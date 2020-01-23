@@ -1,0 +1,57 @@
+﻿@page "/alexmatttestpage"
+@inject HttpClient Http;
+
+<h3>TestPage</h3>
+
+<span>@TextOnPage</span>
+
+@foreach (var s in myList)
+{
+    <div>@s</div>
+}
+
+<span>One way bind: @inputText</span>
+<input type="text" @bind-value="inputText" />
+<button @onclick="AddNewString">Add String!</button>
+
+<TestComponent InputTest="Tony Stark"></TestComponent>
+
+@if (myUsers != null)
+{
+    @foreach (var user in myUsers)
+    {
+        <div>@user.Name</div>
+    }
+}
+
+@code {
+    public string TextOnPage { get; set; } = "Look i'm a variable";
+    List<string> myList;
+    string inputText;
+    List<User> myUsers;
+
+    protected override void OnInitialized()
+    {
+        myList = new List<string>();
+        myList.Add("one");
+        myList.Add("five");
+        myList.Add("apple");
+        myList.Add("potato");
+        myList.Add("test");
+
+
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        myUsers = await Http.GetJsonAsync<List<User>>("api/users");
+    }
+
+    private void AddNewString()
+    {
+        myList.Add(inputText);
+        StateHasChanged();
+    }
+}

@@ -5,11 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Services;
+using Data.Models;
 
 namespace StriveLearningSystem.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -18,15 +19,28 @@ namespace StriveLearningSystem.Server.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> logger;
+        private readonly UserService _userService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, UserService userService)
         {
             this.logger = logger;
+            _userService = userService;
         }
 
         [HttpGet]
+        [Route("api/users")]
+        public IActionResult GetUsers()
+        {
+            var users = _userService.GetUser();
+
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("[controller]")]
         public IEnumerable<WeatherForecast> Get()
         {
+
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
