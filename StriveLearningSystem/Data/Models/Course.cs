@@ -11,7 +11,7 @@ namespace Data.Models
         public String ClassID { get; set; }
         public String Teacher { get; set; }
         public String Description { get; set; }
-        public List<User> Students = new List<User>();
+        public List<User> Students { get; set; }
                
     }
 }

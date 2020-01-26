@@ -7,7 +7,7 @@ namespace Data.Models
 {
     public class User
     {
-        public string Name { get; set; }    //Delete this
+        public string Name { get; set; }    //Delete this. Only here till a test page is deleted
 
         [Key]
         public int UserId { get; set; }
@@ -16,7 +16,7 @@ namespace Data.Models
         public string Email { get; set; }
         public string DateOfBirth { get; set; }
         public string Password { get; set; }
-        public List<Course> Courses = new List<Course>();
-
+        public List<Course> Courses { get; set; }
+       
     }
 }

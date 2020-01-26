@@ -10,6 +10,7 @@ using Services;
 using System.Linq;
 using System.Text;
 using Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace StriveLearningSystem.Server
@@ -27,10 +28,11 @@ namespace StriveLearningSystem.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            /* Service start up Connection string in appsettings.json
-             * services.AddDbContext<ClassDbContext>(options => 
-             *   options.UseSqlServer(Configuration.GetConnectionString("Default")));
-            */
+
+            services.AddDbContext<ClassDbContext>(options => { 
+                options.UseSqlServer(_configuration.GetConnectionString("Default")); 
+            });
+            
 
             services.AddScoped<UserService>();
 
