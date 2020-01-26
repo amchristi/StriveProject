@@ -1,7 +1,27 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using System.Net.Http
+@inject HttpClient Http
 
-Welcome to your new app.
+<h1>Login</h1>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h4>Email:</h4>
+<input @bind="_email" type="text" placeholder="Enter Email" />
+&nbsp;
+<h4>Password:</h4>
+<input @bind="_password" type="password" placeholder="Enter Password" />
+&nbsp;
+<button @onclick="@LogIn" type="submit">Login</button>
+
+
+@code {
+
+    private string _email;
+    private string _password;
+
+    private void LogIn()
+    {
+        var addItem = new StriveLearningSystem.Shared.Models.Identity.Credential { Email = _email, Password = _password };
+        Http.PostJsonAsync("api/login", addItem);
+    }
+}
