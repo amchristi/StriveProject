@@ -1,0 +1,37 @@
+﻿@inject IdentityAgent _identityAgent
+@inject NavigationManager _navigationManager
+
+<h1>Login</h1>
+
+<h4>Email:</h4>
+<input @bind="_email" type="email" placeholder="Enter Email" />
+&nbsp;
+<h4>Password:</h4>
+<input @bind="_password" type="password" placeholder="Enter Password" />
+&nbsp;
+<button @onclick="@LogIn" type="submit">Login</button>
+
+
+@code {
+
+    private string _email;
+    private string _password;
+    private string error = "";
+    bool showErrors = false;
+
+    private async Task LogIn()
+    {
+        var addItem = new Credential { Email = _email, Password = _password };
+        var result = await _identityAgent.Login(addItem);
+
+        if (result.Successful)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            error = result.Error;
+            showErrors = true;
+        }
+    }
+}

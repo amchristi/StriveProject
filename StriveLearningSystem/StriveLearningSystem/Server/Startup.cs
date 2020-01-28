@@ -33,7 +33,6 @@ namespace StriveLearningSystem.Server
                 options.UseSqlServer(_configuration.GetConnectionString("Default")); 
             });
             
-
             services.AddScoped<UserService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

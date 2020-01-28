@@ -34,6 +34,11 @@ namespace Services
             User user = _classDbContext.Users
                         .Where(u => u.Email == email && u.Password == password)
                         .FirstOrDefault<User>();
+
+            if (user == null)
+            {
+                throw new Exception("Invalid username or password");
+            }
             return user;
         }
 
@@ -68,10 +73,10 @@ namespace Services
         }
 
         // Takes a user object and returns a list of the courses for that user.
-        public List<Course> GetClasses(User inputUser) 
+        public List<Course> GetClasses(int inputUser) 
         {
             User student = _classDbContext.Users
-                           .Where(u => u.UserId == inputUser.UserId)
+                           .Where(u => u.UserId == inputUser)
                            .FirstOrDefault<User>();
             List<Course> courseList = student.Courses;
             return courseList;

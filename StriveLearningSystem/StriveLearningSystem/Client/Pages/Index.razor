@@ -1,27 +1,5 @@
 ﻿@page "/"
 
-@using System.Net.Http
-@inject HttpClient Http
-
-<h1>Login</h1>
-
-<h4>Email:</h4>
-<input @bind="_email" type="email" placeholder="Enter Email" />
-&nbsp;
-<h4>Password:</h4>
-<input @bind="_password" type="password" placeholder="Enter Password" />
-&nbsp;
-<button @onclick="@LogIn" type="submit">Login</button>
-
-
-@code {
-
-    private string _email;
-    private string _password;
-
-    private void LogIn()
-    {
-        var addItem = new StriveLearningSystem.Shared.Models.Identity.Credential { Email = _email, Password = _password };
-        Http.PostJsonAsync("api/login", addItem);
-    }
-}
+<h1>
+    Home Page
+</h1>

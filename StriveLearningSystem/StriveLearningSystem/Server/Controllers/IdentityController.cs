@@ -20,10 +20,12 @@ namespace StriveLearningSystem.Server.Controllers
     public class IdentityController : Controller
     {
         private IConfiguration _configuration;
+        private readonly UserService _userService;
 
-        public IdentityController(IConfiguration configuration)
+        public IdentityController(IConfiguration configuration, UserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
         [Route("api/login")]
@@ -33,13 +35,12 @@ namespace StriveLearningSystem.Server.Controllers
 
             try
             {
-                //Call service function to see if user is authenticated.
+                var token = _userService.AuthenticateUser(cred.Password, cred.Email);
 
                 var claims = new List<Claim>();
 
-                //claims.Add(new Claim(ClaimTypes.Name, token.FullName));
-                //claims.Add(new Claim(ClaimTypes.NameIdentifier, token.UserId.ToString()));
-                //Uncomment when service function is added.
+                claims.Add(new Claim(ClaimTypes.Name, token.FirstName + " " + token.LastName));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, token.UserId.ToString()));
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -55,10 +56,22 @@ namespace StriveLearningSystem.Server.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new LoginResult { Successful = false, Error = "Username or password is invalid." });
+                return BadRequest(new LoginResult { Successful = false, Error = ex.Message });
             }
 
         }
-
+        [Route("api/register")]
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] User newUser)
+        {
+            try
+            {
+                return Ok(await _userService.AddNewUser(newUser));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Username already taken");
+            }
+        }
     }
 }

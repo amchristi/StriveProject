@@ -1,4 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using Data.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using StriveLearningSystem.Client.Identity;
 using StriveLearningSystem.Shared.Models.Identity;
@@ -51,6 +53,11 @@ namespace StriveLearningSystem.Client.Agents
             await _localStorage.RemoveItemAsync("authToken");
             ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<User> RegisterUser(User u)
+        {
+            return await _httpClient.PostJsonAsync<User>("api/register", u);
         }
     }
 }
