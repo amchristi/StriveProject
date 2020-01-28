@@ -1,4 +1,6 @@
-﻿@page "/counter"
+﻿@inject IdentityAgent _identityAgent
+@inject NavigationManager _navigationManager
+@page "/counter"
 
 <h1>Sign Up</h1>
 
@@ -27,10 +29,9 @@
     private string _email;
     private string _password;
 
-    //Need an class made for sign up to pass object to controller
-
-    private void SignUp()
+private void SignUp()
     {
+        var addItem = new User { FirstName = _firstName, LastName = _lastName, DateOfBirth = _birthday.ToString(), Email = _email, Password = _password};
         //Http Post here for sign up
     }
 }
