@@ -75,11 +75,13 @@ namespace Services
         // Takes a user object and returns a list of the courses for that user.
         public List<Course> GetClasses(int inputUser) 
         {
-            User student = _classDbContext.Users
+            /*User student = _classDbContext.Users
                            .Where(u => u.UserId == inputUser)
                            .FirstOrDefault<User>();
             List<Course> courseList = student.Courses;
-            return courseList;
+            */
+            //List < Course> courseList = _classDbContext.Courses.Where(u => u.UserId == inputUser).ToList();
+            return null;
         }
 
     }
