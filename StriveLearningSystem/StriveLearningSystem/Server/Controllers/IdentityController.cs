@@ -40,7 +40,7 @@ namespace StriveLearningSystem.Server.Controllers
                 var claims = new List<Claim>();
 
                 claims.Add(new Claim(ClaimTypes.Name, token.FirstName + " " + token.LastName));
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, token.UserId.ToString()));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, token.UserID.ToString()));
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -72,6 +72,13 @@ namespace StriveLearningSystem.Server.Controllers
             {
                 return BadRequest("Username already taken");
             }
+        }
+
+        [Route("api/getallusers")]
+        [HttpGet]
+        public IActionResult TestAllUsers()
+        {
+            return Ok(_userService.GetAllUsers());
         }
     }
 }

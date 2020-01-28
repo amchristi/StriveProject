@@ -16,15 +16,9 @@ namespace Services
             _classDbContext = classDbContext;
         }
 
-        public async Task<List<User>> GetUser()
+        public List<User> GetAllUsers()
         {
-            //Can be deleted once the page that uses it is deleted
-            //Go to DB Context and Get users
-            List<User> usersList = new List<User>();
-            usersList.Add(new User() { Name = "Trevor" });
-
-
-            return usersList;
+            return _classDbContext.Users.ToList();
         }
 
         // Authenticate User
