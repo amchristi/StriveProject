@@ -1,16 +1,36 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+<h1>Sign Up</h1>
 
-<p>Current count: @currentCount</p>
+<h4>First Name:</h4>
+<input @bind="_firstName" type="text" placeholder="Enter First Name" />
+&nbsp;
+<h4>Last Name:</h4>
+<input @bind="_lastName" type="text" placeholder="Enter Last Name" />
+&nbsp;
+<h4>Birthday:</h4>
+<input @bind="_birthday" type="date" placeholder="Enter Birthday" />
+&nbsp;
+<h4>Email:</h4>
+<input @bind="_email" type="email" placeholder="Enter Email" />
+&nbsp;
+<h4>Password:</h4>
+<input @bind="_password" type="password" placeholder="Enter Password" />
+&nbsp;
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="SignUp">Sign Up</button>
 
 @code {
-    private int currentCount = 0;
+    private string _firstName;
+    private string _lastName;
+    private DateTime _birthday;
+    private string _email;
+    private string _password;
 
-    private void IncrementCount()
+    //Need an class made for sign up to pass object to controller
+
+    private void SignUp()
     {
-        currentCount++;
+        //Http Post here for sign up
     }
 }
