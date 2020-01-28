@@ -1,18 +1,61 @@
 ﻿@inject IdentityAgent _identityAgent
 @inject NavigationManager _navigationManager
 
-    <div>
-        <h1>Login</h1>
-        <h4>Email:</h4>
-        <input @bind="_email" type="email" placeholder="Enter Email" />
-        &nbsp;
-        <h4>Password:</h4>
-        <input @bind="_password" type="password" placeholder="Enter Password" />
-        &nbsp;
-        <button @onclick="@LogIn" type="submit">Login</button>
-    </div>
+<div class="container">
+    <h1>Log In or Register</h1>
+    @if (pageState == "login")
+    {
+        <div>
+            <h1>Login</h1>
+            <h4>Email:</h4>
+            <input @bind="_email" type="email" placeholder="Enter Email" />
+            &nbsp;
+            <h4>Password:</h4>
+            <input @bind="_password" type="password" placeholder="Enter Password" />
+            &nbsp;
+            <button @onclick="@LogIn" type="submit">Login</button>
+        </div>
+    }
+    else if (pageState == "register")
+    {
+        <div>
+            <h1>Sign Up</h1>
 
+            <div>@NewUser.FirstName</div>
+
+            <h4>First Name:</h4>
+            <input @bind-value="NewUser.FirstName" @bind-value:event="oninput" type="text" placeholder="Enter First Name" />
+            &nbsp;
+            <h4>Last Name:</h4>
+            <input @bind-value="NewUser.LastName" type="text" placeholder="Enter Last Name" />
+            &nbsp;
+            <h4>Birthday:</h4>
+            <input @bind-value="NewUser.DateOfBirth" type="date" placeholder="Enter Birthday" />
+            &nbsp;
+            <h4>Email:</h4>
+            <input @bind-value="NewUser.Email" type="email" placeholder="Enter Email" />
+            &nbsp;
+            <h4>Password:</h4>
+            <input @bind-value="NewUser.Password" type="password" placeholder="Enter Password" />
+            &nbsp;
+
+            <button class="btn btn-primary" @onclick="SignUp">Sign Up</button>
+            @if  (userCreated)
+            {
+                <div>The user was created.</div>
+            }
+
+        </div>
+    }
+
+    <button class="btn-primary" @onclick="ChangeToRegister">Register</button>
+    <button class="btn-primary" @onclick="ChangeToLogin">Log In</button>
+</div>
 @code {
+    private string pageState = "login";
+    private bool userCreated = false;
+
+    private User NewUser { get; set; }
 
     private string _email;
     private string _password;
@@ -33,5 +76,29 @@
             error = result.Error;
             showErrors = true;
         }
+    }
+
+    private void ChangeToRegister()
+    {
+        NewUser = new User();
+        pageState = "register";
+        StateHasChanged();
+    }
+
+    private void ChangeToLogin()
+    {
+        pageState = "login";
+        StateHasChanged();
+    }
+
+    private async void SignUp()
+    {
+        var user = await _identityAgent.RegisterUser(NewUser);
+        if (user != null)
+        {
+            userCreated = true;
+            StateHasChanged();
+        }
+        
     }
 }
