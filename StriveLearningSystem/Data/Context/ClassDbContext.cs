@@ -11,6 +11,7 @@ namespace Data.Context
         public ClassDbContext(DbContextOptions options):base(options) { }
         public DbSet<Course> Courses { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserCourse> UserCourses { get; set; }
 
     }
 }

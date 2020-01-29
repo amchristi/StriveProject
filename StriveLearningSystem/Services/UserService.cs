@@ -66,16 +66,15 @@ namespace Services
             return userList;
         }
 
-        // Takes a user object and returns a list of the courses for that user.
-        public List<Course> GetClasses(int inputUser) 
+        // Takes a user id and returns a list of courses
+        public List<Course> GetClasses(int inputUserID) 
         {
-            /*User student = _classDbContext.Users
-                           .Where(u => u.UserId == inputUser)
-                           .FirstOrDefault<User>();
-            List<Course> courseList = student.Courses;
-            */
-            //List < Course> courseList = _classDbContext.Courses.Where(u => u.UserId == inputUser).ToList();
-            return null;
+
+            List<Course> userCourseList = (from uc in _classDbContext.UserCourses
+                                         join c in _classDbContext.Courses on uc.CourseID equals c.CourseID
+                                         where uc.UserID == inputUserID
+                                          select c).ToList();
+            return userCourseList;
         }
 
     }
