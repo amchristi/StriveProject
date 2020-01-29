@@ -12,6 +12,11 @@ namespace Data.Context
         public DbSet<Course> Courses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserCourse> UserCourses { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserCourse>()
+                .HasKey(o => new { o.CourseID, o.UserID });
+        }
 
     }
 }
