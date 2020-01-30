@@ -1,55 +1,75 @@
 ﻿@inject IdentityAgent _identityAgent
 @inject NavigationManager _navigationManager
 
-<div class="container">
-    <h1>Log In or Register</h1>
-    @if (pageState == "login")
-    {
-        <div>
-            <h1>Login</h1>
-            <h4>Email:</h4>
-            <input @bind="_email" type="email" placeholder="Enter Email" />
-            &nbsp;
-            <h4>Password:</h4>
-            <input @bind="_password" type="password" placeholder="Enter Password" />
-            &nbsp;
-            <button @onclick="@LogIn" type="submit">Login</button>
-        </div>
-    }
-    else if (pageState == "register")
-    {
-        <div>
-            <h1>Sign Up</h1>
+<div class="login-background">
+    <div class="login-container">
 
-            <div>@NewUser.FirstName</div>
+        <div class="login-header">Strive Learning Systems</div>
 
-            <h4>First Name:</h4>
-            <input @bind-value="NewUser.FirstName" @bind-value:event="oninput" type="text" placeholder="Enter First Name" />
-            &nbsp;
-            <h4>Last Name:</h4>
-            <input @bind-value="NewUser.LastName" type="text" placeholder="Enter Last Name" />
-            &nbsp;
-            <h4>Birthday:</h4>
-            <input @bind-value="NewUser.DateOfBirth" type="date" placeholder="Enter Birthday" />
-            &nbsp;
-            <h4>Email:</h4>
-            <input @bind-value="NewUser.Email" type="email" placeholder="Enter Email" />
-            &nbsp;
-            <h4>Password:</h4>
-            <input @bind-value="NewUser.Password" type="password" placeholder="Enter Password" />
-            &nbsp;
+        @if (pageState == "login")
+        {
+            <EditForm OnValidSubmit="LogIn" Model="loginCreds">
+                <ValidationSummary />
+                <DataAnnotationsValidator />
+                <div class="login-content-container">
+                    <div class="login-content">
+                        <h1>Login</h1>
+                        <h4>Email:</h4>
+                        <input @bind-value="loginCreds.Email" type="email" placeholder="Enter Email" />
+                        <h4>Password:</h4>
+                        <input @bind="loginCreds.Password" type="password" placeholder="Enter Password" />
+                    </div>
+                    <div class="actionContainer">
+                        <button type="button" class="active" @onclick="ChangeToRegister">Register</button>
+                        <button type="submit">Login</button>
+                    </div>
+                </div>
+            </EditForm>
 
-            <button class="btn btn-primary" @onclick="SignUp">Sign Up</button>
-            @if  (userCreated)
-            {
-                <div>The user was created.</div>
-            }
+        }
+        else if (pageState == "register")
+        {
+            <EditForm OnValidSubmit="SignUp" Model="NewUser">
+                <ValidationSummary />
+                <DataAnnotationsValidator />
+                <div class="login-content-container">
+                    <div class="login-content">
+                        <h1>Sign Up</h1>
 
-        </div>
-    }
+                        <div>@NewUser.FirstName</div>
 
-    <button class="btn-primary" @onclick="ChangeToRegister">Register</button>
-    <button class="btn-primary" @onclick="ChangeToLogin">Log In</button>
+                        <h4>First Name:</h4>
+                        <input @bind-value="NewUser.FirstName" @bind-value:event="oninput" type="text" placeholder="Enter First Name" />
+                        &nbsp;
+                        <h4>Last Name:</h4>
+                        <input @bind-value="NewUser.LastName" type="text" placeholder="Enter Last Name" />
+                        &nbsp;
+                        <h4>Birthday:</h4>
+                        <input @bind-value="NewUser.DateOfBirth" type="date" placeholder="Enter Birthday" />
+                        &nbsp;
+                        <h4>Email:</h4>
+                        <input @bind-value="NewUser.Email" type="email" placeholder="Enter Email" />
+                        &nbsp;
+                        <h4>Password:</h4>
+                        <input @bind-value="NewUser.Password" type="password" placeholder="Enter Password" />
+                        &nbsp;
+
+                        @if (userCreated)
+                        {
+                            <div>The user was created.</div>
+                        }
+
+                    </div>
+                    <div class="actionContainer">
+                        <button type="submit" >Register</button>
+                        <button type="button" class="active" @onclick="ChangeToLogin">Login</button>
+                    </div>
+                </div>
+            </EditForm>
+
+        }
+
+    </div>
 </div>
 @code {
     private string pageState = "login";
@@ -57,15 +77,14 @@
 
     private User NewUser { get; set; }
 
-    private string _email;
-    private string _password;
+    private Credential loginCreds { get; set; } = new Credential();
+
     private string error = "";
     bool showErrors = false;
 
     private async Task LogIn()
     {
-        var addItem = new Credential { Email = _email, Password = _password };
-        var result = await _identityAgent.Login(addItem);
+        var result = await _identityAgent.Login(loginCreds);
 
         if (result.Successful)
         {
@@ -99,6 +118,6 @@
             userCreated = true;
             StateHasChanged();
         }
-        
+
     }
 }
