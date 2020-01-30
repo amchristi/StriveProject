@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/StriveLearningSystem/StriveLearningSystem/Client/Pages/Counter.g.cs
+/StriveLearningSystem/StriveLearningSystem/Client/Pages/Index.g.cs
+/StriveLearningSystem/StriveLearningSystem/Client/Pages/Login.g.cs
