@@ -1,4 +1,5 @@
-﻿$primaryColor: change-color(#79AEA3, $lightness: 50);
+﻿//$primaryColor: change-color(#79AEA3, $lightness: 50);
+$primaryColor: change-color(#3797F0, $lightness: 50);
 $secondaryColor: change-color(#FFD0B1, $lightness: 50);
 $gray: change-color($primaryColor, $saturation: 5, $lightness: 50);
 $black: change-color($primaryColor, $lightness: 15);

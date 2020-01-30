@@ -41,6 +41,7 @@ namespace StriveLearningSystem.Server.Controllers
 
                 claims.Add(new Claim(ClaimTypes.Name, token.FirstName + " " + token.LastName));
                 claims.Add(new Claim(ClaimTypes.NameIdentifier, token.UserID.ToString()));
+                claims.Add(new Claim(ClaimTypes.Role, token.IsTeacher ? "Teacher" : "Student"));
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

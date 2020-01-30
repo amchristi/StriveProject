@@ -35,5 +35,6 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/courses");
             return courses;
         }
+
     }
 }
