@@ -1,8 +1,35 @@
-﻿<div>
+﻿@inject CoursesAgent  _coursesAgent
 
-    Hello this is the student component speaking
-</div>
+@if (_coursesvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+<table rules="all" style="width:70%; position:center">
+    <tr>
+        <th>Teacher</th>
+        <th>Description</th>
+    </tr>
+    @foreach (var course in _coursesvar)
+    {
+        <tr>
+            <th>@course.Teacher</th>
+            <th>@course.Description</th>
+        </tr>
+    }
+</table>
+}
+
+This is a student
 
 @code {
+
+    private List<Course> _coursesvar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _coursesvar = await _coursesAgent.GetCoursesByUser();
+    }
 
 }
