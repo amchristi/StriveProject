@@ -9,9 +9,9 @@ namespace Data.Models
     {
         [Key]
         public int CourseID { get; set; }
-        public String Teacher { get; set; }
+        public String Teacher { get; set; } //This field is redundant and should be removed once references to it are removed
         public String Description { get; set; }
-        //public List<User> Students { get; set; }
+        public int TeacherID { get; set; }
 
     }
 }
