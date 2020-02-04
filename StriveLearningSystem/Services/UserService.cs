@@ -42,11 +42,8 @@ namespace Services
         // Register new User 
         // Takes a user object, checks if it the email is unique and adds to database.
         // Returns the newUserObject with an id field if add was successful otherwise the user object is returned unchanged.
-        public async Task<List<User>> AddNewUser(User newUser)
+        public async Task<User> AddNewUser(User newUser)
         {
-         
-            List<User> userList = new List<User>();
-
             // Check if email is already in use
             User checkUnique = _classDbContext.Users
                                .Where(u => u.Email == newUser.Email)
@@ -66,10 +63,12 @@ namespace Services
                          .Where(u => u.Email == newUser.Email)
                          .FirstOrDefault<User>();
             }
+            else
+            {
+                throw new Exception("User already exists");
+            }
 
-            // Add the newUser object to the return list. 
-            userList.Add(newUser);
-            return userList;
+            return newUser;
         }
 
         // Takes a user id and returns a list of courses

@@ -68,7 +68,7 @@ div {
         background-color: $white;
         border: 1px solid scale-color($primaryColor, $lightness: -30);
         width: 540px;
-        height: 80%;
+        min-height: 80%;
         display: grid;
         grid-template-rows: auto 1fr;
         align-items: center;
