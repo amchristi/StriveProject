@@ -3,6 +3,7 @@ using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Services
@@ -25,8 +26,10 @@ namespace Services
         // Takes a password and email and returns a user object associated with those credentials.
         public User AuthenticateUser(string password, string email)
         {
+            var hashedPassword = HashPassword("strivesalt", password);
+
             User user = _classDbContext.Users
-                        .Where(u => u.Email == email && u.Password == password)
+                        .Where(u => u.Email == email && u.Password == hashedPassword)
                         .FirstOrDefault<User>();
 
             if (user == null)
@@ -51,6 +54,9 @@ namespace Services
 
             if (checkUnique == null)
             {
+                //Hash password
+                newUser.Password = HashPassword("strivesalt", newUser.Password);
+
                 // Email is unique add to database
                 _classDbContext.Add(newUser);
                 await _classDbContext.SaveChangesAsync();
@@ -77,5 +83,12 @@ namespace Services
             return userCourseList;
         }
 
+
+        public string HashPassword(string salt, string password)
+        {
+            Rfc2898DeriveBytes HashedPass = new Rfc2898DeriveBytes(password,
+                System.Text.Encoding.UTF8.GetBytes(salt), 10000);
+            return Convert.ToBase64String(HashedPass.GetBytes(25));
+        }
     }
 }
