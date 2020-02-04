@@ -44,7 +44,7 @@ div {
     background-color: #f6fafe;
     border: 1px solid #0c5ca6;
     width: 540px;
-    height: 80%;
+    min-height: 80%;
     display: grid;
     grid-template-rows: auto 1fr;
     align-items: center; }
