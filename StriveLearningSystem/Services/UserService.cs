@@ -82,6 +82,16 @@ namespace Services
             return userCourseList;
         }
 
+        // Takes a user id and returns a list of courses taught by that teacher
+        public List<Course> GetCourseTaughtByTeacher(int inputUserID)
+        {
+
+            List<Course> userCourseList = (from c in _classDbContext.Courses
+                                           where c.TeacherID == inputUserID
+                                           select c).ToList();
+            return userCourseList;
+        }
+
 
         public string HashPassword(string salt, string password)
         {
@@ -89,5 +99,6 @@ namespace Services
                 System.Text.Encoding.UTF8.GetBytes(salt), 10000);
             return Convert.ToBase64String(HashedPass.GetBytes(25));
         }
+
     }
 }
