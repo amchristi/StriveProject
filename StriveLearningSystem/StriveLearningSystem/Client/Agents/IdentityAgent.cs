@@ -58,7 +58,15 @@ namespace StriveLearningSystem.Client.Agents
 
         public async Task<User> RegisterUser(User u)
         {
-            return await _httpClient.PostJsonAsync<User>("api/register", u);
+            try
+            {
+                var user = await _httpClient.PostJsonAsync<User>("api/register", u);
+                return user;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
         }
     }
 }

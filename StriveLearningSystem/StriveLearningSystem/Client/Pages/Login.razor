@@ -18,6 +18,15 @@
                         <input @bind-value="loginCreds.Email" type="email" placeholder="Enter Email" />
                         <h4>Password:</h4>
                         <input @bind="loginCreds.Password" type="password" placeholder="Enter Password" />
+
+                        @if (loginState == 1)
+                        {
+                            <div>Logging in...</div>
+                        }
+                        @if (loginState == 2)
+                        {
+                            <div>@error</div>
+                        }
                     </div>
                     <div class="actionContainer">
                         <button type="button" class="active" @onclick="ChangeToRegister">Register</button>
@@ -25,6 +34,7 @@
                     </div>
                 </div>
             </EditForm>
+
 
         }
         else if (pageState == "register")
@@ -53,15 +63,26 @@
                         <h4>Password:</h4>
                         <input @bind-value="NewUser.Password" type="password" placeholder="Enter Password" />
                         &nbsp;
-
-                        @if (userCreated)
+                        <div>
+                            <label for="isteacherbox">Teacher:</label>
+                            <input id="isteacherbox" type="checkbox" @bind-value="NewUser.IsTeacher" />
+                        </div>
+                        @if (registerState == 3)
                         {
-                            <div>The user was created.</div>
+                            <div>Error Registering User: Username already exists</div>
+                        }
+                        else if (registerState == 2)
+                        {
+                            <div>Registered User!</div>
+                        }
+                        else if (registerState == 1)
+                        {
+                            <div>Registering user...</div>
                         }
 
                     </div>
                     <div class="actionContainer">
-                        <button type="submit" >Register</button>
+                        <button type="submit">Register</button>
                         <button type="button" class="active" @onclick="ChangeToLogin">Login</button>
                     </div>
                 </div>
@@ -73,27 +94,30 @@
 </div>
 @code {
     private string pageState = "login";
-    private bool userCreated = false;
 
     private User NewUser { get; set; }
 
     private Credential loginCreds { get; set; } = new Credential();
 
     private string error = "";
-    bool showErrors = false;
+    int loginState = 0;
+
+    int registerState = 0;
 
     private async Task LogIn()
     {
+        loginState = 1;
         var result = await _identityAgent.Login(loginCreds);
 
         if (result.Successful)
         {
             _navigationManager.NavigateTo("/");
+            loginState = 0;
         }
         else
         {
             error = result.Error;
-            showErrors = true;
+            loginState = 2;
         }
     }
 
@@ -110,13 +134,18 @@
         StateHasChanged();
     }
 
-    private async void SignUp()
+    private async Task SignUp()
     {
+        registerState = 1;
         var user = await _identityAgent.RegisterUser(NewUser);
         if (user != null)
         {
-            userCreated = true;
+            registerState = 2;
             StateHasChanged();
+        }
+        else
+        {
+            registerState = 3;
         }
 
     }
