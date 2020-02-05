@@ -4,7 +4,7 @@
 @inject IdentityAgent _identityAgent
 
 <h1>
-    Home Page
+
 </h1>
 
 <AuthorizeView Roles="Teacher">
@@ -21,7 +21,6 @@
     protected override void OnInitialized()
     {
 
-        var courses = _coursesAgent.GetCoursesByUser();
         base.OnInitialized();
     }
 

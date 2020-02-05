@@ -6,6 +6,8 @@
 }
 else
 {
+    <h1>Teacher Homepage</h1>
+    <h2>Courses taught</h2>
     <table rules="all" style="width:70%; position:center">
         <tr>
             <th>CourseID</th>
@@ -21,10 +23,7 @@ else
     </table>
 }
 
-<div>
 
-   This is course taught by the teacher
-</div>
 
 @code {
 
@@ -33,7 +32,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-    _coursesvar = await _coursesAgent.GetCoursesByUser();
+    _coursesvar = await _coursesAgent.GetCoursesByTeacher();
     }
 
     }
