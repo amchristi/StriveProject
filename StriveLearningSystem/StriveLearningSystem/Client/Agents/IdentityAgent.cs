@@ -68,5 +68,13 @@ namespace StriveLearningSystem.Client.Agents
                 return null;
             }
         }
+
+        public async Task<string> GetName()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var username = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.Name).Value;
+
+            return username;
+        }
     }
 }
