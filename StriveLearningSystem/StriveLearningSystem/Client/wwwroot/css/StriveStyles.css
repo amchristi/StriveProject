@@ -68,11 +68,15 @@ div {
           color: #798086; }
           .login-background .login-container .actionContainer button.active:hover {
             background-color: #cccfd1; }
+  .login-background label {
+    font-size: 24px; }
   .login-background input {
     border: 1px solid #798086;
     padding: 3px;
     border-radius: 5px;
     width: 100%; }
+  .login-background input[type='checkbox'] {
+    width: auto; }
   .login-background form {
     width: 100%;
     height: 100%; }
