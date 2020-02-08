@@ -8,30 +8,119 @@ else
 {
     <h1>Teacher Homepage</h1>
     <h2>Courses taught</h2>
-    <table rules="all" style="width:70%; position:center">
-        <tr>
-            <th>CourseID</th>
-            <th>Description</th>
-        </tr>
+
+    <!--Course list-->
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Course Description</h5>
+                </div>
+            </div>
+        </li>
         @foreach (var course in _coursesvar)
         {
-            <tr>
-                <td>@course.CourseID</td>
-                <td>@course.Description</td>
-            </tr>
+
+            <a href="#" class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        @course.CourseID
+                    </div>
+                    <div class="col">
+                        @course.Description
+                    </div>
+                </div>
+            </a>
         }
-    </table>
+
+    </ul>
+
+    <!--What assignments to grade-->
+    <h2>Assignments to grade</h2>
+    <ul class="list-group" style="width:70%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment</h5>
+                </div>
+                <div class="col">
+                    <h6>Number left to grade</h6>
+                </div>
+            </div>
+        </li>
+        @for (int i = 0; i < 5; i++)
+        {
+            <a href="#" class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        Course id and description
+                    </div>
+                    <div class="col">
+                        Assignment @i
+                    </div>
+                    <div class="col">
+                        @random.Next(0, 100)
+                    </div>
+                </div>
+            </a>
+        }
+
+    </ul>
+
+    <!--Comming up-->
+    <h2>Comming up</h2>
+    <ul class="list-group" style="width:70%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment</h5>
+                </div>
+
+            </div>
+        </li>
+        @for (int i = 0; i < 5; i++)
+        {
+            <a href="#" class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        Course id and description
+                    </div>
+                    <div class="col">
+                        Assignment @i
+                    </div>
+
+                </div>
+            </a>
+        }
+
+    </ul>
+
 }
 
 
 @code {
-
+    Random random = new Random();
     private List<Course>
     _coursesvar;
 
     protected override async Task OnInitializedAsync()
     {
-    _coursesvar = await _coursesAgent.GetCoursesByTeacher();
+        _coursesvar = await _coursesAgent.GetCoursesByTeacher();
     }
 
-    }
+}
