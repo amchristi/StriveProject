@@ -9,12 +9,26 @@
 else
 {
     <h1>Profile</h1>
-    <h1></h1>
-
-    //_user.FirstName
+    <h1>@_user.</h1>
 }
 
+@code{
 
-   
+    private User _user;
+
+    protected async Task GetProfile()
+    {
+        _user = await _identityAgent.GetProfile();
+    }
+
+    //convert upload image to byte[] array to in db
+    /*    public byte[] ImageToByteArray(System.Drawing.Image imageIn)
+        {
+           using (var ms = new MemoryStream())
+           {
+              imageIn.Save(ms,imageIn.RawFormat);
+              return  ms.ToArray();
+           }
+        }*/
 
 }

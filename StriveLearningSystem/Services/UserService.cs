@@ -92,7 +92,7 @@ namespace Services
             return userCourseList;
         }
 
-        public User GetProfile(User user)
+        public async Task<User> GetProfile(User user)
         {
 
             
