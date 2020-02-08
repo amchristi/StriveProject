@@ -2,18 +2,24 @@
 @page "/profile"
 @inject IdentityAgent _identityAgent
 
-
+@if (_user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
     <h1>Profile</h1>
- 
+    <h1>@_user.FirstName</h1>
+}
 
 
-@code {
+    @code           {
 
-    private User _user;
+private User _user;
 
-    protected async Task GetProfile()
-    {
-        _user = await _identityAgent.GetProfile();
-    }
+protected async Task GetProfile()
+{
+_user = await _identityAgent.GetProfile();
+}
 
 }
