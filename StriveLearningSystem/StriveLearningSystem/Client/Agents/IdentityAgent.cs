@@ -81,8 +81,12 @@ namespace StriveLearningSystem.Client.Agents
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var id = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
             User user1 = new User();
+            try
+            {
+                user1.UserID = Int32.Parse(id);
+            }
+            catch (Exception) { return null; }
 
-            user1.UserID =Int32.Parse(id);
             try
             {
                 var user = await _httpClient.PostJsonAsync<User>("api/getprofile", user1);
@@ -92,6 +96,20 @@ namespace StriveLearningSystem.Client.Agents
             {
                 return null;
             }
+        }
+
+        public async Task<User> UpdateProfile(User user1)
+        {
+            try
+            {
+                var user = await _httpClient.PostJsonAsync<User>("api/updateprofile", user1);
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
         }
 
     }

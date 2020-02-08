@@ -85,9 +85,25 @@ namespace StriveLearningSystem.Server.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Username already taken");
+                return BadRequest("Error can't get profile");
             }
         }
+
+        [Route("api/updateprofile")]
+        [HttpPost]
+
+        public async Task<IActionResult> UpdateProfile([FromBody] User user )
+        {
+            try
+            {
+                return Ok(await _userService.UpdateProfile(user));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error can't update profile");
+            }
+        }
+
 
         [Route("api/getallusers")]
         [HttpGet]
