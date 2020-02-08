@@ -1,5 +1,19 @@
-﻿<h3>Component</h3>
+﻿
+@page "/profile"
+@inject IdentityAgent _identityAgent
+
+
+    <h1>Profile</h1>
+ 
+
 
 @code {
+
+    private User _user;
+
+    protected async Task GetProfile()
+    {
+        _user = await _identityAgent.GetProfile();
+    }
 
 }

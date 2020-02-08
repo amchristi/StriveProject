@@ -92,6 +92,15 @@ namespace Services
             return userCourseList;
         }
 
+        public async Task<User> GetProfile(User user)
+        {
+            User user1 = _classDbContext.Users
+                         .Where(u => u.UserID == user.UserID)
+                         .FirstOrDefault<User>();
+
+            return user1;
+        }
+
 
         public string HashPassword(string salt, string password)
         {
