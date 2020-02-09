@@ -92,11 +92,9 @@ namespace Services
             return userCourseList;
         }
 
+        //Take a user object with at least a userId and fill in all the fields and return.
         public User GetProfile(User user)
         {
-
-            
-
             User user1 =  _classDbContext.Users
                          .Where(u => u.UserID == user.UserID)
                          .FirstOrDefault<User>();
@@ -121,6 +119,26 @@ namespace Services
             Rfc2898DeriveBytes HashedPass = new Rfc2898DeriveBytes(password,
                 System.Text.Encoding.UTF8.GetBytes(salt), 10000);
             return Convert.ToBase64String(HashedPass.GetBytes(25));
+        }
+
+        //Takes a student user id and will return all assignments associated with that id.
+        public List<Assignment> GetStudentAssignmentsByUserId(int UserID) 
+        {
+            List<Assignment> assignments = (from a in _classDbContext.Assignments
+                                            join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
+                                            where uc.UserID == UserID
+                                            select a).ToList();
+            return assignments;
+        }
+
+        //Takes a teacher UserIF and will return all assignments associated on the Courses table with that UserID
+        public List<Assignment> GetTeacherAssignmentsByUserId(int UserID)
+        {
+            List<Assignment> assignments = (from a in _classDbContext.Assignments
+                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
+                                            where c.TeacherID == UserID
+                                            select a).ToList();
+            return assignments;
         }
 
     }

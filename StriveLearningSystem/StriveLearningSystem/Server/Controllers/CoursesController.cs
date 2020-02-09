@@ -33,13 +33,27 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_userService.GetClasses(userId));
         }
 
+        //Takes in a teacher user id and returns the courses associated with that teacher.
         [Route("api/users/{userId}/teacherCourses")]
         [HttpGet]
         public IActionResult GetTeacherCourses([FromRoute] int userId)
         {
-            //TODO
             return Ok(_userService.GetCourseTaughtByTeacher(userId));
         }
 
+        [Route("api/users/{userId}/studentAssignments")]
+        [HttpGet]
+        public IActionResult GetStudentAssignmets([FromRoute] int userId) 
+        {
+            return Ok(_userService.GetStudentAssignmentsByUserId(userId));
+        }
+
+        [Route("api/users/{userId}/teacherAssignments")]
+        [HttpGet]
+        public IActionResult GetTeacherAssignmets([FromRoute] int userId)
+        {
+            return Ok(_userService.GetTeacherAssignmentsByUserId(userId));
+        }
     }
 }
+
