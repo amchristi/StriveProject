@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\fullcalendar-4.3.1\**" />
+    <Content Remove="wwwroot\fullcalendar-4.3.1\**" />
+    <EmbeddedResource Remove="wwwroot\fullcalendar-4.3.1\**" />
+    <None Remove="wwwroot\fullcalendar-4.3.1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
@@ -25,6 +32,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Data.csproj" />
     <ProjectReference Include="..\Shared\StriveLearningSystem.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\css\NewFolder\" />
   </ItemGroup>
 
 </Project>
