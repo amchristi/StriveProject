@@ -77,11 +77,11 @@ namespace StriveLearningSystem.Server.Controllers
 
         [Route("api/getprofile")]
         [HttpPost]
-        public async Task<IActionResult> Profile([FromBody] User user)
+        public IActionResult Profile([FromBody] User user)
         {
             try
             {
-                return Ok(await _userService.GetProfile(user));
+                return Ok( _userService.GetProfile(user));
             }
             catch (Exception e)
             {
