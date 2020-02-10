@@ -8,32 +8,46 @@ else
 {
     <h1>Student Homepage</h1>
     <h2>Current courses</h2>
-<table rules="all" style="width:70%; position:center">
-    <tr>
-        <th>Teacher</th>
-        <th>Description</th>
-    </tr>
-    @foreach (var course in _coursesvar)
-    {
-        <tr>
-            <th>@course.Teacher</th>
-            <th>@course.Description</th>
-        </tr>
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Course Description</h5>
+                </div>
+            </div>
+        </li>
+        @foreach (var course in _coursesvar)
+        {
+            <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        @course.CourseID
+                    </div>
+                    <div class="col">
+                        @course.Description
+                    </div>
+                </div>
+            </a>
+        }
+        </ul>
     }
-</table>
-}
 
-<CalendarComponent></CalendarComponent>
+    <CalendarComponent></CalendarComponent>
 
 
 
-@code {
+    @code {
 
-    private List<Course> _coursesvar;
+        private List<Course> _coursesvar;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _coursesvar = await _coursesAgent.GetCoursesByUser();
+        protected override async Task OnInitializedAsync()
+        {
+            _coursesvar = await _coursesAgent.GetCoursesByUser();
+        }
+
     }
-
-}
