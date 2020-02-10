@@ -25,7 +25,7 @@ else
         @foreach (var course in _coursesvar)
         {
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
 
                 <div class="row">
                     <div class="col">
@@ -100,7 +100,7 @@ else
         </li>
         @foreach (var assignment in _assignments)
         {
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="/course/@assignment.CourseID/assignment/@assignment.AssignmentID" class="list-group-item list-group-item-action">
 
                 <div class="row">
                     <div class="col">

@@ -71,6 +71,15 @@ namespace Services
             return newUser;
         }
 
+        // Returns the course object from a courseId
+        public Course GetCourseById(int courseId)
+        {
+            Course course = (from c in _classDbContext.Courses
+                          where c.CourseID == courseId
+                          select c).FirstOrDefault<Course>();
+            return course;
+        }
+
         // Takes a user id and returns a list of courses
         public List<Course> GetClasses(int inputUserID) 
         {
@@ -131,7 +140,7 @@ namespace Services
             return assignments;
         }
 
-        //Takes a teacher UserIF and will return all assignments associated on the Courses table with that UserID
+        //Takes a teacher UserID and will return all assignments associated on the Courses table with that UserID
         public List<Assignment> GetTeacherAssignmentsByUserId(int UserID)
         {
             List<Assignment> assignments = (from a in _classDbContext.Assignments

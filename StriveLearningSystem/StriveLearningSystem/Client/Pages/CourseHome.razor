@@ -1,0 +1,36 @@
+﻿@page "/course/{courseId:int}"
+@inject CoursesAgent  _coursesAgent
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject IdentityAgent _identityAgent
+
+<h3>Course Home</h3>
+
+<AuthorizeView Roles="Teacher">
+    you are a teacher at the course page
+    <h1>Course id is @courseId</h1>
+    <!--
+        TODO This currently breaks the page. 
+        <h1>@_course.Description</h1>-->
+</AuthorizeView>
+
+<AuthorizeView Roles="Student">
+    you are a Student at the course page
+    <h1>Course id is @courseId</h1>
+    <!--<h1>@_course.Description</h1>-->
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public int courseId { get; set; }
+
+    private Course _course;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        _course = await _coursesAgent.GetCourseById(courseId);
+        Console.WriteLine(_course.Description);
+        
+    }
+
+}
