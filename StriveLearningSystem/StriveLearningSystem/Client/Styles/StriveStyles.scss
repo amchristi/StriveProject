@@ -13,6 +13,7 @@ $white: change-color($primaryColor, $lightness: 98);
 }
 
 html, body, app {
+    min-height:100vh;
     color: $black;
     background-color: $white;
 }
@@ -22,7 +23,7 @@ html, body, app {
     background-color: $primaryColor;
     background-image: linear-gradient($primaryColor, scale-color($primaryColor, $lightness:-30));
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
