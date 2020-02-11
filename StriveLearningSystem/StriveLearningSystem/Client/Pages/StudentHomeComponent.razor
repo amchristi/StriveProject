@@ -34,20 +34,20 @@ else
                 </div>
             </a>
         }
-        </ul>
+    </ul>
+}
+
+<StudentCalendarComponent></StudentCalendarComponent>
+
+
+
+@code {
+
+    private List<Course> _coursesvar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _coursesvar = await _coursesAgent.GetCoursesByUser();
     }
 
-    <CalendarComponent></CalendarComponent>
-
-
-
-    @code {
-
-        private List<Course> _coursesvar;
-
-        protected override async Task OnInitializedAsync()
-        {
-            _coursesvar = await _coursesAgent.GetCoursesByUser();
-        }
-
-    }
+}

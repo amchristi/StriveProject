@@ -4,8 +4,6 @@
   --white: #f6fafe; }
 
 html, body, app {
-  width: 100vw;
-  height: 100vh;
   color: #052747;
   background-color: #f6fafe; }
 

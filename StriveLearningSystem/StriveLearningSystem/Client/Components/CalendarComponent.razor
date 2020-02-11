@@ -1,23 +1,21 @@
 ﻿@inject IJSRuntime JSRuntime
 @implements IDisposable
-
-<h3>Calendar Component</h3>
+@using System.Text.Json
 
 <div id="calendar"></div>
 
 @code {
 
-    List<CalendarEvent> calendarEvents = new List<CalendarEvent>();
+    [Parameter] public List<CalendarEvent> CalendarEvents { get; set; } = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            calendarEvents.Add(new CalendarEvent() { AllDay = true, Start = DateTime.UtcNow, Title = "Test Event" });
-            calendarEvents.Add(new CalendarEvent() { Start = DateTime.UtcNow.AddDays(-1), End = DateTime.UtcNow.AddDays(-0.8), Title = "Test Event 2" });
-            calendarEvents.Add(new CalendarEvent() { Start = DateTime.UtcNow.AddDays(-1.1), End = DateTime.UtcNow.AddDays(-0.8), Title = "Test Event 3" });
+            //I'm only serializing like this to remove null values. The JSRuntime normally serializes just fine.
+            var jsonEvents = JsonSerializer.Serialize(CalendarEvents, new JsonSerializerOptions() { IgnoreNullValues = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
 
-            await JSRuntime.InvokeAsync<object>("createNewCalendar", "calendar", calendarEvents);
+            await JSRuntime.InvokeAsync<object>("createNewCalendar", "calendar", jsonEvents);
         }
 
     }

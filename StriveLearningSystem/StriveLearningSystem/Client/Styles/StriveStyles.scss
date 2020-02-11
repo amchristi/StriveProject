@@ -13,8 +13,6 @@ $white: change-color($primaryColor, $lightness: 98);
 }
 
 html, body, app {
-    width: 100vw;
-    height: 100vh;
     color: $black;
     background-color: $white;
 }
