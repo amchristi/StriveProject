@@ -1,34 +1,125 @@
 ﻿
 @page "/profile"
-@inject IdentityAgent _identityAgent
+@inject UserAgent _userAgent
+@inject IdentityAgent  _identity
+@using BlazorInputFile
 
-@if (_user == null)
+@if (user == null)
 {
     <p>Loading...</p>
 }
 else
 {
     <h1>Profile</h1>
-    <h1>@_user.FirstName @_user.LastName</h1>
+    <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
+    @if (!editMode)
+    {
+        if (user.Picture != null)
+        {
+            <img src="data:image/png;base64,@(Convert.ToBase64String(user.Picture))" />
+        }
+
+        <div>User ID: @user.UserID</div>
+        <div>@user.FirstName @user.LastName</div>
+        <div>Birthday: @user.DateOfBirth</div>
+        <div>Description?: @user.Description</div>
+        <div>Email: @user.Email</div>
+        <div>Role: @(user.IsTeacher ? "Teacher" : "Student")</div>
+        <div>Phone: @user.Phone</div>
+        <div>Address: @user.Address</div>
+        <div>External Link: @user.External_Link2</div>
+
+    }
+    else
+    {
+        if (tempUser.Picture != null)
+        {
+            <img src="data:image/png;base64,@(Convert.ToBase64String(tempUser.Picture))"/>
+        }
+
+        <EditForm Model="tempUser" OnValidSubmit="UpdateUser">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            <div>User ID: <InputNumber @bind-Value="@tempUser.UserID" /></div>
+            <div>First Name: <InputText @bind-Value="@tempUser.FirstName"></InputText></div>
+            <div>Last Name: <InputText @bind-Value="@tempUser.LastName"></InputText></div>
+            <div>Birthday: <InputDate @bind-Value="@tempUser.DateOfBirth"></InputDate></div>
+            <div>Description: <InputText @bind-Value="@tempUser.Description"></InputText></div>
+            <div>Email: <InputText @bind-Value="@tempUser.Email"></InputText></div>
+            <div>Role: <InputCheckbox @bind-Value="@tempUser.IsTeacher"></InputCheckbox> @(tempUser.IsTeacher ? "Teacher" : "Student")</div>
+            <div>Phone: <InputText @bind-Value="@tempUser.Phone"></InputText> </div>
+            <div>Address: <InputText @bind-Value="@tempUser.Address"></InputText> </div>
+            <div>External Link: <InputText @bind-Value="@tempUser.External_Link2"></InputText> </div>
+            <div><InputFile OnChange="HandleFileSelected"></InputFile></div>
+            <div>
+                <button class="btn-secondary" type="button" @onclick="ToggleEditMode">Cancel</button>
+                <button class="btn-primary" type="submit">Save</button>
+            </div>
+        </EditForm>
+    }
 }
 
 @code{
+    private User user;
+    private User tempUser;
+    private bool editMode = false;
+    IFileListEntry file;
+    byte[] imageData;
 
-    private User _user;
-
-
-     protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-         _user = await _identityAgent.GetProfile();
-    }
-    //convert upload image to byte[] array to in db
-    /*    public byte[] ImageToByteArray(System.Drawing.Image imageIn)
-        {
-           using (var ms = new MemoryStream())
-           {
-              imageIn.Save(ms,imageIn.RawFormat);
-              return  ms.ToArray();
-           }
-        }*/
+        int userId = await _identity.GetId();
 
+        user = await _userAgent.GetUser(userId);
+    }
+
+    private void ToggleEditMode()
+    {
+        if (!editMode)
+        {
+            tempUser = new User();
+
+            tempUser.Address = user.Address;
+            tempUser.DateOfBirth = user.DateOfBirth;
+            tempUser.Description = user.Description;
+            tempUser.Email = user.Email;
+            tempUser.External_Link2 = user.External_Link2;
+            tempUser.FirstName = user.FirstName;
+            tempUser.IsTeacher = user.IsTeacher;
+            tempUser.LastName = user.LastName;
+            tempUser.Password = user.Password;
+            tempUser.Phone = user.Phone;
+            tempUser.Picture = user.Picture;
+            tempUser.UserID = user.UserID;
+        }
+        editMode = !editMode;
+    }
+
+    private async Task UpdateUser()
+    {
+        user = await _userAgent.UpdateProfile(tempUser);
+        ToggleEditMode();
+    }
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+
+        tempUser.Picture = await ReadFully(file.Data);
+        StateHasChanged();
+    }
+
+    public async Task<byte[]> ReadFully(System.IO.Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+        {
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+        }
+    }
 }

@@ -74,25 +74,21 @@ namespace Services
         
 
         //Take a user object with at least a userId and fill in all the fields and return.
-        public User GetProfile(User user)
+        public User GetUser(int userId)
         {
             User user1 =  _classDbContext.Users
-                         .Where(u => u.UserID == user.UserID)
-                         .FirstOrDefault<User>();
+                         .Where(u => u.UserID == userId)
+                         .FirstOrDefault();
 
             return user1;
         }
 
-        public async Task<User> UpdateProfile(User user)
+        public async Task<User> UpdateUser(User user)
         {
-            _classDbContext.Add(user);
+            _classDbContext.Users.Update(user);
             await _classDbContext.SaveChangesAsync();
 
-            User user1 = _classDbContext.Users
-                         .Where(u => u.UserID == user.UserID)
-                         .FirstOrDefault<User>();
-
-            return user1;
+            return user;
         }
 
         public string HashPassword(string salt, string password)

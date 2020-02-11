@@ -15,7 +15,7 @@ namespace Data.Models
         public DateTime DateOfBirth { get; set; }
         public string Password { get; set; }
         public bool IsTeacher { get; set; }
-        public int Phone { get; set; }
+        public string Phone { get; set; }
         public string Address { get; set; } 
         public string Description { get; set; }
         public byte[] Picture { get; set; }
