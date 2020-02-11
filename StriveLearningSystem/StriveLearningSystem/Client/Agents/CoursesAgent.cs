@@ -51,6 +51,14 @@ namespace StriveLearningSystem.Client.Agents
             return assignments;
         }
 
+        public async Task<List<Assignment>> GetAssignmentsByStudent()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/studentAssignments");
+            return assignments;
+        }
+
         //Returns the course object given a courseId
         public async Task<Course> GetCourseById(int courseId)
         {
