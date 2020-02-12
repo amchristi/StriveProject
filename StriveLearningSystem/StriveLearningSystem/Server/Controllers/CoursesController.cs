@@ -57,6 +57,13 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_userService.GetTeacherAssignmentsByUserId(userId));
         }
 
+        [Route("api/users/{userId}/teacherUngradedAssignments")]
+        [HttpGet]
+        public IActionResult GetTeacherUngradedAssigments([FromRoute] int userId)
+        {
+            return Ok(_userService.GetTeacherUngradedAssignmentsByUserId(userId));
+        }
+
         //Takes in a courseId and returns a course object
         [Route("api/courses/{courseId}/courseById")]
         [HttpGet]

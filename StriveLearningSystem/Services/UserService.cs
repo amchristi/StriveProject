@@ -122,5 +122,18 @@ namespace Services
             return assignments;
         }
 
+
+        //Return a sorted list of ungraded assignments by teacher 
+        public List<Assignment> GetTeacherUngradedAssignmentsByUserId(int UserID)
+        {
+            List<Assignment> assignments = (from a in _classDbContext.Assignments
+                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
+                                            join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
+                                            where c.TeacherID == UserID && !g.IsGraded
+                                            orderby a.DueDate
+                                            select a).ToList();
+            return assignments; 
+        }
+        
     }
 }
