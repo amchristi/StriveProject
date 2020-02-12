@@ -43,6 +43,40 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/teacherCourses");
             return courses;
         }
+        public async Task<List<Assignment>> GetAssignmentsByTeacher()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherAssignments");
+            return assignments;
+        }
+
+        //Returns a sorted list of ungraded assignments by teacher.
+        public async Task<List<Assignment>> GetAssignmentsUngradedByTeacher()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherUngradedAssignments");
+            return assignments;
+        }
+
+        public async Task<List<Assignment>> GetAssignmentsByStudent()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/studentAssignments");
+            return assignments;
+        }
+
+        //Returns the course object given a courseId
+        public async Task<Course> GetCourseById(int courseId)
+        {
+            //Could check to see if user should have access to this course
+            //var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            //var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var course = await _httpClient.GetJsonAsync<Course>($"api/courses/{courseId}/courseById");
+            return course;
+        }
 
     }
 }

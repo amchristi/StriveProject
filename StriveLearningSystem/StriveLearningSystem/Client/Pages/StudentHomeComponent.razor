@@ -8,32 +8,107 @@ else
 {
     <h1>Student Homepage</h1>
     <h2>Current courses</h2>
-<table rules="all" style="width:70%; position:center">
-    <tr>
-        <th>Teacher</th>
-        <th>Description</th>
-    </tr>
-    @foreach (var course in _coursesvar)
-    {
-        <tr>
-            <th>@course.Teacher</th>
-            <th>@course.Description</th>
-        </tr>
-    }
-</table>
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Course Description</h5>
+                </div>
+            </div>
+        </li>
+        @foreach (var course in _coursesvar)
+        {
+            <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        @course.CourseID
+                    </div>
+                    <div class="col">
+                        @course.Description
+                    </div>
+                </div>
+            </a>
+        }
+    </ul>
 }
 
-<CalendarComponent></CalendarComponent>
+@if (_assignmentsvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h2>To Do List:</h2>
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Assignment ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment Type</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment Description</h5>
+                </div>
+                <div class="col">
+                    <h5>Due Date</h5>
+                </div>
+            </div>
+        </li>
+        @foreach (var assignment in _assignmentsvar)
+        {
+            @if (assignment.DueDate < wfn)
+            {
+                <a class="list-group-item list-group-item-action">
+
+                    <div class="row">
+                        <div class="col">
+                            @assignment.AssignmentID
+                        </div>
+                        <div class="col">
+                            @assignment.AssignmentType
+                        </div>
+                        <div class="col">
+                            @assignment.AssignmentDescription
+                        </div>
+                        <div class="col">
+                            @assignment.DueDate
+                        </div>
+                    </div>
+                </a>
+             }
+         }
+    </ul>
+}
+
+<StudentCalendarComponent></StudentCalendarComponent>
 
 
 
 @code {
 
     private List<Course> _coursesvar;
+    private List<Assignment> _assignmentsvar;
+    private DateTime currDate;
+    private DateTime wfn;
 
     protected override async Task OnInitializedAsync()
     {
         _coursesvar = await _coursesAgent.GetCoursesByUser();
+
+        _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
+
+        currDate = DateTime.Now;
+        wfn = currDate.AddDays(7);
     }
+
+  
 
 }

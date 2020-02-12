@@ -1,0 +1,16 @@
+﻿@inject CalendarAgent _calendar
+
+<CalendarComponent CalendarEvents="events"></CalendarComponent>
+
+@code {
+    List<CalendarEvent> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Get assignments and other events. Convert it to calendar events
+        events = await _calendar.GetCalendarEvents();
+
+
+    }
+
+}

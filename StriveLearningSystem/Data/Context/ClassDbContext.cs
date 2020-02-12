@@ -17,6 +17,8 @@ namespace Data.Context
             modelBuilder.Entity<UserCourse>()
                 .HasKey(o => new { o.CourseID, o.UserID });
         }
+        public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<Grade> Grades { get; set; }
 
     }
 }

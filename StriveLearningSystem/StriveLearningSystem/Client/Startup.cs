@@ -17,6 +17,8 @@ namespace StriveLearningSystem.Client
 
             services.AddScoped<CoursesAgent>();
             services.AddScoped<IdentityAgent>();
+            services.AddScoped<CalendarAgent>();
+            services.AddScoped<UserAgent>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

@@ -1,0 +1,19 @@
+﻿@page "/calendar"
+
+<h2>Calendar Home</h2>
+
+<AuthorizeView Roles="Teacher">
+    <TeacherCalendarComponent></TeacherCalendarComponent>
+        
+</AuthorizeView>
+
+<AuthorizeView Roles="Student">
+    <StudentCalendarComponent></StudentCalendarComponent>
+
+
+</AuthorizeView>
+
+@code {
+
+
+}
