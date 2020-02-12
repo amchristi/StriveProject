@@ -1,0 +1,29 @@
+﻿@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<h3>Calendar Component</h3>
+
+<div id="calendar"></div>
+
+@code {
+
+    List<CalendarEvent> calendarEvents = new List<CalendarEvent>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            calendarEvents.Add(new CalendarEvent() { AllDay = true, Start = DateTime.UtcNow, Title = "Test Event" });
+            calendarEvents.Add(new CalendarEvent() { Start = DateTime.UtcNow.AddDays(-1), End = DateTime.UtcNow.AddDays(-0.8), Title = "Test Event 2" });
+            calendarEvents.Add(new CalendarEvent() { Start = DateTime.UtcNow.AddDays(-1.1), End = DateTime.UtcNow.AddDays(-0.8), Title = "Test Event 3" });
+
+            await JSRuntime.InvokeAsync<object>("createNewCalendar", "calendar", calendarEvents);
+        }
+
+    }
+
+    void IDisposable.Dispose()
+    {
+        JSRuntime.InvokeAsync<object>("disposeCalendar", "calendar");
+    }
+}
