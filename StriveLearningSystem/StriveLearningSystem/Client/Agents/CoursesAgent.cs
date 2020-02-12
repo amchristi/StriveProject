@@ -43,7 +43,7 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/teacherCourses");
             return courses;
         }
-        public async Task<List<Assignment>> GetAssignmentsByTeacher()
+        public async Task<List<Assignment>> GetAssignemntsByTeacher()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
@@ -51,12 +51,11 @@ namespace StriveLearningSystem.Client.Agents
             return assignments;
         }
 
-        //Returns a sorted list of ungraded assignments by teacher.
-        public async Task<List<Assignment>> GetAssignmentsUngradedByTeacher()
+        public async Task<List<Assignment>> GetAssignmentsByStudent()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
-            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherUngradedAssignments");
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/studentAssignments");
             return assignments;
         }
 

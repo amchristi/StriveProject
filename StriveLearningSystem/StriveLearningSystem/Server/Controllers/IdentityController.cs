@@ -75,41 +75,8 @@ namespace StriveLearningSystem.Server.Controllers
             }
         }
 
-        [Route("api/getprofile")]
-        [HttpPost]
-        public IActionResult Profile([FromBody] User user)
-        {
-            try
-            {
-                return Ok( _userService.GetProfile(user));
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Error can't get profile");
-            }
-        }
-
-        [Route("api/updateprofile")]
-        [HttpPost]
-
-        public async Task<IActionResult> UpdateProfile([FromBody] User user )
-        {
-            try
-            {
-                return Ok(await _userService.UpdateProfile(user));
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Error can't update profile");
-            }
-        }
 
 
-        [Route("api/getallusers")]
-        [HttpGet]
-        public IActionResult TestAllUsers()
-        {
-            return Ok(_userService.GetAllUsers());
-        }
+
     }
 }
