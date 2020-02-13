@@ -98,16 +98,6 @@ namespace Services
             return Convert.ToBase64String(HashedPass.GetBytes(25));
         }
 
-        //Takes a student user id and will return all assignments associated with that id.
-        public List<Assignment> GetStudentAssignmentsByUserId(int UserID) 
-        {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
-                                            where uc.UserID == UserID
-                                            select a).ToList();
-            return assignments;
-        }
-
         //Takes a student user id and will return all announcements associated with that id based on courses taken.
         public List<Announcement> GetStudentAnnnouncementsByUserId(int UserID)
         {
@@ -117,29 +107,8 @@ namespace Services
                                             select a).ToList();
             return assignments;
         }
+        
 
-        //Takes a teacher UserID and will return all assignments associated on the Courses table with that UserID
-        public List<Assignment> GetTeacherAssignmentsByUserId(int UserID)
-        {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
-                                            where c.TeacherID == UserID
-                                            select a).ToList();
-            return assignments;
-        }
-
-
-        //Return a sorted list of ungraded assignments by teacher 
-        public List<Assignment> GetTeacherUngradedAssignmentsByUserId(int UserID)
-        {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
-                                            join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
-                                            where c.TeacherID == UserID && !g.IsGraded
-                                            orderby a.DueDate
-                                            select a).ToList();
-            return assignments; 
-        }
         
     }
 }

@@ -12,6 +12,6 @@ namespace Data.Models
         public int Score { get; set; }        
         public DateTime DateTurnedIn { get; set; }
         public DateTime DateGraded { get; set; }
-        public Boolean IsGraded { get; set;}
+        public bool IsGraded { get; set;}
     }
 }
