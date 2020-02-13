@@ -1,15 +1,23 @@
 ﻿@inject CalendarAgent _calendar
 
-<CalendarComponent CalendarEvents="events"></CalendarComponent>
+@if (pageState == 1)
+{
+    <CalendarComponent CalendarEvents="events"></CalendarComponent>
+}
+else
+{
+    <div>Loading Calendar...</div>
+}
 
 @code {
     List<CalendarEvent> events;
+    int pageState = 0;
 
     protected override async Task OnInitializedAsync()
     {
         //Get assignments and other events. Convert it to calendar events
         events = await _calendar.GetCalendarEvents();
-
+        pageState = 1;
 
     }
 

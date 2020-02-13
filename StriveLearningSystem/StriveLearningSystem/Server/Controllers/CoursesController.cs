@@ -13,19 +13,22 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StriveLearningSystem.Server.Controllers
 {
     [ApiController]
     public class CoursesController : Controller
     {
+        private readonly AssignmentService _assignmentService;
         private readonly UserService _userService;
         private readonly CourseService _courseService;
 
-        public CoursesController(UserService userService, CourseService courseService)
+        public CoursesController(UserService userService, CourseService courseService, AssignmentService assignmentService)
         {
             _userService = userService;
             _courseService = courseService;
+            _assignmentService = assignmentService;
         }
 
         [Route("api/users/{userId}/courses")]
@@ -47,14 +50,25 @@ namespace StriveLearningSystem.Server.Controllers
         [HttpGet]
         public IActionResult GetStudentAssignmets([FromRoute] int userId) 
         {
-            return Ok(_userService.GetStudentAssignmentsByUserId(userId));
+            return Ok(_assignmentService.GetStudentAssignmentsByUserId(userId));
         }
 
         [Route("api/users/{userId}/teacherAssignments")]
         [HttpGet]
         public IActionResult GetTeacherAssignmets([FromRoute] int userId)
         {
-            return Ok(_userService.GetTeacherAssignmentsByUserId(userId));
+            return Ok(_assignmentService.GetTeacherAssignmentsByUserId(userId));
+        }
+
+        [Authorize]
+        [Route("api/calendar/events")]
+        [HttpGet]
+        public IActionResult GetCalendarItems()
+        {
+            int userId;
+            int.TryParse(HttpContext.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value, out userId);
+            var role = HttpContext.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.Role).Value;
+            return Ok(_assignmentService.GetCalendarItems(userId, role));
         }
 
         //Takes in a courseId and returns a course object

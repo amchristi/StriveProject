@@ -98,25 +98,7 @@ namespace Services
             return Convert.ToBase64String(HashedPass.GetBytes(25));
         }
 
-        //Takes a student user id and will return all assignments associated with that id.
-        public List<Assignment> GetStudentAssignmentsByUserId(int UserID) 
-        {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
-                                            where uc.UserID == UserID
-                                            select a).ToList();
-            return assignments;
-        }
-
-        //Takes a teacher UserID and will return all assignments associated on the Courses table with that UserID
-        public List<Assignment> GetTeacherAssignmentsByUserId(int UserID)
-        {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
-                                            where c.TeacherID == UserID
-                                            select a).ToList();
-            return assignments;
-        }
+   
 
     }
 }
