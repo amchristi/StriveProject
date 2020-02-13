@@ -83,8 +83,56 @@ else
                         </div>
                     </div>
                 </a>
-             }
-         }
+            }
+        }
+    </ul>
+}
+
+@if (_announcementsvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h2>Announcements:</h2>
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Announcement ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Title</h5>
+                </div>
+                <div class="col">
+                    <h5>Body</h5>
+                </div>
+                <div class="col">
+                    <h5>Date Created</h5>
+                </div>
+            </div>
+        </li>
+        @foreach (var announcement in _announcementsvar)
+        {
+            <a class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        @announcement.AnnouncementID
+                    </div>
+                    <div class="col">
+                        @announcement.Title
+                    </div>
+                    <div class="col">
+                        @announcement.Body
+                    </div>
+                    <div class="col">
+                        @announcement.DateCreated
+                    </div>
+                </div>
+            </a>
+        }
     </ul>
 }
 
@@ -96,6 +144,7 @@ else
 
     private List<Course> _coursesvar;
     private List<Assignment> _assignmentsvar;
+    private List<Announcement> _announcementsvar;
     private DateTime currDate;
     private DateTime wfn;
 
@@ -105,10 +154,12 @@ else
 
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
 
+        _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
+
         currDate = DateTime.Now;
         wfn = currDate.AddDays(7);
     }
 
-  
+
 
 }

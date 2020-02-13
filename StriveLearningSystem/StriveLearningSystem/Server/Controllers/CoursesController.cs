@@ -53,6 +53,13 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_assignmentService.GetStudentAssignmentsByUserId(userId));
         }
 
+        [Route("api/users/{userId}/studentAnnouncements")]
+        [HttpGet]
+        public IActionResult GetStudentAnnouncements([FromRoute] int userId)
+        {
+            return Ok(_userService.GetStudentAnnnouncementsByUserId(userId));
+        }
+
         [Route("api/users/{userId}/teacherAssignments")]
         [HttpGet]
         public IActionResult GetTeacherAssignmets([FromRoute] int userId)
@@ -69,6 +76,13 @@ namespace StriveLearningSystem.Server.Controllers
             int.TryParse(HttpContext.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value, out userId);
             var role = HttpContext.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.Role).Value;
             return Ok(_assignmentService.GetCalendarItems(userId, role));
+        }
+
+        [Route("api/users/{userId}/teacherUngradedAssignments")]
+        [HttpGet]
+        public IActionResult GetTeacherUngradedAssigments([FromRoute] int userId)
+        {
+            return Ok(_userService.GetTeacherUngradedAssignmentsByUserId(userId));
         }
 
         //Takes in a courseId and returns a course object

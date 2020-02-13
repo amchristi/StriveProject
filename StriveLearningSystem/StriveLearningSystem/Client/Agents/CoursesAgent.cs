@@ -43,11 +43,20 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/teacherCourses");
             return courses;
         }
-        public async Task<List<Assignment>> GetAssignemntsByTeacher()
+        public async Task<List<Assignment>> GetAssignmentsByTeacher()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
             var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherAssignments");
+            return assignments;
+        }
+
+        //Returns a sorted list of ungraded assignments by teacher.
+        public async Task<List<Assignment>> GetAssignmentsUngradedByTeacher()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherUngradedAssignments");
             return assignments;
         }
 
@@ -57,6 +66,14 @@ namespace StriveLearningSystem.Client.Agents
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
             var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/studentAssignments");
             return assignments;
+        }
+
+        public async Task<List<Announcement>> GetAnnouncementsByStudent()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var announcements = await _httpClient.GetJsonAsync<List<Announcement>>($"api/users/{userId}/studentAnnouncements");
+            return announcements;
         }
 
         //Returns the course object given a courseId

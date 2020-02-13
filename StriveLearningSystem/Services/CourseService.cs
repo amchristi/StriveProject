@@ -22,8 +22,7 @@ namespace Services
                              select c).FirstOrDefault<Course>();
             return course;
         }
-
-        // Takes a user id and returns a list of courses
+        // Takes a user id that is a student and returns a list of courses 
         public List<Course> GetClasses(int inputUserID)
         {
 

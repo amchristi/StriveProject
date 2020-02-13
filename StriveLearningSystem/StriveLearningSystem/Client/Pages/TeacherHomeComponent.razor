@@ -53,32 +53,33 @@ else
                     <h5>Assignment</h5>
                 </div>
                 <div class="col">
-                    <h6>Number left to grade</h6>
+                    <h6>Due Date</h6>
                 </div>
             </div>
         </li>
-        @for (int i = 0; i < 5; i++)
+       @foreach (var assignment in _ungradedAssignments)
         {
-            <a href="#" class="list-group-item list-group-item-action">
+        <a href="#" class="list-group-item list-group-item-action">
 
-                <div class="row">
-                    <div class="col">
-                        Course id and description
-                    </div>
-                    <div class="col">
-                        Assignment @i
-                    </div>
-                    <div class="col">
-                        @random.Next(0, 100)
-                    </div>
-                </div>
-            </a>
+        <div class="row">
+            <div class="col">
+                @assignment.CourseID
+            </div>
+            <div class="col">
+                @assignment.AssignmentDescription
+            </div>
+            <div class="col">
+                @assignment.DueDate
+            </div>
+        </div>
+        </a>
         }
+            
 
     </ul>
 
-    <!--Coming up-->
-    <h2>Coming up</h2>
+    <!--Coming up next week-->
+    <h2>Coming up next week</h2>
     <ul class="list-group" style="width:100%">
         <li class="list-group-item active">
 
@@ -100,6 +101,9 @@ else
         </li>
         @foreach (var assignment in _assignments)
         {
+
+            if (assignment.DueDate > weekFromNow)
+            {
             <a href="/course/@assignment.CourseID/assignment/@assignment.AssignmentID" class="list-group-item list-group-item-action">
 
                 <div class="row">
@@ -117,6 +121,7 @@ else
                     </div>
                 </div>
             </a>
+            }
         }
 
     </ul>
@@ -128,11 +133,20 @@ else
     Random random = new Random();
     private List<Course> _coursesvar;
     private List<Assignment> _assignments;
+    private List<Assignment> _ungradedAssignments;
+    private DateTime currentDate;
+    private DateTime weekFromNow;
 
     protected override async Task OnInitializedAsync()
     {
+
         _coursesvar = await _coursesAgent.GetCoursesByTeacher();
-        _assignments = await _coursesAgent.GetAssignemntsByTeacher();
+        _assignments = await _coursesAgent.GetAssignmentsByTeacher();
+        _ungradedAssignments = await _coursesAgent.GetAssignmentsUngradedByTeacher();
+
+        currentDate = DateTime.Now;
+        weekFromNow = currentDate.AddDays(7);
+
     }
 
 }
