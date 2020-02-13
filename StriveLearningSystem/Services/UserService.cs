@@ -108,6 +108,16 @@ namespace Services
             return assignments;
         }
 
+        //Takes a student user id and will return all announcements associated with that id based on courses taken.
+        public List<Announcement> GetStudentAnnnouncementsByUserId(int UserID)
+        {
+            List<Announcement> assignments = (from a in _classDbContext.Announcements
+                                            join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
+                                            where uc.UserID == UserID
+                                            select a).ToList();
+            return assignments;
+        }
+
         //Takes a teacher UserID and will return all assignments associated on the Courses table with that UserID
         public List<Assignment> GetTeacherAssignmentsByUserId(int UserID)
         {
