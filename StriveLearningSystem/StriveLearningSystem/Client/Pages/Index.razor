@@ -2,6 +2,7 @@
 @inject CoursesAgent  _coursesAgent
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
+@inject CoursesState _coursesState
 
 <h1>
 
@@ -12,7 +13,7 @@
 </AuthorizeView>
 
 <AuthorizeView Roles="Student">
-    <StudentHomeComponent></StudentHomeComponent>
+    <StudentHomeComponent _Courses="@_coursesState.Courses"></StudentHomeComponent>
 </AuthorizeView>
    
 
@@ -22,6 +23,19 @@
     {
 
         base.OnInitialized();
+    }
+
+    /*protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Loading Courses=======================================================================================================================");
+        await _coursesState.LoadCourses();
+        
+        //return base.OnInitializedAsync();
+    }*/
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Loading Courses====================================================================================================================================================================================================");
+        await _coursesState.LoadCourses();
     }
 
 }
