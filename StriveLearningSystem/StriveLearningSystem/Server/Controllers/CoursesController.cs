@@ -31,11 +31,11 @@ namespace StriveLearningSystem.Server.Controllers
             _assignmentService = assignmentService;
         }
 
-        [Route("api/users/{userId}/courses")]
+        [Route("api/users/{userId}/getStudentcourses")]
         [HttpGet]
         public IActionResult GetUsersCourses([FromRoute] int userId)
         {
-            return Ok(_courseService.GetClasses(userId));
+            return Ok(_courseService.GetCoursesByStudentID(userId));
         }
 
         //Takes in a teacher user id and returns the courses associated with that teacher.

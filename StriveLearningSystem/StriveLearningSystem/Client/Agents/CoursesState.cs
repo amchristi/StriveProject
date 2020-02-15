@@ -24,21 +24,15 @@ namespace StriveLearningSystem.Client.Agents
             _authenticationStateProvider = authenticationStateProvider;
         }
 
+        //Checks to see if Courses have been loaded and loads them only if needed
         public async Task LoadCourses()
-        {
-            if(Courses == null)
-            {
-                Console.WriteLine("LoadCourses=======================================================================================================");
+        { 
+            if (Courses == null)
+            {               
                 var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
                 var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
-                Courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/courses");
-                
+                Courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/getStudentcourses");                
             }
-        }
-
-        public List<Course> GetCourses()
-        {
-            return Courses;
         }
     }
 }

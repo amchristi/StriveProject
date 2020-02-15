@@ -21,20 +21,12 @@
 @code {
     protected override void OnInitialized()
     {
-
         base.OnInitialized();
     }
 
-    /*protected override async Task OnInitializedAsync()
-    {
-        Console.WriteLine("Loading Courses=======================================================================================================================");
-        await _coursesState.LoadCourses();
-        
-        //return base.OnInitializedAsync();
-    }*/
+
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Loading Courses====================================================================================================================================================================================================");
         await _coursesState.LoadCourses();
     }
 

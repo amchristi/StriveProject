@@ -32,7 +32,7 @@ namespace StriveLearningSystem.Client.Agents
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
-            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/courses");
+            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/getStudentcourses");
             return courses;
         }
 

@@ -142,7 +142,6 @@ else
 
 @code {
     [Parameter] public List<Course> Courses { get; set; }
-    //private List<Course> _coursesvar;
     private List<Assignment> _assignmentsvar;
     private List<Announcement> _announcementsvar;
     private DateTime currDate;
@@ -150,7 +149,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //_coursesvar = await _coursesAgent.GetCoursesByUser();
 
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
 

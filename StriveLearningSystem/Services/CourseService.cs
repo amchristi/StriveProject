@@ -23,7 +23,7 @@ namespace Services
             return course;
         }
         // Takes a user id that is a student and returns a list of courses 
-        public List<Course> GetClasses(int inputUserID)
+        public List<Course> GetCoursesByStudentID(int inputUserID)
         {
 
             List<Course> userCourseList = (from uc in _classDbContext.UserCourses
