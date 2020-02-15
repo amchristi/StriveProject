@@ -1,6 +1,6 @@
 ﻿@inject CoursesAgent  _coursesAgent
 
-@if (_coursesvar == null)
+@if (Courses == null)
 {
     <p>Loading...</p>
 }
@@ -20,7 +20,7 @@ else
                 </div>
             </div>
         </li>
-        @foreach (var course in _coursesvar)
+        @foreach (var course in Courses)
         {
             <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
 
@@ -141,7 +141,7 @@ else
 
 
 @code {
-    [Parameter] public List<Course> _coursesvar { get; set; }
+    [Parameter] public List<Course> Courses { get; set; }
     //private List<Course> _coursesvar;
     private List<Assignment> _assignmentsvar;
     private List<Announcement> _announcementsvar;
