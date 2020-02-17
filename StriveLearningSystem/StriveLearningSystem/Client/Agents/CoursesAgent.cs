@@ -86,5 +86,32 @@ namespace StriveLearningSystem.Client.Agents
             return course;
         }
 
+        //Takes a new course and tries the enter it into the database. If correct it will return the course object with the ID otherwise null.
+        public async Task<Course> AddNewCourse(Course newCourse)
+        {
+            try
+            {
+                var course = await _httpClient.PostJsonAsync<Course>("api/courses/addCourse", newCourse);
+                return course;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        //Updates a course and returns null if update failed.
+        public async Task<Course> UpdateCourse(Course updatedCourse)
+        {
+            try
+            {
+                var course = await _httpClient.PostJsonAsync<Course>("api/courses/updateCourse", updatedCourse);
+                return course;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

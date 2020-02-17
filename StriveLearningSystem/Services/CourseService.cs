@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Services
 {
@@ -42,5 +43,51 @@ namespace Services
                                            select c).ToList();
             return userCourseList;
         }
+
+        //Takes a course object and enters it into the database and returns an object with the CourseID
+        public async Task<Course> AddNewCourse(Course newCourse)
+        {
+            var addedCourse = _classDbContext.Add(newCourse);
+            await _classDbContext.SaveChangesAsync();
+            return newCourse;
+         
+        }
+
+        //Takes in a course 
+        public async Task<Course> UpdateCourse(Course updatedCourse)
+        {
+            Course checkIfExists = (from c in _classDbContext.Courses
+                                    where c.CourseID == updatedCourse.CourseID
+                                    select c).FirstOrDefault<Course>();
+            if(checkIfExists == null)
+            {
+                throw new Exception("Course does not exists.");
+            }
+            var addedCourse = _classDbContext.Update(updatedCourse);
+            await _classDbContext.SaveChangesAsync();
+            return updatedCourse;
+
+        }
+
+        public async Task<Course> DeleteCourse(Course courseToRemove)
+        {
+            Course checkIfExists = (from c in _classDbContext.Courses
+                                    where c.CourseID == courseToRemove.CourseID
+                                    select c).FirstOrDefault<Course>();
+            if (checkIfExists == null)
+            {
+                throw new Exception("Course does not exists.");
+            }
+
+            //Delete all assignments associated with course
+            //Delete all grades associated with course
+            //Delete all Announcements associated with course
+            //Delete all userCourses associated with course
+            _classDbContext.Remove(courseToRemove);
+            await _classDbContext.SaveChangesAsync();
+            return courseToRemove;
+
+        }
+
     }
 }

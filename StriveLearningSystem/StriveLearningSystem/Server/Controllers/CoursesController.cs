@@ -48,7 +48,7 @@ namespace StriveLearningSystem.Server.Controllers
 
         [Route("api/users/{userId}/studentAssignments")]
         [HttpGet]
-        public IActionResult GetStudentAssignmets([FromRoute] int userId) 
+        public IActionResult GetStudentAssignmets([FromRoute] int userId)
         {
             return Ok(_assignmentService.GetStudentAssignmentsByUserId(userId));
         }
@@ -91,6 +91,35 @@ namespace StriveLearningSystem.Server.Controllers
         public IActionResult GetCourse([FromRoute] int courseId)
         {
             return Ok(_courseService.GetCourseById(courseId));
+        }
+
+        [Route("api/courses/addCourse")]
+        [HttpPost]
+        public async Task<IActionResult> AddCourse([FromBody] Course newCourse)
+        {
+            try
+            {
+                return Ok(await _courseService.AddNewCourse(newCourse));
+            }
+            catch(Exception e)
+            {
+                return BadRequest("Error inserting Course");
+            }
+        }
+
+        //Updates a course in the database will throw an error if the courseID does not exist.
+        [Route("api/courses/updateCourse")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateCourse([FromBody] Course updatedCourse)
+        {
+            try
+            {
+                return Ok(await _courseService.UpdateCourse(updatedCourse));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error updating Course");
+            }
         }
     }
 }
