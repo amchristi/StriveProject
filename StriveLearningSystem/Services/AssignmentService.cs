@@ -79,7 +79,7 @@ namespace Services
                               }).ToList();
                 return events;
             }
-            
+
         }
     }
 }
