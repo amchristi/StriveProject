@@ -1,0 +1,44 @@
+﻿
+@page "/createCourse"
+@inject CoursesAgent _courseAgent
+@inject NavigationManager _navigationManager
+
+<h5 style="color:red">@error</h5>
+<h1>Create Course</h1>
+
+
+<EditForm Model="tempCourse" OnValidSubmit="Create">
+    <ValidationSummary />
+    <DataAnnotationsValidator />
+    <div>Course ID: <InputNumber @bind-Value="@tempCourse.CourseID" /></div>
+    <div>Description: <InputText @bind-Value="@tempCourse.Description"></InputText></div>
+    <div>Teacher ID: <InputNumber @bind-Value="@tempCourse.TeacherID" /></div>
+    <div>Subject: <InputText @bind-Value="@tempCourse.Subject"></InputText></div>
+    <div>Title: <InputText @bind-Value="@tempCourse.Title"></InputText></div>
+    <div>Location: <InputText @bind-Value="@tempCourse.Location"></InputText></div>
+    <div>Meeting Days (MTWRF): <InputText @bind-Value="@tempCourse.MeetingDays"></InputText></div>
+    <div>Credit Hours: <InputNumber @bind-Value="@tempCourse.CreditHours" /></div>
+    <button class="btn-primary" type="submit">Save</button>
+</EditForm>
+
+
+@code{
+    private Course tempCourse { get; set; } = new Course();
+
+    private string error = "";
+
+    private async Task Create()
+    {
+        var result = await _courseAgent.AddNewCourse(tempCourse);
+
+        if (result != null)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            error = "Error Creating Course!";
+        }
+    }
+
+}
