@@ -113,5 +113,19 @@ namespace StriveLearningSystem.Client.Agents
                 return null;
             }
         }
+        //Deletes course associated with the courseID passed in.
+        public async Task<int> DeleteCourse(int deletedCourseID)
+        {
+            try
+            {
+                var courseID = await _httpClient.PostJsonAsync<int>("api/courses/deleteCourse", deletedCourseID);
+                return courseID;
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+        }
+
     }
 }

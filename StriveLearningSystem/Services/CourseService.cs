@@ -69,23 +69,26 @@ namespace Services
 
         }
 
-        public async Task<Course> DeleteCourse(Course courseToRemove)
+        //Deletes course associated with the course ID throws exception if there is no course with that ID.
+        public async Task<int> DeleteCourse(int courseToDeleteID)
         {
             Course checkIfExists = (from c in _classDbContext.Courses
-                                    where c.CourseID == courseToRemove.CourseID
+                                    where c.CourseID == courseToDeleteID
                                     select c).FirstOrDefault<Course>();
             if (checkIfExists == null)
             {
                 throw new Exception("Course does not exists.");
+                
             }
 
             //Delete all assignments associated with course
             //Delete all grades associated with course
             //Delete all Announcements associated with course
             //Delete all userCourses associated with course
-            _classDbContext.Remove(courseToRemove);
+            _classDbContext.Remove(checkIfExists);
             await _classDbContext.SaveChangesAsync();
-            return courseToRemove;
+            return courseToDeleteID;
+      
 
         }
 
