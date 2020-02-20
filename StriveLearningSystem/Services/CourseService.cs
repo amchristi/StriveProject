@@ -69,23 +69,67 @@ namespace Services
 
         }
 
-        public async Task<Course> DeleteCourse(Course courseToRemove)
+        //Deletes course associated with the course ID throws exception if there is no course with that ID.
+        public async Task<int> DeleteCourse(int courseToDeleteID)
         {
-            Course checkIfExists = (from c in _classDbContext.Courses
-                                    where c.CourseID == courseToRemove.CourseID
+            Course courseToDelete = (from c in _classDbContext.Courses
+                                    where c.CourseID == courseToDeleteID
                                     select c).FirstOrDefault<Course>();
-            if (checkIfExists == null)
+            if (courseToDelete == null)
             {
                 throw new Exception("Course does not exists.");
+                
             }
 
-            //Delete all assignments associated with course
-            //Delete all grades associated with course
+            //Get all the assignments associated with the course
+            List<Assignment> assignmentsToDelete = (from a in _classDbContext.Assignments
+                                                    where a.CourseID == courseToDeleteID
+                                                    select a).ToList<Assignment>();
+
+
+            //Get all grades associated with the assignments from the course
+
+            foreach (Assignment i in assignmentsToDelete)
+            {
+                IEnumerable<Grade> tempGrades = (from g in _classDbContext.Grades
+                                          where g.AssignmentID == i.AssignmentID
+                                          select g).ToList<Grade>();
+                //Delete the found grades
+                if(tempGrades != null)
+                {
+                    _classDbContext.RemoveRange(tempGrades);
+                }
+                tempGrades = null;
+                
+            }
+            if(assignmentsToDelete != null)
+            {
+                _classDbContext.RemoveRange(assignmentsToDelete);
+            }
+
+
             //Delete all Announcements associated with course
+            IEnumerable<Announcement> announcementsToDelete = (from a in _classDbContext.Announcements
+                                                               where a.CourseID == courseToDeleteID
+                                                               select a).ToList<Announcement>();
+            if(announcementsToDelete != null)
+            {
+                _classDbContext.RemoveRange(announcementsToDelete);
+            }
+
             //Delete all userCourses associated with course
-            _classDbContext.Remove(courseToRemove);
+            IEnumerable<UserCourse> userCoursesToDelete = (from uc in _classDbContext.UserCourses
+                                                               where uc.CourseID == courseToDeleteID
+                                                               select uc).ToList<UserCourse>();
+            if (userCoursesToDelete != null) 
+            {
+                _classDbContext.RemoveRange(userCoursesToDelete);
+            } 
+
+            _classDbContext.Remove(courseToDelete);
             await _classDbContext.SaveChangesAsync();
-            return courseToRemove;
+            return courseToDeleteID;
+      
 
         }
 

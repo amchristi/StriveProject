@@ -121,6 +121,22 @@ namespace StriveLearningSystem.Server.Controllers
                 return BadRequest("Error updating Course");
             }
         }
+
+        //Sends request to delete course based on Course ID
+        [Route("api/courses/deleteCourse")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteCourse([FromBody] int deletedCourseID)
+        {
+            try
+            {
+                return Ok(await _courseService.DeleteCourse(deletedCourseID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error deleting Course");
+            }
+        }
+
     }
 }
 
