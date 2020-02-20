@@ -10,9 +10,9 @@
 <EditForm Model="tempCourse" OnValidSubmit="Create">
     <ValidationSummary />
     <DataAnnotationsValidator />
-    <div>Course ID: <InputNumber @bind-Value="@tempCourse.CourseID" /></div>
+    @*<div>Course ID: <InputNumber @bind-Value="@tempCourse.CourseID" /></div>*@
     <div>Description: <InputText @bind-Value="@tempCourse.Description"></InputText></div>
-    <div>Teacher ID: <InputNumber @bind-Value="@tempCourse.TeacherID" /></div>
+    @*<div>Teacher ID: <InputNumber @bind-Value="@tempCourse.TeacherID" /></div>*@
     <div>Subject: <InputText @bind-Value="@tempCourse.Subject"></InputText></div>
     <div>Title: <InputText @bind-Value="@tempCourse.Title"></InputText></div>
     <div>Location: <InputText @bind-Value="@tempCourse.Location"></InputText></div>

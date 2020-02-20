@@ -97,6 +97,9 @@ namespace StriveLearningSystem.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCourse([FromBody] Course newCourse)
         {
+            int userId;
+            int.TryParse(HttpContext.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value, out userId);
+            newCourse.TeacherID = userId;
             try
             {
                 return Ok(await _courseService.AddNewCourse(newCourse));
