@@ -13,56 +13,29 @@
     }
     else
     {
-        if (!editMode)
-        {
 
             <div class="row">
                 <div class="col">
-                    @course.CourseID
+                    @_course.CourseID
                 </div>
 
                 <div class="col">
-                    @course.Subject
+                    @_course.Subject
                 </div>
                 <div class="col">
-                    @course.Title
+                    @_course.Title
                 </div>
                 <div class="col">
-                    @course.Location
+                    @_course.Location
                 </div>
                 <div class="col">
-                    @course.MeetingDays
+                    @_course.MeetingDays
                 </div>
 
-                <button class="btn-primary" type="button" @onclick="Delete">Delete</button>
-
-                <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
+               
 
             </div>
 
-        }
-        else
-        {
-
-            <EditForm Model="_course" OnValidSubmit="UpdateCourse">
-                <ValidationSummary />
-                <DataAnnotationsValidator />
-                <div>CourseID: <InputNumber @bind-Value="@_course.CourseID" ></InputNumber></div>
-                <div>Description : <InputText @bind-Value="@_course.Description"></InputText></div>
-                <div>TeacherID: <InputNumber @bind-Value="@_course.TeacherID" ></InputNumber></div>
-                <div>Subject: <InputText @bind-Value="@_course.Subject"></InputText></div>
-                <div>Title: <InputText @bind-Value="@_course.Title"></InputText></div>
-                <div>Location: <InputText @bind-Value="@_course.Location"></InputText></div>
-                <div>Meeting Days: <InputText @bind-Value="@_course.MeetingDays"></InputText></div>
-                <div>Credit Hours: <InputNumber @bind-Value="@_course.CreditHours"></InputNumber> </div>
-
-
-                <div>
-                    <button class="btn-primary" type="submit">Save</button>
-                </div>
-            </EditForm>
-
-        }
     }
 </AuthorizeView>
 
@@ -85,48 +58,15 @@
     [Parameter]
     public int courseId { get; set; }
     private Course _course;
-    private Course course;
-    private int index = 0;
-    private bool editMode = false;
+   
 
 
     protected override async Task OnInitializedAsync()
     {
 
-        course = await _coursesAgent.GetCourseById(courseId);
+        _course = await _coursesAgent.GetCourseById(courseId);
 
     }
 
 
-    private void ToggleEditMode()
-    {
-
-        if (!editMode)
-        {
-            _course = new Course();
-            _course.CourseID = course.CourseID;
-             _course.Description = course.Description;
-             _course.TeacherID = course.TeacherID;
-             _course.Subject = course.Subject;
-             _course.Title = course.Title;
-             _course.Location = course.Location;
-             _course.MeetingDays = course.MeetingDays;
-             _course.CreditHours = course.CreditHours;
-
-
-        }
-        editMode = !editMode;
-
-    }
-
-    private async Task UpdateCourse()
-    {
-        course = await _coursesAgent.UpdateCourse(_course);
-        ToggleEditMode();
-    }
-
-    private async Task Delete()
-    {
-        var id = await _coursesAgent.DeleteCourse(_course.CourseID);
-    }
 }
