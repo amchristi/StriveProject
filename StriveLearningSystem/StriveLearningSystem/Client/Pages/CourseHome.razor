@@ -2,19 +2,41 @@
 @inject CoursesAgent  _coursesAgent
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
-
+@using BlazorInputFile
 <h3>Course Home</h3>
 
 <AuthorizeView Roles="Teacher">
-    
-        @if (_course == null)
-        {
+
+    @if (_course == null)
+    {
         <p>Loading...</p>
-        }
-        else{
-                   
-        <h1>@_course.Description</h1>
-        }
+    }
+    else
+    {
+
+            <div class="row">
+                <div class="col">
+                    @_course.CourseID
+                </div>
+
+                <div class="col">
+                    @_course.Subject
+                </div>
+                <div class="col">
+                    @_course.Title
+                </div>
+                <div class="col">
+                    @_course.Location
+                </div>
+                <div class="col">
+                    @_course.MeetingDays
+                </div>
+
+               
+
+            </div>
+
+    }
 </AuthorizeView>
 
 <AuthorizeView Roles="Student">
@@ -24,24 +46,27 @@
     }
     else
     {
-       <h1>@_course.Description</h1>
+        <h1>@_course.Description</h1>
     }
 
 
 
 </AuthorizeView>
 
-@code {
+@code
+{
     [Parameter]
     public int courseId { get; set; }
-
     private Course _course;
+   
+
 
     protected override async Task OnInitializedAsync()
     {
 
         _course = await _coursesAgent.GetCourseById(courseId);
-            
+
     }
+
 
 }

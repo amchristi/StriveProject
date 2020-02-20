@@ -24,5 +24,23 @@ namespace UnitTest
             var assignments = _assignmentService.GetStudentAssignmentsByUserId(17);
             Assert.IsNotNull(assignments);
         }
+
+        [TestInitialize]
+        public void StartUp()
+        {
+
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            
+        }
+
+        [ClassInitialize]
+        public void InitializingClass()
+        {
+
+        }
     }
 }

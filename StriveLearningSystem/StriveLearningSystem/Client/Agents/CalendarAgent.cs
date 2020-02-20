@@ -31,6 +31,8 @@ namespace StriveLearningSystem.Client.Agents
 
         public async Task<List<CalendarEvent>> GetCalendarEvents()
         {
+            Console.WriteLine("heyo2");
+
             var events = await _httpClient.GetJsonAsync<List<CalendarEvent>>($"api/calendar/events");
 
             return events;

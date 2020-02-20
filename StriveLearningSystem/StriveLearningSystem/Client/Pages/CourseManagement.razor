@@ -1,0 +1,71 @@
+﻿@page "/coursemanagement"
+@inject CoursesAgent _coursesAgent
+@using BlazorInputFile
+
+@if (_coursesvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    
+        <h1>Course Management</h1>
+        <h2>Courses</h2>
+        
+        <!--Course list-->
+        <ul class="list-group" style="width:50%">
+            <li class="list-group-item active">
+
+                <div class="row">
+                    <div class="col">
+                        <h5>Course ID</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Course Description</h5>
+                    </div>
+                </div>
+            </li>
+        
+            @foreach (var course in _coursesvar)
+            {
+
+                <a href="/individualcourse/@course.CourseID" class="list-group-item list-group-item-action">
+
+                    <div class="row">
+                        <div class="col">
+                            @course.CourseID
+                        </div>
+
+                        <div class="col">
+                            @course.Subject
+                        </div>
+                        <div class="col">
+                            @course.Title
+                        </div>
+                        <div class="col">
+                            @course.Location
+                        </div>
+                        <div class="col">
+                            @course.MeetingDays
+                        </div>
+                    </div>
+                </a>
+            }
+
+        </ul>
+    
+   
+} 
+
+@code
+{
+    private List<Course> _coursesvar;
+  
+    protected override async Task OnInitializedAsync()
+    {
+        _coursesvar = await _coursesAgent.GetCoursesByTeacher();
+    }
+
+   
+}
+

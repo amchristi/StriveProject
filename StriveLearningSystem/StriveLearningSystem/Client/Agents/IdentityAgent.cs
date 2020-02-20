@@ -43,8 +43,11 @@ namespace StriveLearningSystem.Client.Agents
             }
 
             await _localStorage.SetItemAsync("authToken", loginResult.Token);
-            ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginResult.Token);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.Token);
+            Console.WriteLine("heyo");
+            ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginResult.Token);
+
+            
 
             return loginResult;
         }

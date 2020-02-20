@@ -56,13 +56,6 @@ namespace Services
         //Takes in a course 
         public async Task<Course> UpdateCourse(Course updatedCourse)
         {
-            Course checkIfExists = (from c in _classDbContext.Courses
-                                    where c.CourseID == updatedCourse.CourseID
-                                    select c).FirstOrDefault<Course>();
-            if(checkIfExists == null)
-            {
-                throw new Exception("Course does not exists.");
-            }
             var addedCourse = _classDbContext.Update(updatedCourse);
             await _classDbContext.SaveChangesAsync();
             return updatedCourse;
