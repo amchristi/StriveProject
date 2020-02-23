@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data.Models
 {
-    public class Course
+    public class Course: IEquatable<Course>
     {
         [Key]
         public int CourseID { get; set; }
@@ -16,6 +16,18 @@ namespace Data.Models
         public string Location { get; set; }
         public string MeetingDays { get; set; }
         public int CreditHours { get; set; }
-        
+
+
+
+        public bool Equals(Course other)
+        {
+            if (other == null) return false;
+            return other.CourseID == this.CourseID;
+        }
+
+        public int GetHashCode(Course obj)
+        {
+            return obj.CourseID;
+        }
     }
 }

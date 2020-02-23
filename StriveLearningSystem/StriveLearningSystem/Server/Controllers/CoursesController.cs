@@ -104,7 +104,7 @@ namespace StriveLearningSystem.Server.Controllers
             {
                 return Ok(await _courseService.AddNewCourse(newCourse));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest("Error inserting Course");
             }
@@ -140,6 +140,49 @@ namespace StriveLearningSystem.Server.Controllers
             }
         }
 
+        [Route("api/courses/getCourses")]
+        [HttpGet]
+        public IActionResult getCourses()
+        {
+            try
+            {
+                return Ok(_courseService.getCourses());
+            }
+            catch
+            {
+                return BadRequest("Error retriving courses");
+            }
+        }
+
+        [Route("api/courses/registerStudentForCourse")]
+        [HttpPost]
+        public async Task<IActionResult> registerStudentForCourse([FromBody] UserCourse UserCourseToRegister)
+        {
+            try
+            {
+                return Ok(await _courseService.registerStudentForCourse(UserCourseToRegister));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error registering course");
+            }
+        }
+
+        [Route("api/courses/dropStudentCourseRegistration")]
+        [HttpPost]
+        public async Task<IActionResult> dropStudentCourseRegistration([FromBody] UserCourse UserCourseToDrop)
+        {
+            try
+            {
+                return Ok(await _courseService.dropStudentCourseRegistration(UserCourseToDrop));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error dropping course");
+            }
+        }
+
+        
     }
 }
 

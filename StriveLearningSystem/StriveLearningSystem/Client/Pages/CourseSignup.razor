@@ -1,0 +1,114 @@
+﻿@page "/courseRegistration"
+@inject CoursesAgent _coursesAgent
+@inject CoursesState  _coursesState
+
+
+@if (_coursesvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <h1>Course Management</h1>
+    <h2>Courses</h2>
+
+    <!--Course list-->
+    <ul class="list-group" style="width:100%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Course ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Course Description</h5>
+                </div>
+            </div>
+        </li>
+
+        @foreach (var course in _coursesvar)
+        {
+
+
+
+    <div class="row">
+        <div class="col">
+            @course.CourseID
+        </div>
+
+        <div class="col">
+            @course.Subject
+        </div>
+        <div class="col">
+            @course.Title
+        </div>
+        <div class="col">
+            @course.Location
+        </div>
+        <div class="col">
+            @course.MeetingDays
+        </div>
+        <div class="col">
+            @course.CreditHours
+        </div>
+
+        @if (! _registeredCourses.Contains(course))
+        {
+
+            <div class="col">
+                <button class="btn-primary" @onclick="@(() => Register(course.CourseID))">Register</button>
+            </div>
+        }
+        else
+        {
+            <div class="col">
+                <button class="btn-primary" @onclick="@(() => RemoveRegistration(course.CourseID, this))">Unregister</button>
+            </div>
+        }
+
+    </div>
+           
+        }
+
+    </ul>
+
+
+}
+
+@code
+{
+    private List<Course> _coursesvar;
+    private List<Course> _registeredCourses;
+    //private List<User> _teachers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _coursesvar = await _coursesAgent.getCourses();
+        //_registeredCourses = await _coursesAgent.GetCoursesByUser();
+        await _coursesState.LoadCourses();
+        _registeredCourses = _coursesState.Courses;
+
+    }
+
+    private async Task Register(int courseID)
+    {
+        await _coursesAgent.registerStudentForCourse(courseID);
+        await _coursesState.LoadCourses();
+        _registeredCourses = _coursesState.Courses;
+        this.StateHasChanged();
+    }
+
+    private async Task RemoveRegistration(int courseID, StriveLearningSystem.Client.Pages.CourseSignup page)
+    {
+
+        await _coursesAgent.dropStudentCourseRegistration(courseID);
+        await _coursesState.LoadCourses();
+        _registeredCourses = _coursesState.Courses;
+        await this.OnInitializedAsync();
+        this.StateHasChanged();
+    }
+    
+    
+}
+

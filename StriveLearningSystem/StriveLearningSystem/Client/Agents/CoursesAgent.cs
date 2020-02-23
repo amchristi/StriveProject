@@ -127,7 +127,53 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
-       
+        //Returns a list of all the courses
+        public async Task<List<Course>> getCourses()
+        {
+            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/courses/getCourses");
+            return courses;
+                           
+        }
+
+        public async Task<Boolean> registerStudentForCourse(int courseID)
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            int userID = int.Parse(authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value);
+            UserCourse userCourse = new UserCourse();
+            userCourse.CourseID = courseID;
+            userCourse.UserID = userID;
+
+            try
+            {
+                return await _httpClient.PostJsonAsync<Boolean>("api/courses/registerStudentForCourse", userCourse);
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
+
+        public async Task<Boolean> dropStudentCourseRegistration(int courseID)
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            int userID = int.Parse(authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value);
+            UserCourse userCourse = new UserCourse();
+            userCourse.CourseID = courseID;
+            userCourse.UserID = userID;
+
+            try
+            {
+                return await _httpClient.PostJsonAsync<Boolean>("api/courses/dropStudentCourseRegistration", userCourse);
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
 
     }
 }

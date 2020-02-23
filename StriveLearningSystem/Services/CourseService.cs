@@ -50,7 +50,7 @@ namespace Services
             var addedCourse = _classDbContext.Add(newCourse);
             await _classDbContext.SaveChangesAsync();
             return newCourse;
-         
+
         }
 
         //Takes in a course 
@@ -66,12 +66,12 @@ namespace Services
         public async Task<int> DeleteCourse(int courseToDeleteID)
         {
             Course courseToDelete = (from c in _classDbContext.Courses
-                                    where c.CourseID == courseToDeleteID
-                                    select c).FirstOrDefault<Course>();
+                                     where c.CourseID == courseToDeleteID
+                                     select c).FirstOrDefault<Course>();
             if (courseToDelete == null)
             {
                 throw new Exception("Course does not exists.");
-                
+
             }
 
             //Get all the assignments associated with the course
@@ -85,17 +85,17 @@ namespace Services
             foreach (Assignment i in assignmentsToDelete)
             {
                 IEnumerable<Grade> tempGrades = (from g in _classDbContext.Grades
-                                          where g.AssignmentID == i.AssignmentID
-                                          select g).ToList<Grade>();
+                                                 where g.AssignmentID == i.AssignmentID
+                                                 select g).ToList<Grade>();
                 //Delete the found grades
-                if(tempGrades != null)
+                if (tempGrades != null)
                 {
                     _classDbContext.RemoveRange(tempGrades);
                 }
                 tempGrades = null;
-                
+
             }
-            if(assignmentsToDelete != null)
+            if (assignmentsToDelete != null)
             {
                 _classDbContext.RemoveRange(assignmentsToDelete);
             }
@@ -105,26 +105,50 @@ namespace Services
             IEnumerable<Announcement> announcementsToDelete = (from a in _classDbContext.Announcements
                                                                where a.CourseID == courseToDeleteID
                                                                select a).ToList<Announcement>();
-            if(announcementsToDelete != null)
+            if (announcementsToDelete != null)
             {
                 _classDbContext.RemoveRange(announcementsToDelete);
             }
 
             //Delete all userCourses associated with course
             IEnumerable<UserCourse> userCoursesToDelete = (from uc in _classDbContext.UserCourses
-                                                               where uc.CourseID == courseToDeleteID
-                                                               select uc).ToList<UserCourse>();
-            if (userCoursesToDelete != null) 
+                                                           where uc.CourseID == courseToDeleteID
+                                                           select uc).ToList<UserCourse>();
+            if (userCoursesToDelete != null)
             {
                 _classDbContext.RemoveRange(userCoursesToDelete);
-            } 
+            }
 
             _classDbContext.Remove(courseToDelete);
             await _classDbContext.SaveChangesAsync();
             return courseToDeleteID;
-      
+
 
         }
 
+        //Returns a list of all the courses
+        public List<Course> getCourses()
+        {
+            List<Course> courses = (from c in _classDbContext.Courses
+                                         select c).ToList<Course>();
+            return courses;
+        }
+
+        public async Task<Boolean> registerStudentForCourse(UserCourse UserCourseToRegister)
+        {
+
+            var userCourseRegistration = _classDbContext.Add(UserCourseToRegister);
+            await _classDbContext.SaveChangesAsync();
+            return userCourseRegistration.State.Equals(Microsoft.EntityFrameworkCore.EntityState.Modified);
+
+        }
+
+        public async Task<Boolean> dropStudentCourseRegistration(UserCourse userCourseToDrop)
+        {
+            var userCourseRegistration = _classDbContext.Remove(userCourseToDrop);
+            await _classDbContext.SaveChangesAsync();
+            return userCourseRegistration.State.Equals(Microsoft.EntityFrameworkCore.EntityState.Modified);
+
+        }
     }
 }
