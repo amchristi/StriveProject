@@ -34,5 +34,15 @@ namespace StriveLearningSystem.Client.Agents
                 Courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/getStudentcourses");                
             }
         }
+
+        public async Task RefreshCourses()
+        {
+            
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            Courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/getStudentcourses");
+            
+        }
+
     }
 }
