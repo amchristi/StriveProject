@@ -51,5 +51,17 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
+        public async Task<List<User>> GetAllUsers()
+        {
+            try
+            {
+                var user = await _httpClient.GetJsonAsync<List<User>>($"api/users");
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

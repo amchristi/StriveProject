@@ -1,6 +1,7 @@
 ﻿@page "/courseRegistration"
 @inject CoursesAgent _coursesAgent
 @inject CoursesState  _coursesState
+@inject UserAgent _userAgent
 
 
 @if (_coursesvar == null)
@@ -22,52 +23,77 @@ else
                     <h5>Course ID</h5>
                 </div>
                 <div class="col">
+                    <h5>Title</h5>
+                </div>
+                <div class="col">
+                    <h5>Subject</h5>
+                </div>
+                <div class="col">
                     <h5>Course Description</h5>
+                </div>
+                <div class="col">
+                    <h5>Location</h5>
+                </div>
+                <div class="col">
+                    <h5>Meeting Days</h5>
+                </div>
+                <div class="col">
+                    <h5>Credit Hours</h5>
+                </div>
+                <div class="col">
+                    <h5>Teacher Name</h5>
+                </div>
+                <div class="col">
+                    <h5></h5>
                 </div>
             </div>
         </li>
 
         @foreach (var course in _coursesvar)
-        {
+         {
 
-
-
-    <div class="row">
-        <div class="col">
-            @course.CourseID
-        </div>
-
-        <div class="col">
-            @course.Subject
-        </div>
-        <div class="col">
-            @course.Title
-        </div>
-        <div class="col">
-            @course.Location
-        </div>
-        <div class="col">
-            @course.MeetingDays
-        </div>
-        <div class="col">
-            @course.CreditHours
-        </div>
-
-        @if (! _registeredCourses.Contains(course))
-        {
-
+         <div class="row">
             <div class="col">
-                <button class="btn-primary" @onclick="@(() => Register(course.CourseID))">Register</button>
+                @course.CourseID
             </div>
-        }
-        else
-        {
             <div class="col">
-                <button class="btn-primary" @onclick="@(() => RemoveRegistration(course.CourseID, this))">Unregister</button>
+                @course.Title
             </div>
-        }
+            <div class="col">
+                @course.Subject
+            </div>
+            <div class="col">
+                @course.Description
+            </div>
+            <div class="col">
+                @course.Location
+            </div>
+            <div class="col">
+                @course.MeetingDays
+            </div>
+            <div class="col">
+                @course.CreditHours
+            </div>
+            <div class="col">
+                @getTeacherName(course.TeacherID)
+         </div>
 
-    </div>
+
+            @if (!_registeredCourses.Contains(course))
+            {
+
+                <div class="col">
+                    <button class="btn-primary" @onclick="@(() => Register(course.CourseID))">Register</button>
+                </div>
+            }
+            else
+            {
+                <div class="col">
+                    <button class="btn-primary" @onclick="@(() => RemoveRegistration(course.CourseID, this))">Unregister</button>
+                </div>
+            }
+
+         </div>
            
         }
 
@@ -80,14 +106,14 @@ else
 {
     private List<Course> _coursesvar;
     private List<Course> _registeredCourses;
-    //private List<User> _teachers;
+    private List<User> _teachers;
 
     protected override async Task OnInitializedAsync()
     {
         _coursesvar = await _coursesAgent.getCourses();
-        //_registeredCourses = await _coursesAgent.GetCoursesByUser();
         await _coursesState.LoadCourses();
         _registeredCourses = _coursesState.Courses;
+        _teachers = await _userAgent.GetAllUsers();
 
     }
 
@@ -107,7 +133,14 @@ else
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
-    
-    
+    private string getTeacherName(int teacherID) 
+    {
+        Console.WriteLine("Teacher Id" + teacherID);
+        var teacher = _teachers.Find(x => x.UserID == teacherID);
+        var teacherName = teacher.FirstName + " " + teacher.LastName;
+        return teacherName;
+    }
+
+
 }
 
