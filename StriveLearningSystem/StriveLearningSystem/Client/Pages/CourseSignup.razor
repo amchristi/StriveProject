@@ -94,7 +94,7 @@ else
     private async Task Register(int courseID)
     {
         await _coursesAgent.registerStudentForCourse(courseID);
-        await _coursesState.LoadCourses();
+        await _coursesState.RefreshCourses();
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
@@ -103,9 +103,8 @@ else
     {
 
         await _coursesAgent.dropStudentCourseRegistration(courseID);
-        await _coursesState.LoadCourses();
+        await _coursesState.RefreshCourses();
         _registeredCourses = _coursesState.Courses;
-        await this.OnInitializedAsync();
         this.StateHasChanged();
     }
     
