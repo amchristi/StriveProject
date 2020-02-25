@@ -82,6 +82,7 @@
     [Parameter]
     public int courseId { get; set; }
     private Course _course;
+    private Assignment _assignment;
 
     private bool add = false;
 
@@ -96,8 +97,16 @@
 
     protected async Task CreateAssignment()
     {
-        // tempAssignment.CourseID = courseId;
-        add = !add;
+        tempAssignment.CourseID = courseId;
+        _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
+        if(_assignment == null)
+        {
+            //Display error message.
+        }
+        else
+        {
+            add = !add;
+        }
     }
 
     protected void AddAssignment()

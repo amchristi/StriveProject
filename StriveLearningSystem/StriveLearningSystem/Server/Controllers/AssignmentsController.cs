@@ -30,7 +30,20 @@ namespace StriveLearningSystem.Server.Controllers
             _courseService = courseService;
             _assignmentService = assignmentService;
         }
-        
+
+        [Route("api/assignments/addAssignment")]
+        [HttpPost]
+        public async Task<IActionResult> AddCourse([FromBody] Assignment newAssignment)
+        {
+            try
+            {
+                return Ok(await _assignmentService.AddNewAssignment(newAssignment));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error inserting Course");
+            }
+        }
     }
 }
 

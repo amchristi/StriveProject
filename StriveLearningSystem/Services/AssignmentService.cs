@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Data.DTOs;
+using System.Threading.Tasks;
 
 namespace Services
 {
@@ -46,6 +47,15 @@ namespace Services
                                             orderby a.DueDate
                                             select a).ToList();
             return assignments;
+        }
+
+        //Takes a assignment object and enters it into the database and returns an object
+        public async Task<Assignment> AddNewAssignment(Assignment newAssignment)
+        {
+            var addedAssignment = _classDbContext.Add(newAssignment);
+            await _classDbContext.SaveChangesAsync();
+            return newAssignment;
+
         }
 
         public List<CalendarEvent> GetCalendarItems(int userId, string userRole)
