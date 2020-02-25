@@ -51,8 +51,8 @@ else
 
         @foreach (var course in _coursesvar)
          {
-
-         <div class="row">
+    <li class="list-group-item">
+        <div class="row">
             <div class="col">
                 @course.CourseID
             </div>
@@ -76,7 +76,7 @@ else
             </div>
             <div class="col">
                 @getTeacherName(course.TeacherID)
-         </div>
+            </div>
 
 
             @if (!_registeredCourses.Contains(course))
@@ -93,7 +93,8 @@ else
                 </div>
             }
 
-         </div>
+        </div>
+    </li>
            
         }
 
