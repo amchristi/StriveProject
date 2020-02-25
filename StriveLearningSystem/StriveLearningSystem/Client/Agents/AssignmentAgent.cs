@@ -28,7 +28,18 @@ namespace StriveLearningSystem.Client.Agents
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-
+        public async Task<Assignment> AddNewAssignment(Assignment newAssignment)
+        {
+            try
+            {
+                var assignment = await _httpClient.PostJsonAsync<Assignment>("api/assignments/addAssignment", newAssignment);
+                return assignment;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
 
 
