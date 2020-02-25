@@ -5,7 +5,30 @@
 @using BlazorInputFile
 <h3>Course Home</h3>
 
-<AuthorizeView Roles="Teacher">
+
+
+<AuthorizeView Context="AuthContext" Roles="Teacher">
+
+    @if (add == true)
+    {
+
+        <EditForm Context="FormContext" Model="tempAssignment" OnValidSubmit="CreateAssignment">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            <div>Due Date: <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></div>
+            <div>Assignment Title: <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></div>
+            <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
+            <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
+            <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
+            <button type="submit" class="btn-primary">Create Course</button>
+        </EditForm>
+
+
+    }
+    else
+    {
+        <button type="button" class="active" @onclick="AddAssignment">Add Assignemnt</button>
+    }
 
     @if (_course == null)
     {
@@ -14,27 +37,27 @@
     else
     {
 
-            <div class="row">
-                <div class="col">
-                    @_course.CourseID
-                </div>
-
-                <div class="col">
-                    @_course.Subject
-                </div>
-                <div class="col">
-                    @_course.Title
-                </div>
-                <div class="col">
-                    @_course.Location
-                </div>
-                <div class="col">
-                    @_course.MeetingDays
-                </div>
-
-               
-
+        <div class="row">
+            <div class="col">
+                @_course.CourseID
             </div>
+
+            <div class="col">
+                @_course.Subject
+            </div>
+            <div class="col">
+                @_course.Title
+            </div>
+            <div class="col">
+                @_course.Location
+            </div>
+            <div class="col">
+                @_course.MeetingDays
+            </div>
+
+
+
+        </div>
 
     }
 </AuthorizeView>
@@ -58,14 +81,27 @@
     [Parameter]
     public int courseId { get; set; }
     private Course _course;
-   
 
+    private bool add = false;
+
+    private Assignment tempAssignment { get; set; } = new Assignment();
 
     protected override async Task OnInitializedAsync()
     {
 
         _course = await _coursesAgent.GetCourseById(courseId);
 
+    }
+
+    protected async Task CreateAssignment()
+    {
+        // tempAssignment.CourseID = courseId;
+        add = !add;
+    }
+
+    protected void AddAssignment()
+    {
+        add = !add;
     }
 
 
