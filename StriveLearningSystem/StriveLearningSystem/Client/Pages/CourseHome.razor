@@ -3,33 +3,13 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
 @inject AssignmentAgent _assignmentAgent
-@using BlazorInputFile
 <h3>Course Home</h3>
 
 
 
 <AuthorizeView Context="AuthContext" Roles="Teacher">
 
-    @if (add == true)
-    {
 
-        <EditForm Context="FormContext" Model="tempAssignment" OnValidSubmit="CreateAssignment">
-            <ValidationSummary />
-            <DataAnnotationsValidator />
-            <div>Due Date: <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></div>
-            <div>Assignment Title: <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></div>
-            <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
-            <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
-            <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
-            <button type="submit" class="btn-primary">Create Course</button>
-        </EditForm>
-
-
-    }
-    else
-    {
-        <button type="button" class="active" @onclick="AddAssignment">Add Assignemnt</button>
-    }
 
     @if (_course == null)
     {
@@ -37,29 +17,79 @@
     }
     else
     {
+        <h3>@_course.Subject  @_course.Title</h3>
 
-        <div class="row">
-            <div class="col">
-                @_course.CourseID
-            </div>
+        @if (add == true)
+        {
 
-            <div class="col">
-                @_course.Subject
-            </div>
-            <div class="col">
-                @_course.Title
-            </div>
-            <div class="col">
-                @_course.Location
-            </div>
-            <div class="col">
-                @_course.MeetingDays
-            </div>
+            <EditForm Context="FormContext" Model="tempAssignment" OnValidSubmit="CreateAssignment">
+                <ValidationSummary />
+                <DataAnnotationsValidator />
+                <div>Due Date: <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></div>
+                <div>Assignment Title: <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></div>
+                <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
+                <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
+                <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
+                <button type="submit" class="btn-primary">Create Assignment</button>
+            </EditForm>
 
 
+        }
+        else
+        {
+            <button type="button" class="active" @onclick="AddAssignment">Add Assignment</button>
+        }
 
-        </div>
+        //List of all the assignments
+        <ul class="list-group" style="width:100%">
 
+            <li class="list-group-item active">
+
+                <div class="row">
+                    <div class="col">
+                        <h5>Assignment title</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Assignment description</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Due Date</h5>
+                    </div>
+
+                </div>
+            </li>
+            @if (_allAssignments == null)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            No assignments
+                        </div>
+
+                    </div>
+                </li>
+            }
+            else
+            {
+                @foreach (var assignment in _allAssignments)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                @assignment.AssignmentTitle
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentDescription
+                            </div>
+                            <div class="col">
+                                @assignment.DueDate
+                            </div>
+
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
     }
 </AuthorizeView>
 
@@ -70,7 +100,57 @@
     }
     else
     {
-        <h1>@_course.Description</h1>
+        <h3>@_course.Subject  @_course.Title</h3>
+        //List of all the assignments
+        <ul class="list-group" style="width:100%">
+
+            <li class="list-group-item active">
+
+                <div class="row">
+                    <div class="col">
+                        <h5>Assignment title</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Assignment description</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Due Date</h5>
+                    </div>
+
+                </div>
+            </li>
+            @if (_allAssignments == null)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            No assignments
+                        </div>
+
+                    </div>
+                </li>
+            }
+            else
+            {
+                @foreach (var assignment in _allAssignments)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                @assignment.AssignmentTitle
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentDescription
+                            </div>
+                            <div class="col">
+                                @assignment.DueDate
+                            </div>
+
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
     }
 
 
@@ -83,6 +163,7 @@
     public int courseId { get; set; }
     private Course _course;
     private Assignment _assignment;
+    private List<Assignment> _allAssignments;
 
     private bool add = false;
 
@@ -92,6 +173,7 @@
     {
 
         _course = await _coursesAgent.GetCourseById(courseId);
+        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
 
     }
 
@@ -99,7 +181,8 @@
     {
         tempAssignment.CourseID = courseId;
         _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
-        if(_assignment == null)
+        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+        if (_assignment == null)
         {
             //Display error message.
         }

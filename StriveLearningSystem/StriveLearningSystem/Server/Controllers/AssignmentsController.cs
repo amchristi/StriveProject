@@ -44,6 +44,15 @@ namespace StriveLearningSystem.Server.Controllers
                 return BadRequest("Error inserting Course");
             }
         }
+
+        //Returns a list of all the assignments by courseID
+        [Route("api/courses/{courseID}/assignments")]
+        [HttpGet]
+        public IActionResult GetAssigmentByCourseID([FromRoute] int courseID)
+        {
+            return Ok(_assignmentService.GetAssigmentByCourseID(courseID));
+        }
+
     }
 }
 

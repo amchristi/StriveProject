@@ -41,7 +41,19 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
-
+        //Returns a list of all the assignments for the course
+        public async Task<List<Assignment>> GetAssigmentByCourseID(int courseID)
+        {
+            try
+            {
+                var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/courses/{courseID}/assignments");
+                return assignments;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
     }
 }

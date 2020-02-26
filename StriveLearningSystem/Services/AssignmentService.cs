@@ -49,6 +49,15 @@ namespace Services
             return assignments;
         }
 
+        //Returns a list of all the assignments by courseID
+        public object GetAssigmentByCourseID(int courseID)
+        {
+            var assignmentsForCourse = (from a in _classDbContext.Assignments
+                                        where a.CourseID == courseID
+                                        select a).ToList<Assignment>();
+            return assignmentsForCourse;
+        }
+
         //Takes a assignment object and enters it into the database and returns an object
         public async Task<Assignment> AddNewAssignment(Assignment newAssignment)
         {

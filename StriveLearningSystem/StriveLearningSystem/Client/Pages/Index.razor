@@ -13,7 +13,7 @@
 </AuthorizeView>
 
 <AuthorizeView Roles="Student">
-    <StudentHomeComponent Courses="@_coursesState.Courses"></StudentHomeComponent>
+    <StudentHomeComponent></StudentHomeComponent>
 </AuthorizeView>
    
 
@@ -27,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await _coursesState.LoadCourses();
+        
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿@inject CoursesAgent  _coursesAgent
+@inject CoursesState _coursesState
 
 @if (Courses == null)
 {
@@ -150,7 +151,7 @@ else
 
 
 @code {
-    [Parameter] public List<Course> Courses { get; set; }
+    public List<Course> Courses;
     private List<Assignment> _assignmentsvar;
     private List<Announcement> _announcementsvar;
     private DateTime currDate;
@@ -162,6 +163,8 @@ else
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
 
         _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
+        await _coursesState.LoadCourses();
+        Courses = _coursesState.Courses;
 
         currDate = DateTime.Now;
         wfn = currDate.AddDays(7);
