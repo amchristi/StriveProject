@@ -1,0 +1,215 @@
+﻿@page "/teacher/courses/{courseId:int}"
+@attribute [Authorize(Roles = "Teacher")]
+@inject CoursesAgent  _coursesAgent
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject IdentityAgent _identityAgent
+@inject AssignmentAgent _assignmentAgent
+<h3>Course Home</h3>
+
+
+@if (course == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@course.Subject  @course.Title</h3>
+
+    if (!editMode)
+    {
+
+        <div class="row">
+            <div class="col">
+                @course.CourseID
+            </div>
+
+            <div class="col">
+                @course.Subject
+            </div>
+            <div class="col">
+                @course.Title
+            </div>
+            <div class="col">
+                @course.Location
+            </div>
+            <div class="col">
+                @course.MeetingDays
+            </div>
+
+            <button class="btn-primary" type="button" @onclick="Delete">Delete</button>
+
+            <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
+
+        </div>
+
+    }
+    else
+    {
+
+        <EditForm Model="course" OnValidSubmit="UpdateCourse">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            <div>CourseID: <InputNumber @bind-Value="@course.CourseID"></InputNumber></div>
+            <div>Description : <InputText @bind-Value="@course.Description"></InputText></div>
+            <div>TeacherID: <InputNumber @bind-Value="@course.TeacherID"></InputNumber></div>
+            <div>Subject: <InputText @bind-Value="@course.Subject"></InputText></div>
+            <div>Title: <InputText @bind-Value="@course.Title"></InputText></div>
+            <div>Location: <InputText @bind-Value="@course.Location"></InputText></div>
+            <div>Meeting Days: <InputText @bind-Value="@course.MeetingDays"></InputText></div>
+            <div>Credit Hours: <InputNumber @bind-Value="@course.CreditHours"></InputNumber> </div>
+
+
+            <div>
+                <button class="btn-secondary" type="button" @onclick="ToggleEditMode">Cancel</button>
+                <button class="btn-primary" type="submit">Save</button>
+            </div>
+        </EditForm>
+
+    }
+
+    @if (add == true)
+    {
+
+        <EditForm Context="FormContext" Model="tempAssignment" OnValidSubmit="CreateAssignment">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            <div>Due Date: <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></div>
+            <div>Assignment Title: <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></div>
+            <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
+            <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
+            <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
+            <button type="submit" class="btn-primary">Create Assignment</button>
+        </EditForm>
+
+
+    }
+    else
+    {
+        <button type="button" class="active" @onclick="AddAssignment">Add Assignment</button>
+    }
+
+    //List of all the assignments
+    <ul class="list-group" style="width:100%">
+
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Assignment title</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment description</h5>
+                </div>
+                <div class="col">
+                    <h5>Due Date</h5>
+                </div>
+
+            </div>
+        </li>
+        @if (_allAssignments == null)
+        {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        No assignments
+                    </div>
+
+                </div>
+            </li>
+        }
+        else
+        {
+            @foreach (var assignment in _allAssignments)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            @assignment.AssignmentTitle
+                        </div>
+                        <div class="col">
+                            @assignment.AssignmentDescription
+                        </div>
+                        <div class="col">
+                            @assignment.DueDate
+                        </div>
+
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+}
+
+@code
+{
+    [Parameter]
+    public int courseId { get; set; }
+    private Course course;
+    private Course tempCourse;
+    private Assignment _assignment;
+    private List<Assignment> _allAssignments;
+
+    private bool add = false;
+    private bool editMode = false;
+
+    private Assignment tempAssignment { get; set; } = new Assignment();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        course = await _coursesAgent.GetCourseById(courseId);
+        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+
+    }
+
+    protected async Task CreateAssignment()
+    {
+        tempAssignment.CourseID = courseId;
+        _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
+        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+        if (_assignment == null)
+        {
+            //Display error message.
+        }
+        else
+        {
+            add = !add;
+        }
+    }
+
+    protected void AddAssignment()
+    {
+        add = !add;
+    }
+
+
+    private void ToggleEditMode()
+    {
+        if (!editMode)
+        {
+            tempCourse = new Course();
+            tempCourse.CourseID = course.CourseID;
+            tempCourse.Description = course.Description;
+            tempCourse.TeacherID = course.TeacherID;
+            tempCourse.Subject = course.Subject;
+            tempCourse.Title = course.Title;
+            tempCourse.Location = course.Location;
+            tempCourse.MeetingDays = course.MeetingDays;
+            tempCourse.CreditHours = course.CreditHours;
+        }
+        editMode = !editMode;
+
+    }
+
+    private async Task UpdateCourse()
+    {
+        course = await _coursesAgent.UpdateCourse(course);
+        ToggleEditMode();
+    }
+
+    private async Task Delete()
+    {
+        var id = await _coursesAgent.DeleteCourse(course.CourseID);
+    }
+
+}

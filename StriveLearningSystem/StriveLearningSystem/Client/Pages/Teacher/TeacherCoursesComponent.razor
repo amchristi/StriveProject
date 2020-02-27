@@ -1,6 +1,4 @@
-﻿@page "/coursemanagement"
-@inject CoursesAgent _coursesAgent
-@using BlazorInputFile
+﻿@inject CoursesAgent _coursesAgent
 
 @if (_coursesvar == null)
 {
@@ -8,8 +6,6 @@
 }
 else
 {
-    
-        <h1>Course Management</h1>
         <h2>Courses</h2>
         
         <!--Course list-->
@@ -29,7 +25,7 @@ else
             @foreach (var course in _coursesvar)
             {
 
-                <a href="/individualcourse/@course.CourseID" class="list-group-item list-group-item-action">
+                <a href="teacher/courses/@course.CourseID" class="list-group-item list-group-item-action">
 
                     <div class="row">
                         <div class="col">
