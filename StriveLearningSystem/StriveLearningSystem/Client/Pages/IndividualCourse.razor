@@ -43,7 +43,7 @@ else
         <EditForm Model="_course" OnValidSubmit="UpdateCourse">
             <ValidationSummary />
             <DataAnnotationsValidator />
-            <div>CourseID: <InputNumber @bind-Value="@_course.CourseID"></InputNumber></div>
+        
             <div>Description : <InputText @bind-Value="@_course.Description"></InputText></div>
             <div>TeacherID: <InputNumber @bind-Value="@_course.TeacherID"></InputNumber></div>
             <div>Subject: <InputText @bind-Value="@_course.Subject"></InputText></div>
@@ -85,7 +85,7 @@ else
         if (!editMode)
         {
             _course = new Course();
-            _course.CourseID = course.CourseID;
+           
              _course.Description = course.Description;
              _course.TeacherID = course.TeacherID;
              _course.Subject = course.Subject;
