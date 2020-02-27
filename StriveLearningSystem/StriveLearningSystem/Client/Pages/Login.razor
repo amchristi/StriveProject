@@ -1,6 +1,5 @@
 ﻿@inject IdentityAgent _identityAgent
 @inject NavigationManager _navigationManager
-@inject IToaster Toaster
 
 <div class="login-background">
     <div class="login-container">
@@ -142,7 +141,6 @@
         if (user != null)
         {
             registerState = 2;
-            Toaster.Success("User has been registered");
             StateHasChanged();
         }
         else

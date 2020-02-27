@@ -3,7 +3,6 @@
 @inject CoursesAgent _courseAgent
 @inject NavigationManager _navigationManager
 @inject IdentityAgent _identityAgent
-@inject IToaster Toaster
 
 <h5 style="color:red">@error</h5>
 <h1>Create Course</h1>
@@ -35,7 +34,6 @@
 
         if (result != null)
         {
-            Toaster.Success("Course successfuly created!");
             _navigationManager.NavigateTo("/");
         }
         else
