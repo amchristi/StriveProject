@@ -2,46 +2,84 @@
 @inject CoursesAgent  _coursesAgent
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
-
+@inject AssignmentAgent _assignmentAgent
 <h3>Course Home</h3>
 
-<AuthorizeView Roles="Teacher">
-    
-        @if (_course == null)
+@if (_course == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@_course.Subject  @_course.Title</h3>
+    //List of all the assignments
+    <ul class="list-group" style="width:100%">
+
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Assignment title</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment description</h5>
+                </div>
+                <div class="col">
+                    <h5>Due Date</h5>
+                </div>
+
+            </div>
+        </li>
+        @if (_allAssignments == null)
         {
-        <p>Loading...</p>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        No assignments
+                    </div>
+
+                </div>
+            </li>
         }
-        else{
-                   
-        <h1>@_course.Description</h1>
+        else
+        {
+            @foreach (var assignment in _allAssignments)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            @assignment.AssignmentTitle
+                        </div>
+                        <div class="col">
+                            @assignment.AssignmentDescription
+                        </div>
+                        <div class="col">
+                            @assignment.DueDate
+                        </div>
+
+                    </div>
+                </li>
+            }
         }
-</AuthorizeView>
+    </ul>
+}
 
-<AuthorizeView Roles="Student">
-    @if (_course == null)
-    {
-        <p>Loading...</p>
-    }
-    else
-    {
-       <h1>@_course.Description</h1>
-    }
-
-
-
-</AuthorizeView>
-
-@code {
+@code
+{
     [Parameter]
     public int courseId { get; set; }
-
     private Course _course;
+    private Assignment _assignment;
+    private List<Assignment> _allAssignments;
 
     protected override async Task OnInitializedAsync()
     {
 
         _course = await _coursesAgent.GetCourseById(courseId);
-            
+        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+
     }
+
+
 
 }

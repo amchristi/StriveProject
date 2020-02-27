@@ -1,6 +1,7 @@
 ﻿@inject CoursesAgent  _coursesAgent
+@inject CoursesState _coursesState
 
-@if (_coursesvar == null)
+@if (Courses == null)
 {
     <p>Loading...</p>
 }
@@ -20,7 +21,7 @@ else
                 </div>
             </div>
         </li>
-        @foreach (var course in _coursesvar)
+        @foreach (var course in Courses)
         {
             <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
 
@@ -34,6 +35,15 @@ else
                 </div>
             </a>
         }
+        <a href="/courseRegistration" class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    Register or Drop Classes
+                </div>
+            </div>
+        </a>
+
     </ul>
 }
 
@@ -83,8 +93,56 @@ else
                         </div>
                     </div>
                 </a>
-             }
-         }
+            }
+        }
+    </ul>
+}
+
+@if (_announcementsvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h2>Announcements:</h2>
+    <ul class="list-group" style="width:50%">
+        <li class="list-group-item active">
+
+            <div class="row">
+                <div class="col">
+                    <h5>Announcement ID</h5>
+                </div>
+                <div class="col">
+                    <h5>Title</h5>
+                </div>
+                <div class="col">
+                    <h5>Body</h5>
+                </div>
+                <div class="col">
+                    <h5>Date Created</h5>
+                </div>
+            </div>
+        </li>
+        @foreach (var announcement in _announcementsvar)
+        {
+            <a class="list-group-item list-group-item-action">
+
+                <div class="row">
+                    <div class="col">
+                        @announcement.AnnouncementID
+                    </div>
+                    <div class="col">
+                        @announcement.Title
+                    </div>
+                    <div class="col">
+                        @announcement.Body
+                    </div>
+                    <div class="col">
+                        @announcement.DateCreated
+                    </div>
+                </div>
+            </a>
+        }
     </ul>
 }
 
@@ -93,22 +151,25 @@ else
 
 
 @code {
-
-    private List<Course> _coursesvar;
+    public List<Course> Courses;
     private List<Assignment> _assignmentsvar;
+    private List<Announcement> _announcementsvar;
     private DateTime currDate;
     private DateTime wfn;
 
     protected override async Task OnInitializedAsync()
     {
-        _coursesvar = await _coursesAgent.GetCoursesByUser();
 
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
+
+        _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
+        await _coursesState.LoadCourses();
+        Courses = _coursesState.Courses;
 
         currDate = DateTime.Now;
         wfn = currDate.AddDays(7);
     }
 
-  
+
 
 }

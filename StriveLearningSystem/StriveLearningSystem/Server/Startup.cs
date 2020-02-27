@@ -44,7 +44,7 @@ namespace StriveLearningSystem.Server
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidateLifetime = true,
+                        ValidateLifetime = false,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = _configuration["JwtIssuer"],
                         ValidAudience = _configuration["JwtAudience"],

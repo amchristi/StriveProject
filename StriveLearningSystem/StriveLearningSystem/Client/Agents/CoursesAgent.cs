@@ -32,7 +32,7 @@ namespace StriveLearningSystem.Client.Agents
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
-            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/courses");
+            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/getStudentcourses");
             return courses;
         }
 
@@ -68,6 +68,14 @@ namespace StriveLearningSystem.Client.Agents
             return assignments;
         }
 
+        public async Task<List<Announcement>> GetAnnouncementsByStudent()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
+            var announcements = await _httpClient.GetJsonAsync<List<Announcement>>($"api/users/{userId}/studentAnnouncements");
+            return announcements;
+        }
+
         //Returns the course object given a courseId
         public async Task<Course> GetCourseById(int courseId)
         {
@@ -77,6 +85,95 @@ namespace StriveLearningSystem.Client.Agents
             var course = await _httpClient.GetJsonAsync<Course>($"api/courses/{courseId}/courseById");
             return course;
         }
+
+        //Takes a new course and tries the enter it into the database. If correct it will return the course object with the ID otherwise null.
+        public async Task<Course> AddNewCourse(Course newCourse)
+        {
+            try
+            {
+                var course = await _httpClient.PostJsonAsync<Course>("api/courses/addCourse", newCourse);
+                return course;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        //Updates a course and returns null if update failed.
+        public async Task<Course> UpdateCourse(Course updatedCourse)
+        {
+            try
+            {
+                var course = await _httpClient.PostJsonAsync<Course>("api/courses/updateCourse", updatedCourse);
+                return course;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        //Deletes course associated with the courseID passed in.
+        public async Task<int> DeleteCourse(int deletedCourseID)
+        {
+            try
+            {
+                var courseID = await _httpClient.PostJsonAsync<int>("api/courses/deleteCourse", deletedCourseID);
+                return courseID;
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+        }
+
+        //Returns a list of all the courses
+        public async Task<List<Course>> getCourses()
+        {
+            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/courses/getCourses");
+            return courses;
+                           
+        }
+
+        public async Task<Boolean> registerStudentForCourse(int courseID)
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            int userID = int.Parse(authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value);
+            UserCourse userCourse = new UserCourse();
+            userCourse.CourseID = courseID;
+            userCourse.UserID = userID;
+
+            try
+            {
+                return await _httpClient.PostJsonAsync<Boolean>("api/courses/registerStudentForCourse", userCourse);
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
+
+        public async Task<Boolean> dropStudentCourseRegistration(int courseID)
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            int userID = int.Parse(authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value);
+            UserCourse userCourse = new UserCourse();
+            userCourse.CourseID = courseID;
+            userCourse.UserID = userID;
+
+            try
+            {
+                return await _httpClient.PostJsonAsync<Boolean>("api/courses/dropStudentCourseRegistration", userCourse);
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
 
     }
 }

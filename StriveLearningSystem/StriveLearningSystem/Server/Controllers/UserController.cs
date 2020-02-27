@@ -59,7 +59,7 @@ namespace StriveLearningSystem.Server.Controllers
 
         [Route("api/users")]
         [HttpGet]
-        public IActionResult TestAllUsers()
+        public IActionResult GetAllUsers()
         {
             return Ok(_userService.GetAllUsers());
         }

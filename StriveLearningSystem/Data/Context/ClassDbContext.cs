@@ -19,6 +19,7 @@ namespace Data.Context
         }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Grade> Grades { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
 
     }
 }

@@ -2,6 +2,7 @@
 @inject CoursesAgent  _coursesAgent
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
+@inject CoursesState _coursesState
 
 <h1>
 
@@ -20,8 +21,13 @@
 @code {
     protected override void OnInitialized()
     {
-
         base.OnInitialized();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
     }
 
 }

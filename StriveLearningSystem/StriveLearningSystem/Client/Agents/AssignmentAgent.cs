@@ -16,21 +16,24 @@ using System.Threading.Tasks;
 
 namespace StriveLearningSystem.Client.Agents
 {
-    public class UserAgent
+    public class AssignmentAgent
     {
         private readonly HttpClient _httpClient;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public UserAgent(HttpClient httpClient)
+        public AssignmentAgent(HttpClient httpClient,
+                       AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<Assignment> AddNewAssignment(Assignment newAssignment)
         {
             try
             {
-                var user = await _httpClient.GetJsonAsync<User>($"api/users/{userId}");
-                return user;
+                var assignment = await _httpClient.PostJsonAsync<Assignment>("api/assignments/addAssignment", newAssignment);
+                return assignment;
             }
             catch (Exception e)
             {
@@ -38,12 +41,13 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
-        public async Task<User> UpdateProfile(User updateUser)
+        //Returns a list of all the assignments for the course
+        public async Task<List<Assignment>> GetAssigmentByCourseID(int courseID)
         {
             try
             {
-                var user = await _httpClient.PutJsonAsync<User>($"api/users/{updateUser.UserID}", updateUser);
-                return user;
+                var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/courses/{courseID}/assignments");
+                return assignments;
             }
             catch (Exception e)
             {
@@ -51,17 +55,5 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
-        public async Task<List<User>> GetAllUsers()
-        {
-            try
-            {
-                var user = await _httpClient.GetJsonAsync<List<User>>($"api/users");
-                return user;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
     }
 }
