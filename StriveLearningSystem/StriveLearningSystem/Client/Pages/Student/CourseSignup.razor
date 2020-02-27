@@ -2,7 +2,7 @@
 @inject CoursesAgent _coursesAgent
 @inject CoursesState  _coursesState
 @inject UserAgent _userAgent
-
+@inject IToaster Toaster
 
 @if (_coursesvar == null)
 {
@@ -50,52 +50,52 @@ else
         </li>
 
         @foreach (var course in _coursesvar)
-         {
-    <li class="list-group-item">
-        <div class="row">
-            <div class="col">
-                @course.CourseID
-            </div>
-            <div class="col">
-                @course.Title
-            </div>
-            <div class="col">
-                @course.Subject
-            </div>
-            <div class="col">
-                @course.Description
-            </div>
-            <div class="col">
-                @course.Location
-            </div>
-            <div class="col">
-                @course.MeetingDays
-            </div>
-            <div class="col">
-                @course.CreditHours
-            </div>
-            <div class="col">
-                @getTeacherName(course.TeacherID)
-            </div>
+        {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        @course.CourseID
+                    </div>
+                    <div class="col">
+                        @course.Title
+                    </div>
+                    <div class="col">
+                        @course.Subject
+                    </div>
+                    <div class="col">
+                        @course.Description
+                    </div>
+                    <div class="col">
+                        @course.Location
+                    </div>
+                    <div class="col">
+                        @course.MeetingDays
+                    </div>
+                    <div class="col">
+                        @course.CreditHours
+                    </div>
+                    <div class="col">
+                        @getTeacherName(course.TeacherID)
+                    </div>
 
 
-            @if (!_registeredCourses.Contains(course))
-            {
+                    @if (!_registeredCourses.Contains(course))
+                    {
 
-                <div class="col">
-                    <button class="btn-primary" @onclick="@(() => Register(course.CourseID))">Register</button>
+                        <div class="col">
+                            <button class="btn-primary" @onclick="@(() => Register(course.CourseID))">Register</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col">
+                            <button class="btn-primary" @onclick="@(() => RemoveRegistration(course.CourseID, this))">Unregister</button>
+                        </div>
+                    }
+
                 </div>
-            }
-            else
-            {
-                <div class="col">
-                    <button class="btn-primary" @onclick="@(() => RemoveRegistration(course.CourseID, this))">Unregister</button>
-                </div>
-            }
+            </li>
 
-        </div>
-    </li>
-           
         }
 
     </ul>
@@ -113,6 +113,7 @@ else
     {
         _coursesvar = await _coursesAgent.getCourses();
         await _coursesState.LoadCourses();
+        
         _registeredCourses = _coursesState.Courses;
         _teachers = await _userAgent.GetAllUsers();
 
@@ -122,6 +123,7 @@ else
     {
         await _coursesAgent.registerStudentForCourse(courseID);
         await _coursesState.RefreshCourses();
+        Toaster.Success("Successfully registered");
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
@@ -131,10 +133,11 @@ else
 
         await _coursesAgent.dropStudentCourseRegistration(courseID);
         await _coursesState.RefreshCourses();
+        Toaster.Success("Succesfully unregistered");
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
-    private string getTeacherName(int teacherID) 
+    private string getTeacherName(int teacherID)
     {
         Console.WriteLine("Teacher Id" + teacherID);
         var teacher = _teachers.Find(x => x.UserID == teacherID);
