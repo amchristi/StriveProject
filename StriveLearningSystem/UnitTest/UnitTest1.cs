@@ -16,8 +16,8 @@ namespace UnitTest
 
         public UnitTest1()
         {
-            
-            
+
+
         }
 
         [TestMethod]
@@ -37,29 +37,32 @@ namespace UnitTest
         [TestMethod]
         public void UserNotNULL()
         {
-            Assert.IsTrue(_userService.GetAllUsers()!=null);
+            Assert.IsTrue(_userService.GetAllUsers() != null);
         }
 
         [TestInitialize]
         public void StartUp()
-        {
-
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            
-        }
-
-        [ClassInitialize]
-        public void InitializingClass()
         {
             var contextOptions = new DbContextOptionsBuilder().UseSqlServer("Server = titan.cs.weber.edu,10433; User Id=Strive; Password=Password*1; Database=LMS_Strive").Options;
             _dbContext = new ClassDbContext(contextOptions);
             _assignmentService = new AssignmentService(_dbContext);
             _courseservice = new CourseService(_dbContext);
             _userService = new UserService(_dbContext);
+
         }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+
+        }
+
+        [ClassInitialize]
+        public static void InitializingClass(TestContext testContext)
+        {
+
+                           
+
+        }   
     }
 }
