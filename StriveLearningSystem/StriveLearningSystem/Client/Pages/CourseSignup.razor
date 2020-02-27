@@ -2,7 +2,6 @@
 @inject CoursesAgent _coursesAgent
 @inject CoursesState  _coursesState
 @inject UserAgent _userAgent
-@inject IToaster Toaster
 
 
 @if (_coursesvar == null)
@@ -123,7 +122,6 @@ else
     {
         await _coursesAgent.registerStudentForCourse(courseID);
         await _coursesState.RefreshCourses();
-        Toaster.Success("Successfully registered");
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
@@ -133,7 +131,6 @@ else
 
         await _coursesAgent.dropStudentCourseRegistration(courseID);
         await _coursesState.RefreshCourses();
-        Toaster.Success("Succesfully unregistered");
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
