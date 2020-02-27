@@ -5,157 +5,64 @@
 @inject AssignmentAgent _assignmentAgent
 <h3>Course Home</h3>
 
+@if (_course == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@_course.Subject  @_course.Title</h3>
+    //List of all the assignments
+    <ul class="list-group" style="width:100%">
 
+        <li class="list-group-item active">
 
-<AuthorizeView Context="AuthContext" Roles="Teacher">
+            <div class="row">
+                <div class="col">
+                    <h5>Assignment title</h5>
+                </div>
+                <div class="col">
+                    <h5>Assignment description</h5>
+                </div>
+                <div class="col">
+                    <h5>Due Date</h5>
+                </div>
 
-
-
-    @if (_course == null)
-    {
-        <p>Loading...</p>
-    }
-    else
-    {
-        <h3>@_course.Subject  @_course.Title</h3>
-
-        @if (add == true)
+            </div>
+        </li>
+        @if (_allAssignments == null)
         {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        No assignments
+                    </div>
 
-            <EditForm Context="FormContext" Model="tempAssignment" OnValidSubmit="CreateAssignment">
-                <ValidationSummary />
-                <DataAnnotationsValidator />
-                <div>Due Date: <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></div>
-                <div>Assignment Title: <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></div>
-                <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
-                <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
-                <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
-                <button type="submit" class="btn-primary">Create Assignment</button>
-            </EditForm>
-
-
+                </div>
+            </li>
         }
         else
         {
-            <button type="button" class="active" @onclick="AddAssignment">Add Assignment</button>
+            @foreach (var assignment in _allAssignments)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            @assignment.AssignmentTitle
+                        </div>
+                        <div class="col">
+                            @assignment.AssignmentDescription
+                        </div>
+                        <div class="col">
+                            @assignment.DueDate
+                        </div>
+
+                    </div>
+                </li>
+            }
         }
-
-        //List of all the assignments
-        <ul class="list-group" style="width:100%">
-
-            <li class="list-group-item active">
-
-                <div class="row">
-                    <div class="col">
-                        <h5>Assignment title</h5>
-                    </div>
-                    <div class="col">
-                        <h5>Assignment description</h5>
-                    </div>
-                    <div class="col">
-                        <h5>Due Date</h5>
-                    </div>
-
-                </div>
-            </li>
-            @if (_allAssignments == null)
-            {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">
-                            No assignments
-                        </div>
-
-                    </div>
-                </li>
-            }
-            else
-            {
-                @foreach (var assignment in _allAssignments)
-                {
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col">
-                                @assignment.AssignmentTitle
-                            </div>
-                            <div class="col">
-                                @assignment.AssignmentDescription
-                            </div>
-                            <div class="col">
-                                @assignment.DueDate
-                            </div>
-
-                        </div>
-                    </li>
-                }
-            }
-        </ul>
-    }
-</AuthorizeView>
-
-<AuthorizeView Roles="Student">
-    @if (_course == null)
-    {
-        <p>Loading...</p>
-    }
-    else
-    {
-        <h3>@_course.Subject  @_course.Title</h3>
-        //List of all the assignments
-        <ul class="list-group" style="width:100%">
-
-            <li class="list-group-item active">
-
-                <div class="row">
-                    <div class="col">
-                        <h5>Assignment title</h5>
-                    </div>
-                    <div class="col">
-                        <h5>Assignment description</h5>
-                    </div>
-                    <div class="col">
-                        <h5>Due Date</h5>
-                    </div>
-
-                </div>
-            </li>
-            @if (_allAssignments == null)
-            {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">
-                            No assignments
-                        </div>
-
-                    </div>
-                </li>
-            }
-            else
-            {
-                @foreach (var assignment in _allAssignments)
-                {
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col">
-                                @assignment.AssignmentTitle
-                            </div>
-                            <div class="col">
-                                @assignment.AssignmentDescription
-                            </div>
-                            <div class="col">
-                                @assignment.DueDate
-                            </div>
-
-                        </div>
-                    </li>
-                }
-            }
-        </ul>
-    }
-
-
-
-</AuthorizeView>
+    </ul>
+}
 
 @code
 {
@@ -165,10 +72,6 @@
     private Assignment _assignment;
     private List<Assignment> _allAssignments;
 
-    private bool add = false;
-
-    private Assignment tempAssignment { get; set; } = new Assignment();
-
     protected override async Task OnInitializedAsync()
     {
 
@@ -177,25 +80,6 @@
 
     }
 
-    protected async Task CreateAssignment()
-    {
-        tempAssignment.CourseID = courseId;
-        _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
-        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
-        if (_assignment == null)
-        {
-            //Display error message.
-        }
-        else
-        {
-            add = !add;
-        }
-    }
-
-    protected void AddAssignment()
-    {
-        add = !add;
-    }
 
 
 }
