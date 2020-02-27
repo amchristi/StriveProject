@@ -40,6 +40,17 @@ namespace UnitTest
             Assert.IsTrue(_userService.GetAllUsers() != null);
         }
 
+        [DataTestMethod]
+        [DataRow("classid1")]
+        [DataRow("classid2")]
+        public void DummyTest(string classID)
+        {
+            //This will change the classID to the different data point 
+            
+            var assignments = _assignmentService.GetStudentAssignmentsByUserId(16);
+            Assert.IsNotNull(assignments);
+        }
+
         [TestInitialize]
         public void StartUp()
         {

@@ -169,7 +169,8 @@ else
     {
         tempAssignment.CourseID = courseId;
         _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
-        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+        _allAssignments.Add(_assignment);
+        //_allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
         if (_assignment == null)
         {
             //Display error message.
