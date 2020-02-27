@@ -128,9 +128,9 @@ namespace StriveLearningSystem.Client.Agents
         }
 
         //Returns a list of all the courses
-        public async Task<List<Course>> getCourses()
+        public async Task<List<CourseInformationDTO>> getCourses()
         {
-            var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/courses/getCourses");
+            var courses = await _httpClient.GetJsonAsync<List<CourseInformationDTO>>($"api/courses/getCourses");
             return courses;
                            
         }

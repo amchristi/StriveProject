@@ -127,10 +127,24 @@ namespace Services
         }
 
         //Returns a list of all the courses
-        public List<Course> getCourses()
+        public List<CourseInformationDTO> getCourses()
         {
-            List<Course> courses = (from c in _classDbContext.Courses
-                                         select c).ToList<Course>();
+            List<CourseInformationDTO> courses = (from c in _classDbContext.Courses
+                                                  join u in _classDbContext.Users
+                                                  on c.TeacherID equals u.UserID
+                                         select new CourseInformationDTO
+                                         {
+                                             CourseID = c.CourseID,
+                                             CreditHours = c.CreditHours,
+                                             Description = c.Description,
+                                             Location = c.Location,
+                                             MeetingDays = c.MeetingDays,
+                                             Subject = c.MeetingDays,
+                                             TeacherID = c.TeacherID,
+                                             TeacherName = u.FirstName + " " + u.LastName,
+                                             Title = c.Title
+
+                                         }).ToList();
             return courses;
         }
 
