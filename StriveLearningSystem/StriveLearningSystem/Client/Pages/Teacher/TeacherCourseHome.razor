@@ -4,6 +4,7 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IdentityAgent _identityAgent
 @inject AssignmentAgent _assignmentAgent
+@inject IToaster Toaster
 <h3>Course Home</h3>
 
 
@@ -204,6 +205,7 @@ else
     private async Task UpdateCourse()
     {
         course = await _coursesAgent.UpdateCourse(course);
+        Toaster.Success("Course successfully updated");
         ToggleEditMode();
     }
 
