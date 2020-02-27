@@ -160,6 +160,8 @@ else
 
         course = await _coursesAgent.GetCourseById(courseId);
         _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+        tempAssignment.DueDate = DateTime.Now;
+
 
     }
 
@@ -171,6 +173,7 @@ else
         if (_assignment == null)
         {
             //Display error message.
+            Toaster.Error("Assignment not created!");
         }
         else
         {

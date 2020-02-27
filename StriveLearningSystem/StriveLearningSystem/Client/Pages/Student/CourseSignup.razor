@@ -128,7 +128,7 @@ else
         this.StateHasChanged();
     }
 
-    private async Task RemoveRegistration(int courseID, StriveLearningSystem.Client.Pages.CourseSignup page)
+    private async Task RemoveRegistration(int courseID, StriveLearningSystem.Client.Pages.Student.CourseSignup page)
     {
 
         await _coursesAgent.dropStudentCourseRegistration(courseID);
