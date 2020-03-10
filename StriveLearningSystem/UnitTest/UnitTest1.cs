@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Services;
+using Data.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace UnitTest
 {
@@ -38,6 +42,62 @@ namespace UnitTest
         public void UserNotNULL()
         {
             Assert.IsTrue(_userService.GetAllUsers() != null);
+        }
+
+        
+        // Inserts a new assignment and tests to ensure that it is added and retrieved from the database correctly.
+        [TestMethod]
+        public async Task CheckAssignmentAddingAndRetriving()
+        {
+            Assignment testAssignment = new Assignment();
+            //testAssignment.AssignmentID = 999;
+            testAssignment.CourseID = 1;
+            testAssignment.DueDate = DateTime.Now;
+            testAssignment.AssignmentTitle = "testing";
+            testAssignment.AssignmentDescription = "testDescription";
+            testAssignment.AssignmentType = "test";
+            testAssignment.TotalPossible = 10;
+
+            var returnedAssignment = await _assignmentService.AddNewAssignment(testAssignment);
+            List<Assignment> assignmentList = (_assignmentService.GetAssigmentByCourseID(1));
+
+            Assignment checkAssignment = null;
+
+            for(int i=0; i < assignmentList.Count; i++)
+            {
+                if( assignmentList[i].AssignmentID == returnedAssignment.AssignmentID)
+                {
+                    checkAssignment = assignmentList[i];
+                    break;
+                }
+            }
+
+            Assert.IsTrue(testAssignment.CourseID == checkAssignment.CourseID &&
+               testAssignment.AssignmentID == checkAssignment.AssignmentID &&
+               testAssignment.DueDate == checkAssignment.DueDate &&
+               testAssignment.AssignmentTitle == checkAssignment.AssignmentTitle &&
+               testAssignment.AssignmentDescription == checkAssignment.AssignmentDescription &&
+               testAssignment.AssignmentType == checkAssignment.AssignmentType &&
+               testAssignment.TotalPossible == checkAssignment.TotalPossible);
+            
+            _dbContext.Remove(testAssignment);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // Tries to input a assignment with an incorrect course number
+        [TestMethod]
+        public async Task CheckAssignmentWithInvalidCourse()
+        {
+            Assignment testAssignment = new Assignment();
+            testAssignment.CourseID = 0;
+            testAssignment.DueDate = DateTime.Now;
+            testAssignment.AssignmentTitle = "testing";
+            testAssignment.AssignmentDescription = "testDescription";
+            testAssignment.AssignmentType = "test";
+            testAssignment.TotalPossible = 10;
+
+            var returnedAssignment = await _assignmentService.AddNewAssignment(testAssignment);
+            Assert.IsNull(returnedAssignment);
         }
 
         [DataTestMethod]
