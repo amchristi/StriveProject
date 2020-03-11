@@ -54,7 +54,11 @@ namespace UnitTest
         [TestInitialize]
         public void StartUp()
         {
-
+            var contextOptions = new DbContextOptionsBuilder().UseSqlServer("Server = titan.cs.weber.edu,10433; User Id=Strive; Password=Password*1; Database=LMS_Strive").Options;
+            _dbContext = new ClassDbContext(contextOptions);
+            _assignmentService = new AssignmentService(_dbContext);
+            _courseservice = new CourseService(_dbContext);
+            _userService = new UserService(_dbContext);
         }
 
         [TestCleanup]
@@ -66,11 +70,7 @@ namespace UnitTest
         [ClassInitialize]
         public void InitializingClass()
         {
-            var contextOptions = new DbContextOptionsBuilder().UseSqlServer("Server = titan.cs.weber.edu,10433; User Id=Strive; Password=Password*1; Database=LMS_Strive").Options;
-            _dbContext = new ClassDbContext(contextOptions);
-            _assignmentService = new AssignmentService(_dbContext);
-            _courseservice = new CourseService(_dbContext);
-            _userService = new UserService(_dbContext);
+           
         }
     }
 }
