@@ -171,7 +171,7 @@ else
         _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
         _allAssignments.Add(_assignment);
         //_allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
-        if (_assignment == null)
+        if (_assignment == null || _assignment.AssignmentID == null)
         {
             //Display error message.
             Toaster.Error("Assignment not created!");
