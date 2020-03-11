@@ -13,6 +13,7 @@ namespace Data.Models
         public string AssignmentDescription { get; set;}
         public string AssignmentType { get; set; }
         public int TotalPossible { get; set; }
+        public bool IsFile { get; set; }
 
     }
 }
