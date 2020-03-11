@@ -1,0 +1,119 @@
+﻿@inject CoursesAgent  _coursesAgent
+
+
+<h1>Teacher Homepage</h1>
+<TeacherCoursesComponent></TeacherCoursesComponent>
+
+@if (_ungradedAssignments != null)
+{
+<!--What assignments to grade-->
+<h2>Assignments to grade</h2>
+<ul class="list-group" style="width:70%">
+    <li class="list-group-item active">
+
+        <div class="row">
+            <div class="col">
+                <h5>Course ID</h5>
+            </div>
+            <div class="col">
+                <h5>Assignment</h5>
+            </div>
+            <div class="col">
+                <h6>Due Date</h6>
+            </div>
+        </div>
+    </li>
+    @foreach (var assignment in _ungradedAssignments)
+    {
+        <a href="#" class="list-group-item list-group-item-action">
+
+            <div class="row">
+                <div class="col">
+                    @assignment.CourseID
+                </div>
+                <div class="col">
+                    @assignment.AssignmentDescription
+                </div>
+                <div class="col">
+                    @assignment.DueDate
+                </div>
+            </div>
+        </a>
+    }
+
+
+</ul>
+}
+
+<!--Should be componentized-->
+@if (_assignments != null)
+{
+    <div>
+        <!--Coming up next week-->
+        <h2>Coming up next week</h2>
+        <ul class="list-group" style="width:100%">
+            <li class="list-group-item active">
+
+                <div class="row">
+                    <div class="col">
+                        <h5>Course ID</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Due Date</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Description</h5>
+                    </div>
+                    <div class="col">
+                        <h5>Type</h5>
+                    </div>
+
+                </div>
+            </li>
+            @foreach (var assignment in _assignments)
+            {
+
+                if (assignment.DueDate > weekFromNow)
+                {
+                    <a href="/course/@assignment.CourseID/assignment/@assignment.AssignmentID" class="list-group-item list-group-item-action">
+
+                        <div class="row">
+                            <div class="col">
+                                @assignment.CourseID
+                            </div>
+                            <div class="col">
+                                @assignment.DueDate
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentDescription
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentType
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+
+        </ul>
+    </div>
+}
+
+@code {
+    Random random = new Random();
+    private List<Assignment> _assignments;
+    private List<Assignment> _ungradedAssignments;
+    private DateTime currentDate;
+    private DateTime weekFromNow;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _assignments = await _coursesAgent.GetAssignmentsByTeacher();
+        _ungradedAssignments = await _coursesAgent.GetAssignmentsUngradedByTeacher();
+
+        currentDate = DateTime.Now;
+        weekFromNow = currentDate.AddDays(7);
+
+    }
+
+}

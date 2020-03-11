@@ -14,7 +14,11 @@ namespace UnitTest
         private ClassDbContext _dbContext;
         private UserService _userService;
 
-        
+        public UnitTest1()
+        {
+            
+            
+        }
 
         [TestMethod]
         public void AssignmentIsNotNullForStudent()
@@ -33,29 +37,40 @@ namespace UnitTest
         [TestMethod]
         public void UserNotNULL()
         {
-            Assert.IsTrue(_userService.GetAllUsers()!=null);
+            Assert.IsTrue(_userService.GetAllUsers() != null);
+        }
+
+        [DataTestMethod]
+        [DataRow("classid1")]
+        [DataRow("classid2")]
+        public void DummyTest(string classID)
+        {
+            //This will change the classID to the different data point 
+            
+            var assignments = _assignmentService.GetStudentAssignmentsByUserId(16);
+            Assert.IsNotNull(assignments);
         }
 
         [TestInitialize]
         public void StartUp()
+        {
+
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+
+        }
+
+        [ClassInitialize]
+        public void InitializingClass()
         {
             var contextOptions = new DbContextOptionsBuilder().UseSqlServer("Server = titan.cs.weber.edu,10433; User Id=Strive; Password=Password*1; Database=LMS_Strive").Options;
             _dbContext = new ClassDbContext(contextOptions);
             _assignmentService = new AssignmentService(_dbContext);
             _courseservice = new CourseService(_dbContext);
             _userService = new UserService(_dbContext);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            
-        }
-
-        [ClassInitialize]
-        public static void InitializingClass()
-        {
-          
         }
     }
 }
