@@ -20,8 +20,8 @@ namespace UnitTest
 
         public UnitTest1()
         {
-            
-            
+
+
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace UnitTest
             Assert.IsTrue(_userService.GetAllUsers() != null);
         }
 
-        
+
         // Inserts a new assignment and tests to ensure that it is added and retrieved from the database correctly.
         [TestMethod]
         public async Task CheckAssignmentAddingAndRetriving()
@@ -63,9 +63,9 @@ namespace UnitTest
 
             Assignment checkAssignment = null;
 
-            for(int i=0; i < assignmentList.Count; i++)
+            for (int i = 0; i < assignmentList.Count; i++)
             {
-                if( assignmentList[i].AssignmentID == returnedAssignment.AssignmentID)
+                if (assignmentList[i].AssignmentID == returnedAssignment.AssignmentID)
                 {
                     checkAssignment = assignmentList[i];
                     break;
@@ -79,7 +79,7 @@ namespace UnitTest
                testAssignment.AssignmentDescription == checkAssignment.AssignmentDescription &&
                testAssignment.AssignmentType == checkAssignment.AssignmentType &&
                testAssignment.TotalPossible == checkAssignment.TotalPossible);
-            
+
             _dbContext.Remove(testAssignment);
             await _dbContext.SaveChangesAsync();
         }
@@ -106,7 +106,7 @@ namespace UnitTest
         public void DummyTest(string classID)
         {
             //This will change the classID to the different data point 
-            
+
             var assignments = _assignmentService.GetStudentAssignmentsByUserId(16);
             Assert.IsNotNull(assignments);
         }
@@ -119,6 +119,7 @@ namespace UnitTest
             _assignmentService = new AssignmentService(_dbContext);
             _courseservice = new CourseService(_dbContext);
             _userService = new UserService(_dbContext);
+
         }
 
         [TestCleanup]
@@ -128,9 +129,11 @@ namespace UnitTest
         }
 
         [ClassInitialize]
-        public void InitializingClass()
+        public static void InitializingClass(TestContext testContext)
         {
-           
+
+
+
         }
     }
 }
