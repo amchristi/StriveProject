@@ -75,11 +75,11 @@ else
                         @course.CreditHours
                     </div>
                     <div class="col">
-                        @getTeacherName(course.TeacherID)
+                        @course.TeacherName
                     </div>
 
 
-                    @if (!_registeredCourses.Contains(course))
+                    @if (!_registeredCourses.Select(m=>m.CourseID).Contains(course.CourseID))
                     {
 
                         <div class="col">
@@ -105,7 +105,7 @@ else
 
 @code
 {
-    private List<Course> _coursesvar;
+    private List<CourseInformationDTO> _coursesvar;
     private List<Course> _registeredCourses;
     private List<User> _teachers;
 
@@ -115,7 +115,6 @@ else
         await _coursesState.LoadCourses();
         
         _registeredCourses = _coursesState.Courses;
-        _teachers = await _userAgent.GetAllUsers();
 
     }
 
@@ -136,13 +135,6 @@ else
         Toaster.Success("Succesfully unregistered");
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
-    }
-    private string getTeacherName(int teacherID)
-    {
-        Console.WriteLine("Teacher Id" + teacherID);
-        var teacher = _teachers.Find(x => x.UserID == teacherID);
-        var teacherName = teacher.FirstName + " " + teacher.LastName;
-        return teacherName;
     }
 
 

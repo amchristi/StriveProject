@@ -79,6 +79,7 @@ else
             <div>Assignment Question: <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></div>
             <div>Assignment Type: <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></div>
             <div>Total Possible Points: <InputNumber @bind-Value="@tempAssignment.TotalPossible" /></div>
+            <div>Submission Type File: <InputCheckbox @bind-Value="@tempAssignment.IsFile"></InputCheckbox></div>
             <button type="submit" class="btn-primary">Create Assignment</button>
         </EditForm>
 
@@ -169,8 +170,9 @@ else
     {
         tempAssignment.CourseID = courseId;
         _assignment = await _assignmentAgent.AddNewAssignment(tempAssignment);
-        _allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
-        if (_assignment == null)
+        _allAssignments.Add(_assignment);
+        //_allAssignments = await _assignmentAgent.GetAssigmentByCourseID(courseId);
+        if (_assignment == null || _assignment.AssignmentID == null)
         {
             //Display error message.
             Toaster.Error("Assignment not created!");

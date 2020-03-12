@@ -50,7 +50,7 @@ namespace Services
         }
 
         //Returns a list of all the assignments by courseID
-        public object GetAssigmentByCourseID(int courseID)
+        public List<Assignment> GetAssigmentByCourseID(int courseID)
         {
             var assignmentsForCourse = (from a in _classDbContext.Assignments
                                         where a.CourseID == courseID
@@ -61,9 +61,22 @@ namespace Services
         //Takes a assignment object and enters it into the database and returns an object
         public async Task<Assignment> AddNewAssignment(Assignment newAssignment)
         {
-            var addedAssignment = _classDbContext.Add(newAssignment);
-            await _classDbContext.SaveChangesAsync();
-            return newAssignment;
+            // Check if course number exists
+            Course course = (from c in _classDbContext.Courses
+                             where c.CourseID == newAssignment.CourseID
+                             select c).FirstOrDefault<Course>();
+            if(course!= null && course.CourseID == newAssignment.CourseID) 
+            {
+                var addedAssignment = _classDbContext.Add(newAssignment);
+                await _classDbContext.SaveChangesAsync();
+                return newAssignment;
+            }
+            else
+            {               
+                return null;
+            }
+
+            
 
         }
 
