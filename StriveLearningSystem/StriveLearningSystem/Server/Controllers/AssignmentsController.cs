@@ -53,6 +53,14 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_assignmentService.GetAssigmentByCourseID(courseID));
         }
 
+        //Return a single assignment from an assignmentID
+        [Route("api/assignment/{AssignmentID}/getassignment")]
+        [HttpGet]
+        public IActionResult GetAssignmentByID([FromRoute] int AssignmentID)
+        {
+            return Ok(_assignmentService.GetAssignmentByAssignmentID(AssignmentID));
+        }
+
     }
 }
 

@@ -84,9 +84,9 @@ namespace Services
 
             foreach (Assignment i in assignmentsToDelete)
             {
-                IEnumerable<Grade> tempGrades = (from g in _classDbContext.Grades
+                IEnumerable<GradeDBModel> tempGrades = (from g in _classDbContext.Grades
                                                  where g.AssignmentID == i.AssignmentID
-                                                 select g).ToList<Grade>();
+                                                 select g).ToList<GradeDBModel>();
                 //Delete the found grades
                 if (tempGrades != null)
                 {

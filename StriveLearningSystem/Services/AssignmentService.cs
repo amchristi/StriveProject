@@ -17,6 +17,14 @@ namespace Services
             _classDbContext = classDbContext;
         }
 
+        //Return a single assignemnt by assignmentId
+        public Assignment GetAssignmentByAssignmentID(int AssignmentID)
+        {
+            var assignment = (from c in _classDbContext.Assignments
+                                    where c.AssignmentID == AssignmentID
+                                    select c).FirstOrDefault<Assignment>();
+            return assignment;
+        }
         //Takes a student user id and will return all assignments associated with that id.
         public List<Assignment> GetStudentAssignmentsByUserId(int UserID)
         {

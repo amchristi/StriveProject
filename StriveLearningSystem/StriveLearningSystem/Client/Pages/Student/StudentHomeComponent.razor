@@ -76,7 +76,7 @@ else
         {
             @if (assignment.DueDate < wfn)
             {
-                <a class="list-group-item list-group-item-action">
+                <a href="student/assignmentpage/@assignment.AssignmentID" class="list-group-item list-group-item-action">
 
                     <div class="row">
                         <div class="col">
@@ -161,6 +161,8 @@ else
     {
 
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
+
+     
 
         _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
         await _coursesState.LoadCourses();

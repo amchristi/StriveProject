@@ -55,5 +55,17 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
+        public async Task<Assignment> GetAssignment(int AssignmentID)
+        {
+            try
+            {
+                var assignment = await _httpClient.GetJsonAsync<Assignment>($"api/assignment/{AssignmentID}/getassignment");
+                return assignment;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
-}
+   }

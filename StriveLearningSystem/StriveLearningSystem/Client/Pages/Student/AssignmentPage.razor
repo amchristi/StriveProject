@@ -1,0 +1,87 @@
+﻿@page "/student/assignmentpage/{AssignmentID:int}"
+@inject AssignmentAgent _assignmentAgent
+@inject GradeAgent _gradeagent
+@inject IdentityAgent _identity
+@using BlazorInputFile
+<h1>Assignment</h1>
+@if (_assignment == null)
+{
+    <h3> Assignment is Null</h3>
+}
+else
+{
+
+    <h2><b>Title: </b>@_assignment.AssignmentTitle   <b>CourseID: </b> @_assignment.CourseID  </h2>
+    <h4> <b>Assignment Type: </b>@_assignment.AssignmentType.</h4>
+    <h4> <b> Assignment Description: </b> @_assignment.AssignmentDescription</h4>
+    <h4> <b> Assignment Due Date: </b>@_assignment.DueDate.</h4>
+    <h4> <b> Total Points: </b>@_assignment.TotalPossible<b></b></h4>
+
+    <EditForm Model="_assignment" OnValidSubmit="update">
+
+        if (!_assignment.IsFile)
+        {
+            <p>Please Enter text</p>
+            <div>  <textarea @bind="@_grade.TextSubmission" rows="20" cols="50">Please enter text</textarea></div>
+        }
+        else
+        {
+            <h3> Please Upload File</h3>
+            <div><InputFile OnChange="HandleFileSelected"></InputFile></div>
+        }
+        <div><button class="btn-primary" type="submit">Save</button></div>
+    </EditForm>
+
+
+
+}
+
+@code {
+
+    [Parameter]
+    public int AssignmentID { set; get; }
+    public Assignment _assignment;
+    public TempGrade _grade;
+    IFileListEntry file;
+    byte[] imageData;
+
+    public int userId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userId = await _identity.GetId();
+        _assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+    }
+
+
+
+    private async Task update()
+    {
+        _grade = await _gradeagent.SubmitAssignment(_grade);
+
+    }
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+
+        _grade.FileURl = await ReadFully(file.Data);
+
+       
+    }
+
+    public async Task<byte[]> ReadFully(System.IO.Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+        {
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+        }
+    }
+}
