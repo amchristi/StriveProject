@@ -30,7 +30,6 @@ namespace StriveLearningSystem.Server.Controllers
 
         [Route("api/grade/submitassignment")]
         [HttpPost]
-        //to be continues
         public async Task<IActionResult> SubmitAssignment([FromBody] TempGrade grade)
         {
             try

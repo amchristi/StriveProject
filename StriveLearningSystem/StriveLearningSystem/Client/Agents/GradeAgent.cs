@@ -28,11 +28,11 @@ namespace StriveLearningSystem.Client.Agents
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<TempGrade> SubmitAssignment(TempGrade newgrade)
+        public async Task<TempGrade> SubmitAssignment(TempGrade tempGrade)
         {
             try
             {
-                var grade = await _httpClient.PostJsonAsync<TempGrade>("api/grade/submitassignment", newgrade);
+                var grade = await _httpClient.PostJsonAsync<TempGrade>("api/grade/submitassignment", tempGrade);
                 return grade;
             }
             catch (Exception e)

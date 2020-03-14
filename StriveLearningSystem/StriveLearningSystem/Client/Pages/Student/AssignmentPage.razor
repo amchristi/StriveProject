@@ -17,22 +17,27 @@ else
     <h4> <b> Assignment Due Date: </b>@_assignment.DueDate.</h4>
     <h4> <b> Total Points: </b>@_assignment.TotalPossible<b></b></h4>
 
-    <EditForm Model="_assignment" OnValidSubmit="update">
+    if (grade != null)
+    {
+        <h3> Assignment Submited </h3>
+    }
+    else
+    {
 
-        if (!_assignment.IsFile)
-        {
-            <p>Please Enter text</p>
-            <div>  <textarea @bind="@_grade.TextSubmission" rows="20" cols="50">Please enter text</textarea></div>
-        }
-        else
-        {
-            <h3> Please Upload File</h3>
-            <div><InputFile OnChange="HandleFileSelected"></InputFile></div>
-        }
-        <div><button class="btn-primary" type="submit">Save</button></div>
-    </EditForm>
-
-
+        <EditForm Model="_grade" OnValidSubmit="update">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            @if (!_assignment.IsFile)
+            {
+                <div> Please Enter Text:  <InputTextArea @bind-Value="_grade.TextSubmission" rows="20" cols="50">Please enter text</InputTextArea></div>
+            }
+            else
+            {
+                <div>Please Upload File  <InputFile OnChange="HandleFileSelected"></InputFile></div>
+            }
+            <div><button class="btn-primary" type="submit">Save</button></div>
+        </EditForm>
+    }
 
 }
 
@@ -41,34 +46,34 @@ else
     [Parameter]
     public int AssignmentID { set; get; }
     public Assignment _assignment;
-    public TempGrade _grade;
+    public TempGrade _grade = new TempGrade();
+    public TempGrade grade;
     IFileListEntry file;
     byte[] imageData;
-
     public int userId;
 
 
     protected override async Task OnInitializedAsync()
     {
+
         userId = await _identity.GetId();
         _assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+
     }
-
-
 
     private async Task update()
     {
-        _grade = await _gradeagent.SubmitAssignment(_grade);
-
+        Console.WriteLine("OnValidSubmit");
+        _grade.AssignmentID = _assignment.AssignmentID;
+        _grade.UserID = userId;
+        _grade.IsFile = _assignment.IsFile;
+        grade = await _gradeagent.SubmitAssignment(_grade);
     }
 
     async Task HandleFileSelected(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
-
         _grade.FileURl = await ReadFully(file.Data);
-
-       
     }
 
     public async Task<byte[]> ReadFully(System.IO.Stream input)

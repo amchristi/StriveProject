@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Data.DTOs;
 using System.Threading.Tasks;
 
 namespace Services
@@ -23,11 +22,10 @@ namespace Services
         public async Task<TempGrade> SubmitAssignmentFile(TempGrade tempGrade)
         {
             gradeDB = ConvertoDBModel(tempGrade);
-                
 
-             
               var addgrade = _classDbContext.Add(gradeDB);
               await _classDbContext.SaveChangesAsync();
+               
               return tempGrade;
             
         }
@@ -50,7 +48,7 @@ namespace Services
             //dBMode FileURL is of type instead of Type Byte[] for the 
             if (tempGrade.TextSubmission == null)
             {
-                dBModel.FileURl = "fakeurl";//Class that stores the file and return a unique filename;
+                dBModel.FileURl = "ADD URL HERE";//After storing the file put the URL here thats it.
             }
             else
             {
