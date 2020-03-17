@@ -37,6 +37,26 @@ namespace UnitTest
             Assert.IsNotNull(_courseservice.getCourses());
         }
 
+        [TestMethod]
+        public void UngradedAssignmentIsNotNullForTeacher()
+        {
+            var assignments = _assignmentService.GetTeacherUngradedAssignmentsByUserId(3);
+            Assert.IsNotNull(assignments);
+        }
+
+        [TestMethod]
+        public void CoursesIsNotNullForTeacher()
+        {
+            var courses = _courseservice.GetCourseTaughtByTeacher(3);
+            Assert.IsNotNull(courses);
+        }
+
+        [TestMethod]
+        public void AssignmentIsNotNullForTeacher()
+        {
+            var assignments = _assignmentService.GetTeacherAssignmentsByUserId(3);
+            Assert.IsNotNull(assignments);
+        }
 
         [TestMethod]
         public void UserNotNULL()
