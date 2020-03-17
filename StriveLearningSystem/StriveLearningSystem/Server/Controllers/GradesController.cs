@@ -38,12 +38,30 @@ namespace StriveLearningSystem.Server.Controllers
                     return Ok(await _gradeservice.SubmitAssignmentText(grade));
                 else
                     return Ok(await _gradeservice.SubmitAssignmentFile(grade));
-                
+
             }
             catch (Exception e)
             {
                 return BadRequest("Error inserting Course");
             }
         }
+
+        // Uploads the file to the server
+        [Route("api/grade/fileAssignmentUpload")]
+        [HttpPost]
+        public  IActionResult UploadAssignmentFile([FromBody] FileAssignment fileAssignment)
+        {
+            try
+            {
+
+                return Ok(_gradeservice.UploadAssignmentFile(fileAssignment));
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error uploading file");
+            }
+        }
     }
 }
+

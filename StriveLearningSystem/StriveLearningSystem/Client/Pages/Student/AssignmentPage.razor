@@ -2,6 +2,7 @@
 @inject AssignmentAgent _assignmentAgent
 @inject GradeAgent _gradeagent
 @inject IdentityAgent _identity
+@inject IToaster Toaster
 @using BlazorInputFile
 <h1>Assignment</h1>
 @if (_assignment == null)
@@ -49,7 +50,6 @@ else
     public TempGrade _grade = new TempGrade();
     public TempGrade grade;
     IFileListEntry file;
-    byte[] imageData;
     public int userId;
 
 
@@ -73,7 +73,26 @@ else
     async Task HandleFileSelected(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
-        _grade.FileURl = await ReadFully(file.Data);
+        // Here is where the file will be uploaded to the server and a url will be given as a response
+        var gradeFile = await ReadFully(file.Data);
+
+        FileAssignment FileToUpload = new FileAssignment();
+        FileToUpload.Data = gradeFile;
+        FileToUpload.Name = userId + AssignmentID.ToString() + file.Name;
+        FileToUpload = await _gradeagent.UploadAssignmentFile(FileToUpload);
+
+
+        if(FileToUpload.URL != null)
+        {
+            Toaster.Success("Assignment successfully uploaded");
+            _grade.FileURl = FileToUpload.URL;
+
+        }
+        else
+        {
+            Toaster.Error("Assignment upload error");
+        }
+        
     }
 
     public async Task<byte[]> ReadFully(System.IO.Stream input)

@@ -104,7 +104,7 @@ else
     async Task HandleFileSelected(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
-
+        
         tempUser.Picture = await ReadFully(file.Data);
         StateHasChanged();
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Services
 {
@@ -18,15 +19,14 @@ namespace Services
             _classDbContext = classDbContext;
         }
 
-        //upload assignment
+        
         public async Task<TempGrade> SubmitAssignmentFile(TempGrade tempGrade)
         {
             gradeDB = ConvertoDBModel(tempGrade);
-
-              var addgrade = _classDbContext.Add(gradeDB);
-              await _classDbContext.SaveChangesAsync();
-               
-              return tempGrade;
+            var addgrade = _classDbContext.Add(gradeDB);
+            await _classDbContext.SaveChangesAsync();
+              
+            return tempGrade;
             
         }
 
@@ -40,15 +40,15 @@ namespace Services
 
         }
 
-        //This I would call the class to store the file and get back a fileURL
+       
         public GradeDBModel ConvertoDBModel(TempGrade tempGrade)
         {
              
-            GradeDBModel dBModel = new GradeDBModel();
-            //dBMode FileURL is of type instead of Type Byte[] for the 
+            GradeDBModel dBModel = new GradeDBModel();         
             if (tempGrade.TextSubmission == null)
-            {
-                dBModel.FileURl = "ADD URL HERE";//After storing the file put the URL here thats it.
+            {              
+                dBModel.FileURl = tempGrade.FileURl;
+                dBModel.IsFile = true;
             }
             else
             {
@@ -56,7 +56,27 @@ namespace Services
             }
             dBModel.AssignmentID = tempGrade.AssignmentID;
             dBModel.UserID = tempGrade.UserID;
+            dBModel.DateTurnedIn = DateTime.Now;
+                       
             return dBModel;
         }
+
+        // Takes in a fileAssignment and writes creates the file on the server and returns the url.
+        public FileAssignment UploadAssignmentFile(FileAssignment fileAssignment)
+        {
+            // Save assignment on the server and update the Url in the FileAssignment object and pass it back
+            string cwd = Directory.GetCurrentDirectory();
+            //Store only the AssignmentFiles and filename in the database
+            fileAssignment.URL = "\\" + "AssignmentFiles\\" + fileAssignment.Name;
+            // Add in the current working directory to save the file on the server
+            var path = cwd + fileAssignment.URL;
+            File.WriteAllBytes(path, fileAssignment.Data);
+            
+            return fileAssignment;
+
+            
+        }
+
+
     }
 }

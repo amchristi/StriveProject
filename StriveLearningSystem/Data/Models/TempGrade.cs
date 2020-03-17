@@ -14,7 +14,7 @@ namespace Data.Models
         public DateTime DateGraded { get; set; }
         public bool IsGraded { get; set; }
         public String TextSubmission { get; set; }
-        public Byte[] FileURl { get; set; }
+        public string FileURl { get; set; }
         public bool IsFile { get; set; }
     }
 }

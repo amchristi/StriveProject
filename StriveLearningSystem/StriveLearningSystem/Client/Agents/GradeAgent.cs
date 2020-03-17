@@ -40,5 +40,19 @@ namespace StriveLearningSystem.Client.Agents
                 return null;
             }
         }
+
+        // Uploads the assignment to the server
+        public async Task<FileAssignment> UploadAssignmentFile(FileAssignment fileAssignment)
+        {
+            try
+            {
+                fileAssignment = await _httpClient.PostJsonAsync<FileAssignment>("api/grade/fileAssignmentUpload", fileAssignment);
+                return fileAssignment;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
