@@ -14,57 +14,58 @@
 }
 else
 {
-    <h3>@course.Subject  @course.Title</h3>
+
 
     if (!editMode)
     {
 
-        <div class="row">
-            <div class="col">
-                @course.CourseID
+        <div class="card">
+            <div class="card-header">
+                <b>@course.Subject  @course.Title</b>
             </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Course Id:</b> @course.CourseID</li>
+                <li class="list-group-item"><b>Subject:</b> @course.Subject</li>
+                <li class="list-group-item"><b>Title:</b> @course.Title</li>
+                <li class="list-group-item"><b>Description:</b> @course.Description</li>
+                <li class="list-group-item"><b>Location:</b> @course.Location</li>
+                <li class="list-group-item"><b>Meeting Days:</b> @course.MeetingDays</li>
+                <li class="list-group-item"><b>Credit Hours:</b> @course.CreditHours</li>
 
-            <div class="col">
-                @course.Subject
+            </ul>
+            <div>
+                <button class="btn-primary" type="button" @onclick="Delete">Delete</button>
+                <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
             </div>
-            <div class="col">
-                @course.Title
-            </div>
-            <div class="col">
-                @course.Location
-            </div>
-            <div class="col">
-                @course.MeetingDays
-            </div>
-
-            <button class="btn-primary" type="button" @onclick="Delete">Delete</button>
-
-            <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
-
         </div>
 
     }
     else
     {
-
-        <EditForm Model="course" OnValidSubmit="UpdateCourse">
-            <ValidationSummary />
-            <DataAnnotationsValidator />
-            <div>CourseID: <InputNumber @bind-Value="@course.CourseID"></InputNumber></div>
-            <div>Description : <InputText @bind-Value="@course.Description"></InputText></div>
-            <div>TeacherID: <InputNumber @bind-Value="@course.TeacherID"></InputNumber></div>
-            <div>Subject: <InputText @bind-Value="@course.Subject"></InputText></div>
-            <div>Title: <InputText @bind-Value="@course.Title"></InputText></div>
-            <div>Location: <InputText @bind-Value="@course.Location"></InputText></div>
-            <div>Meeting Days: <InputText @bind-Value="@course.MeetingDays"></InputText></div>
-            <div>Credit Hours: <InputNumber @bind-Value="@course.CreditHours"></InputNumber> </div>
-
-
-            <div>
-                <button class="btn-secondary" type="button" @onclick="ToggleEditMode">Cancel</button>
-                <button class="btn-primary" type="submit">Save</button>
+        <div class="card">
+            <div class="card-header">
+                <b>@course.Subject  @course.Title</b>
             </div>
-        </EditForm>
+            <EditForm Model="course" OnValidSubmit="UpdateCourse">
+                <ValidationSummary />
+                <DataAnnotationsValidator />
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Course Id:</b> @course.CourseID</li>
+                    <li class="list-group-item"><b>Subject:</b> <InputText @bind-Value="@course.Subject"></InputText></li>
+                    <li class="list-group-item"><b>Title:</b> <InputText @bind-Value="@course.Title"></InputText></li>
+                    <li class="list-group-item"><b>Description:</b> <InputText @bind-Value="@course.Description"></InputText></li>
+                    <li class="list-group-item"><b>Location:</b> <InputText @bind-Value="@course.Location"></InputText></li>
+                    <li class="list-group-item"><b>Meeting Days:</b> <InputText @bind-Value="@course.MeetingDays"></InputText></li>
+                    <li class="list-group-item"><b>Credit Hours:</b> <InputNumber @bind-Value="@course.CreditHours"></InputNumber></li>
+
+                </ul>
+                <div>
+                    <button class="btn-secondary" type="button" @onclick="ToggleEditMode">Cancel</button>
+                    <button class="btn-primary" type="submit">Save</button>
+                </div>
+            </EditForm>
+        </div>
+
 
     }
 
