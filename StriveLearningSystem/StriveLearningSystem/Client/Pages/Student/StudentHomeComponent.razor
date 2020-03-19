@@ -1,6 +1,18 @@
 ﻿@inject CoursesAgent  _coursesAgent
 @inject CoursesState _coursesState
 
+<style>
+    .coursesGroup {
+        padding: 5px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(325px, 1fr));
+        grid-gap: 1rem;
+    }
+
+    .courseCard {
+    }
+</style>
+
 @if (Courses == null)
 {
     <p>Loading...</p>
@@ -9,42 +21,28 @@ else
 {
     <h1>Student Homepage</h1>
     <h2>Current courses</h2>
-    <ul class="list-group" style="width:50%">
-        <li class="list-group-item active">
+    <div>
+        <div class="coursesGroup">
+            @foreach (var course in Courses)
+            {
+                <a href="/course/@course.CourseID" class="courseCard">
+                    <div class="card">
+                        <div class="card-header">
+                            <b>Course Id - @course.CourseID : @course.Title</b>
+                        </div>
+                        <div class="card-body">
+                            <b>Description:</b> <p>@course.Description</p>
+                        </div>
 
-            <div class="row">
-                <div class="col">
-                    <h5>Course ID</h5>
-                </div>
-                <div class="col">
-                    <h5>Course Description</h5>
-                </div>
-            </div>
-        </li>
-        @foreach (var course in Courses)
-        {
-            <a href="/course/@course.CourseID" class="list-group-item list-group-item-action">
-
-                <div class="row">
-                    <div class="col">
-                        @course.CourseID
                     </div>
-                    <div class="col">
-                        @course.Description
-                    </div>
-                </div>
-            </a>
-        }
-        <a href="/courseRegistration" class="list-group-item active">
+                </a>
+            }
+        </div>
 
-            <div class="row">
-                <div class="col">
-                    Register or Drop Classes
-                </div>
-            </div>
+        <a href="/courseRegistration" >
+            Register or Drop Classes
         </a>
-
-    </ul>
+    </div>
 }
 
 @if (_assignmentsvar == null)
@@ -162,7 +160,7 @@ else
 
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
 
-     
+
 
         _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
         await _coursesState.LoadCourses();

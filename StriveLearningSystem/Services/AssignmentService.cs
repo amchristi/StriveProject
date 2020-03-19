@@ -31,7 +31,7 @@ namespace Services
             List<Assignment> assignments = (from a in _classDbContext.Assignments
                                             join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
                                             where uc.UserID == UserID
-                                            select a).ToList();
+                                            select a).OrderBy(m=>m.DueDate).Take(5).ToList();
             return assignments;
         }
 
