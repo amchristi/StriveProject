@@ -61,6 +61,22 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_assignmentService.GetAssignmentByAssignmentID(AssignmentID));
         }
 
+        //Updates an assignment
+        [Route("api/assignments/{AssignmentID}/update")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateAssignment([FromRoute] int AssignmentID, [FromBody] Assignment assignment)
+        {
+            return Ok(await _assignmentService.UpdateAssignment(assignment));
+        }
+
+        //Gets all the users for a particular class and if they have a submission for that assignment.
+        [Route("api/assignments/{assignmentId}/submissions")]
+        [HttpGet]
+        public IActionResult GetAssignmentSubmissions([FromRoute] int assignmentId)
+        {
+            return Ok(_assignmentService.GetAssignmentSubmissions(assignmentId));
+        }
+
     }
 }
 

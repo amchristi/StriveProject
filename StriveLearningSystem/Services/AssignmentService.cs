@@ -21,8 +21,8 @@ namespace Services
         public Assignment GetAssignmentByAssignmentID(int AssignmentID)
         {
             var assignment = (from c in _classDbContext.Assignments
-                                    where c.AssignmentID == AssignmentID
-                                    select c).FirstOrDefault<Assignment>();
+                              where c.AssignmentID == AssignmentID
+                              select c).FirstOrDefault<Assignment>();
             return assignment;
         }
         //Takes a student user id and will return all assignments associated with that id.
@@ -31,7 +31,7 @@ namespace Services
             List<Assignment> assignments = (from a in _classDbContext.Assignments
                                             join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
                                             where uc.UserID == UserID
-                                            select a).OrderBy(m=>m.DueDate).Take(5).ToList();
+                                            select a).OrderBy(m => m.DueDate).Take(5).ToList();
             return assignments;
         }
 
@@ -57,6 +57,49 @@ namespace Services
             return assignments;
         }
 
+        public async Task<Assignment> UpdateAssignment(Assignment assignment)
+        {
+            _classDbContext.Assignments.Update(assignment);
+            await _classDbContext.SaveChangesAsync();
+
+            return assignment;
+        }
+
+        public List<AssignmentSubmissionListDTO> GetAssignmentSubmissions(int assignmentId)
+        {
+            var users = (from a in _classDbContext.Assignments
+                         join uc in _classDbContext.UserCourses
+                         on a.CourseID equals uc.CourseID
+                         join u in _classDbContext.Users
+                         on uc.UserID equals u.UserID
+                         where a.AssignmentID == assignmentId
+                         select u).ToList();
+
+            var grades = _classDbContext.Grades.Where(m => m.AssignmentID == assignmentId).ToList();
+
+            List<AssignmentSubmissionListDTO> submissions = new List<AssignmentSubmissionListDTO>();
+
+            foreach (var user in users)
+            {
+                AssignmentSubmissionListDTO assignmentSubmission = new AssignmentSubmissionListDTO();
+                assignmentSubmission.StudentId = user.UserID;
+                assignmentSubmission.StudentName = user.FirstName + " " + user.LastName;
+
+                var grade = grades.FirstOrDefault(m => m.UserID == user.UserID);
+                if (grade != null)
+                {
+                    assignmentSubmission.GradeId = grade.GradeID;
+                    assignmentSubmission.IsGraded = grade.IsGraded;
+                    assignmentSubmission.Score = grade.Score.Value;
+                    assignmentSubmission.DateTurnedIn = grade.DateTurnedIn.Value;
+                }
+
+                submissions.Add(assignmentSubmission);
+            }
+
+            return submissions;
+        }
+
         //Returns a list of all the assignments by courseID
         public List<Assignment> GetAssigmentByCourseID(int courseID)
         {
@@ -73,18 +116,18 @@ namespace Services
             Course course = (from c in _classDbContext.Courses
                              where c.CourseID == newAssignment.CourseID
                              select c).FirstOrDefault<Course>();
-            if(course!= null && course.CourseID == newAssignment.CourseID) 
+            if (course != null && course.CourseID == newAssignment.CourseID)
             {
                 var addedAssignment = _classDbContext.Add(newAssignment);
                 await _classDbContext.SaveChangesAsync();
                 return newAssignment;
             }
             else
-            {               
+            {
                 return null;
             }
 
-            
+
 
         }
 

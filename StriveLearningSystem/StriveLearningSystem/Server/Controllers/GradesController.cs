@@ -49,18 +49,26 @@ namespace StriveLearningSystem.Server.Controllers
         // Uploads the file to the server
         [Route("api/grade/fileAssignmentUpload")]
         [HttpPost]
-        public  IActionResult UploadAssignmentFile([FromBody] FileAssignment fileAssignment)
+        public IActionResult UploadAssignmentFile([FromBody] FileAssignment fileAssignment)
         {
             try
             {
 
                 return Ok(_gradeservice.UploadAssignmentFile(fileAssignment));
-                
+
             }
             catch (Exception e)
             {
                 return BadRequest("Error uploading file");
             }
+        }
+
+        // Get grade by id
+        [Route("api/grades/{gradeId}")]
+        [HttpGet]
+        public IActionResult GetGrade([FromRoute] int gradeId)
+        {
+            return Ok(_gradeservice.GetGrade(gradeId));
         }
     }
 }

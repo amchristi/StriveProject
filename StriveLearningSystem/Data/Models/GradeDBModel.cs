@@ -10,7 +10,7 @@ namespace Data.Models
         public int GradeID { get; set; }
         public int AssignmentID { get; set; }
         public int UserID { get; set; }
-        public int Score { get; set; }
+        public int? Score { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? DateTurnedIn { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

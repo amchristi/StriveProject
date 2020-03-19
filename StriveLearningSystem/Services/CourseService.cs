@@ -85,8 +85,8 @@ namespace Services
             foreach (Assignment i in assignmentsToDelete)
             {
                 IEnumerable<GradeDBModel> tempGrades = (from g in _classDbContext.Grades
-                                                 where g.AssignmentID == i.AssignmentID
-                                                 select g).ToList<GradeDBModel>();
+                                                        where g.AssignmentID == i.AssignmentID
+                                                        select g).ToList<GradeDBModel>();
                 //Delete the found grades
                 if (tempGrades != null)
                 {
@@ -132,19 +132,19 @@ namespace Services
             List<CourseInformationDTO> courses = (from c in _classDbContext.Courses
                                                   join u in _classDbContext.Users
                                                   on c.TeacherID equals u.UserID
-                                         select new CourseInformationDTO
-                                         {
-                                             CourseID = c.CourseID,
-                                             CreditHours = c.CreditHours,
-                                             Description = c.Description,
-                                             Location = c.Location,
-                                             MeetingDays = c.MeetingDays,
-                                             Subject = c.MeetingDays,
-                                             TeacherID = c.TeacherID,
-                                             TeacherName = u.FirstName + " " + u.LastName,
-                                             Title = c.Title
+                                                  select new CourseInformationDTO
+                                                  {
+                                                      CourseID = c.CourseID,
+                                                      CreditHours = c.CreditHours,
+                                                      Description = c.Description,
+                                                      Location = c.Location,
+                                                      MeetingDays = c.MeetingDays,
+                                                      Subject = c.MeetingDays,
+                                                      TeacherID = c.TeacherID,
+                                                      TeacherName = u.FirstName + " " + u.LastName,
+                                                      Title = c.Title
 
-                                         }).ToList();
+                                                  }).ToList();
             return courses;
         }
 
@@ -155,6 +155,17 @@ namespace Services
             await _classDbContext.SaveChangesAsync();
             return userCourseRegistration.State.Equals(Microsoft.EntityFrameworkCore.EntityState.Modified);
 
+        }
+
+        public List<User> GetStudentsByCourseId(int courseId)
+        {
+            var students = (from uc in _classDbContext.UserCourses
+                            join u in _classDbContext.Users
+                            on uc.UserID equals u.UserID
+                            where uc.CourseID == courseId
+                            select u).ToList();
+
+            return students;
         }
 
         public async Task<Boolean> dropStudentCourseRegistration(UserCourse userCourseToDrop)

@@ -54,5 +54,10 @@ namespace StriveLearningSystem.Client.Agents
                 return null;
             }
         }
+
+        public async Task<GradeDBModel> GetGrade(int gradeId)
+        {
+            return await _httpClient.GetJsonAsync<GradeDBModel>($"api/grades/{gradeId}");
+        }
     }
 }

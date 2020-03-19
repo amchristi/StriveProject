@@ -182,7 +182,12 @@ namespace StriveLearningSystem.Server.Controllers
             }
         }
 
-        
+        [Route("api/courses/{courseId}/students")]
+        [HttpGet]
+        public IActionResult GetStudentsByCourse([FromRoute] int courseId)
+        {
+            return Ok(_courseService.GetStudentsByCourseId(courseId));
+        }
     }
 }
 

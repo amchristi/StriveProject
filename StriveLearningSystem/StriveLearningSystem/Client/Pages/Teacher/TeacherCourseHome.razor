@@ -124,24 +124,28 @@ else
         {
             @foreach (var assignment in _allAssignments)
             {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">
-                            @assignment.AssignmentTitle
-                        </div>
-                        <div class="col">
-                            @assignment.AssignmentDescription
-                        </div>
-                        <div class="col">
-                            @assignment.DueDate
-                        </div>
+                <a href="/teacher/assignments/@assignment.AssignmentID">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                @assignment.AssignmentTitle
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentDescription
+                            </div>
+                            <div class="col">
+                                @assignment.DueDate
+                            </div>
 
-                    </div>
-                </li>
+                        </div>
+                    </li>
+                </a>
             }
         }
     </ul>
 }
+
+<StudentsInCourseListComponent CourseId="courseId"></StudentsInCourseListComponent>
 
 @code
 {

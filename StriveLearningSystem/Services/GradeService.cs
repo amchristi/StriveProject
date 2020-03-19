@@ -77,6 +77,9 @@ namespace Services
             
         }
 
-
+        public GradeDBModel GetGrade(int gradeId)
+        {
+            return _classDbContext.Grades.FirstOrDefault(m => m.GradeID == gradeId);
+        }
     }
 }

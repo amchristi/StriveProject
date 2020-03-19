@@ -1,0 +1,64 @@
+﻿@inject AssignmentAgent _assignmentAgent
+
+@if (pageState == 0)
+{
+    <span>Loading...</span>
+}
+else
+{
+    <div class="card">
+        <div class="card-header space-between">
+            <div>
+                <h2>Assignment Submissions</h2>
+            </div>            
+        </div>
+        <div class="card-body">
+
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Turned In</th>
+                        <th scope="col">Grade</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in submissions)
+                    {
+                        <tr>
+                            <td>@student.StudentName</td>
+                            <td>@(student.DateTurnedIn.HasValue ? "Yes" : "No" )</td>
+                            <td>@(student.IsGraded ? @student.Score.ToString() : "")</td>
+                            <td><a href="teacher/submission/@student.GradeId">View Submission</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    
+}
+
+@code {
+
+    [Parameter] public int AssignmentId { get; set; }
+    int pageState = 0;
+
+    public List<AssignmentSubmissionListDTO> submissions { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        pageState = 0;
+        await GetSubmissions();
+        pageState = 1;
+    }
+
+    private async Task GetSubmissions()
+    {
+        submissions = await _assignmentAgent.GetAssignmentSubmissions(AssignmentId);
+    }
+
+
+}

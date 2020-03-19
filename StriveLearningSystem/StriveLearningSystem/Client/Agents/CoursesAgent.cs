@@ -173,6 +173,11 @@ namespace StriveLearningSystem.Client.Agents
 
         }
 
+        public async Task<List<User>> GetStudentsByCourseId(int courseId)
+        {
+            return await _httpClient.GetJsonAsync<List<User>>($"api/courses/{courseId}/students");
+        }
+
 
 
     }
