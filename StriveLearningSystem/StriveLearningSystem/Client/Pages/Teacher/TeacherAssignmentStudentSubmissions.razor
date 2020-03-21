@@ -10,7 +10,7 @@ else
         <div class="card-header space-between">
             <div>
                 <h2>Assignment Submissions</h2>
-            </div>            
+            </div>
         </div>
         <div class="card-body">
 
@@ -28,9 +28,14 @@ else
                     {
                         <tr>
                             <td>@student.StudentName</td>
-                            <td>@(student.DateTurnedIn.HasValue ? "Yes" : "No" )</td>
+                            <td>@(student.DateTurnedIn.HasValue ? "Yes" : "No")</td>
                             <td>@(student.IsGraded ? @student.Score.ToString() : "")</td>
-                            <td><a href="teacher/submission/@student.GradeId">View Submission</a></td>
+                            <td>
+                                @if (student.DateTurnedIn.HasValue)
+                                {
+                                    <a href="teacher/submission/@student.GradeId">View Submission</a>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -38,7 +43,7 @@ else
 
         </div>
     </div>
-    
+
 }
 
 @code {
