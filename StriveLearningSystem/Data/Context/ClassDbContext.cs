@@ -18,7 +18,7 @@ namespace Data.Context
                 .HasKey(o => new { o.CourseID, o.UserID });
         }
         public DbSet<Assignment> Assignments { get; set; }
-        public DbSet<GradeDBModel> Grades { get; set; }
+        public DbSet<Grade> Grades { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
 
       

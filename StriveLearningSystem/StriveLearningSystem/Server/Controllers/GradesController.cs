@@ -30,14 +30,12 @@ namespace StriveLearningSystem.Server.Controllers
 
         [Route("api/grade/submitassignment")]
         [HttpPost]
-        public async Task<IActionResult> SubmitAssignment([FromBody] TempGrade grade)
+        public async Task<IActionResult> SubmitAssignment([FromBody] Grade grade)
         {
             try
             {
-                if (!grade.IsFile)
-                    return Ok(await _gradeservice.SubmitAssignmentText(grade));
-                else
-                    return Ok(await _gradeservice.SubmitAssignmentFile(grade));
+
+                return Ok(await _gradeservice.SubmitAssignment(grade));
 
             }
             catch (Exception e)
@@ -45,6 +43,8 @@ namespace StriveLearningSystem.Server.Controllers
                 return BadRequest("Error inserting Course");
             }
         }
+
+
 
         // Uploads the file to the server
         [Route("api/grade/fileAssignmentUpload")]
@@ -69,6 +69,22 @@ namespace StriveLearningSystem.Server.Controllers
         public IActionResult GetGrade([FromRoute] int gradeId)
         {
             return Ok(_gradeservice.GetGrade(gradeId));
+        }
+
+        // Get grade off assignmentID and the userID
+        [Route("api/grade/checkForGrade")]
+        [HttpPost]
+        public IActionResult CheckForGrade([FromBody] Grade grade)
+        {
+            try
+            {
+                return Ok(_gradeservice.CheckForGrade(grade));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error Getting Grade");
+            }
         }
     }
 }

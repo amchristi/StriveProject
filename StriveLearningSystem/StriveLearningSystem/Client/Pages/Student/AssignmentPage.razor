@@ -5,32 +5,40 @@
 @inject IToaster Toaster
 @using BlazorInputFile
 <h1>Assignment</h1>
-@if (_assignment == null)
+@if (assignment == null)
 {
-    <h3> Assignment is Null</h3>
+    <h3> Loading....</h3>
 }
 else
 {
 
-    <h2><b>Title: </b>@_assignment.AssignmentTitle   <b>CourseID: </b> @_assignment.CourseID  </h2>
-    <h4> <b>Assignment Type: </b>@_assignment.AssignmentType.</h4>
-    <h4> <b> Assignment Description: </b> @_assignment.AssignmentDescription</h4>
-    <h4> <b> Assignment Due Date: </b>@_assignment.DueDate.</h4>
-    <h4> <b> Total Points: </b>@_assignment.TotalPossible<b></b></h4>
+    <h2><b>Title: </b>@assignment.AssignmentTitle   <b>CourseID: </b> @assignment.CourseID  </h2>
+    <h4> <b>Assignment Type: </b>@assignment.AssignmentType.</h4>
+    <h4> <b> Assignment Description: </b> @assignment.AssignmentDescription</h4>
+    <h4> <b> Assignment Due Date: </b>@assignment.DueDate.</h4>
+    <h4> <b> Total Points: </b>@assignment.TotalPossible<b></b></h4>
 
-    if (grade != null)
+    if (grade.GradeID != 0)
     {
-        <h3> Assignment Submited </h3>
+        <h3> <b>Assignment Submitted</b> </h3>
+        if (grade.IsFile)
+        {
+            <h4><b>FileName: </b> @grade.FileURl.Split("\\")[2] </h4>
+        }
+        else
+        {
+            <h4><b>Submission: </b> @grade.TextSubmission </h4>
+        }
     }
     else
     {
 
-        <EditForm Model="_grade" OnValidSubmit="update">
+        <EditForm Model="grade" OnValidSubmit="update">
             <ValidationSummary />
             <DataAnnotationsValidator />
-            @if (!_assignment.IsFile)
+            @if (!assignment.IsFile)
             {
-                <div> Please Enter Text:  <InputTextArea @bind-Value="_grade.TextSubmission" rows="20" cols="50">Please enter text</InputTextArea></div>
+                <div> Please Enter Text:  <InputTextArea @bind-Value="grade.TextSubmission" rows="20" cols="50">Please enter text</InputTextArea></div>
             }
             else
             {
@@ -46,28 +54,38 @@ else
 
     [Parameter]
     public int AssignmentID { set; get; }
-    public Assignment _assignment;
-    public TempGrade _grade = new TempGrade();
-    public TempGrade grade;
+    public Assignment assignment;
+    public Grade grade;
     IFileListEntry file;
     public int userId;
 
 
     protected override async Task OnInitializedAsync()
     {
+        
 
         userId = await _identity.GetId();
-        _assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+
+        assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+
+        //Check if the assignment has already been submitted
+        grade = new Grade();
+        grade.AssignmentID = AssignmentID;
+        grade.UserID = userId;
+        grade = await _gradeagent.CheckForGrade(grade);
+
+
 
     }
 
     private async Task update()
     {
         Console.WriteLine("OnValidSubmit");
-        _grade.AssignmentID = _assignment.AssignmentID;
-        _grade.UserID = userId;
-        _grade.IsFile = _assignment.IsFile;
-        grade = await _gradeagent.SubmitAssignment(_grade);
+        grade.AssignmentID = assignment.AssignmentID;
+        grade.UserID = userId;
+        grade.IsFile = assignment.IsFile;
+        grade.DateTurnedIn = DateTime.Now;
+        grade = await _gradeagent.SubmitAssignment(grade);
     }
 
     async Task HandleFileSelected(IFileListEntry[] files)
@@ -82,17 +100,17 @@ else
         FileToUpload = await _gradeagent.UploadAssignmentFile(FileToUpload);
 
 
-        if(FileToUpload.URL != null)
+        if (FileToUpload.URL != null)
         {
             Toaster.Success("Assignment successfully uploaded");
-            _grade.FileURl = FileToUpload.URL;
+            grade.FileURl = FileToUpload.URL;
 
         }
         else
         {
             Toaster.Error("Assignment upload error");
         }
-        
+
     }
 
     public async Task<byte[]> ReadFully(System.IO.Stream input)

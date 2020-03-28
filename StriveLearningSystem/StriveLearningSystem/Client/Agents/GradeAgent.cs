@@ -28,11 +28,11 @@ namespace StriveLearningSystem.Client.Agents
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<TempGrade> SubmitAssignment(TempGrade tempGrade)
+        public async Task<Grade> SubmitAssignment(Grade tempGrade)
         {
             try
             {
-                var grade = await _httpClient.PostJsonAsync<TempGrade>("api/grade/submitassignment", tempGrade);
+                var grade = await _httpClient.PostJsonAsync<Grade>("api/grade/submitassignment", tempGrade);
                 return grade;
             }
             catch (Exception e)
@@ -55,9 +55,24 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
-        public async Task<GradeDBModel> GetGrade(int gradeId)
+        public async Task<Grade> GetGrade(int gradeId)
         {
-            return await _httpClient.GetJsonAsync<GradeDBModel>($"api/grades/{gradeId}");
+            return await _httpClient.GetJsonAsync<Grade>($"api/grades/{gradeId}");
         }
+
+        //Gets the grade from the assignmentID and the userId
+        public async Task<Grade> CheckForGrade(Grade grade)
+        {
+            try
+            {
+                var outGrade = await _httpClient.PostJsonAsync<Grade>("api/grade/checkForGrade", grade);
+                return outGrade;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
     }
 }
