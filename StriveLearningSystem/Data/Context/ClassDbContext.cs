@@ -21,6 +21,8 @@ namespace Data.Context
         public DbSet<Grade> Grades { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
 
+      
+
     }
 }
 

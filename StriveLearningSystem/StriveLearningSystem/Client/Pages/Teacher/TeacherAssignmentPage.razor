@@ -1,0 +1,105 @@
+﻿@page "/teacher/assignments/{AssignmentID:int}"
+@inject AssignmentAgent _assignmentAgent
+@inject IToaster Toaster
+
+
+@if (pageState == 0)
+{
+    <span>Loading...</span>
+}
+else
+{
+    <a href="/teacher/courses/@assignment.CourseID">Back to Course</a>
+    <h1>Assignment Page</h1>
+    <div class="card">
+        <div class="card-header space-between">
+            <div>
+                <h2>@assignment.AssignmentTitle</h2>
+            </div>
+            <button class="btn-primary" type="button" @onclick="ToggleEditMode">Edit</button>
+        </div>
+        <div class="card-body">
+            @if (!editMode)
+            {
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Course Id:</b> @assignment.CourseID</li>
+                    <li class="list-group-item"><b>Title:</b> @assignment.AssignmentTitle</li>
+                    <li class="list-group-item"><b>Assignment Type:</b> @assignment.AssignmentType</li>
+                    <li class="list-group-item"><b>Assignment Description:</b> @assignment.AssignmentDescription</li>
+                    <li class="list-group-item"><b>Assignment Due Date:</b> @assignment.DueDate</li>
+                    <li class="list-group-item"><b>Total Points:</b> @assignment.TotalPossible</li>
+                    <li class="list-group-item"><b>Submission is File:</b> @assignment.IsFile</li>
+                </ul>
+            }
+            else
+            {
+                <EditForm Model="tempAssignment" OnValidSubmit="SaveChanges">
+                    <ValidationSummary />
+                    <DataAnnotationsValidator />
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Course Id:</b> @assignment.CourseID</li>
+                        <li class="list-group-item"><b>Title:</b> <InputText @bind-Value="@tempAssignment.AssignmentTitle"></InputText></li>
+                        <li class="list-group-item"><b>Assignment Type:</b> <InputText @bind-Value="@tempAssignment.AssignmentType"></InputText></li>
+                        <li class="list-group-item"><b>Assignment Description:</b> <InputText @bind-Value="@tempAssignment.AssignmentDescription"></InputText></li>
+                        <li class="list-group-item"><b>Assignment Due Date:</b> <InputDate @bind-Value="@tempAssignment.DueDate"></InputDate></li>
+                        <li class="list-group-item"><b>Total Points:</b> <InputNumber @bind-Value="@tempAssignment.TotalPossible"></InputNumber></li>
+                        <li class="list-group-item"><b>Submission is File:</b> <InputCheckbox @bind-Value="@tempAssignment.IsFile"></InputCheckbox></li>
+                    </ul>
+                    <button class="btn-secondary" type="button" @onclick="ToggleEditMode">Cancel</button>
+                    <button class="btn-primary" type="submit">Save</button>
+                </EditForm>
+            }
+        </div>
+    </div>
+
+    <TeacherAssignmentStudentSubmissions AssignmentId="AssignmentID"></TeacherAssignmentStudentSubmissions>
+}
+
+@code {
+
+    [Parameter]
+    public int AssignmentID { set; get; }
+    public Assignment assignment;
+    public Assignment tempAssignment;
+    bool editMode = false;
+    int pageState = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        pageState = 0;
+        await GetAssignment();
+        pageState = 1;
+    }
+
+    private async Task GetAssignment()
+    {
+        assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+    }
+    //private async Task update()
+    //{
+    //    Console.WriteLine("OnValidSubmit");
+    //    _grade.AssignmentID = _assignment.AssignmentID;
+    //    _grade.UserID = userId;
+    //    _grade.IsFile = _assignment.IsFile;
+    //    grade = await _gradeagent.SubmitAssignment(_grade);
+    //}
+
+    private void ToggleEditMode()
+    {
+        if (!editMode)
+        {
+            tempAssignment = ObjectCopyUtil.CloneObject(assignment) as Assignment;
+        }
+
+        editMode = !editMode;
+    }
+
+    private async Task SaveChanges()
+    {
+        assignment = await _assignmentAgent.SaveAssignment(tempAssignment);
+        Toaster.Success("Assignment successfully updated");
+        editMode = !editMode;
+    }
+
+}

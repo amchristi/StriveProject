@@ -45,20 +45,22 @@ else
         {
             @foreach (var assignment in _allAssignments)
             {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">
-                            @assignment.AssignmentTitle
-                        </div>
-                        <div class="col">
-                            @assignment.AssignmentDescription
-                        </div>
-                        <div class="col">
-                            @assignment.DueDate
-                        </div>
+                <a href="/student/assignmentpage/@assignment.AssignmentID">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                @assignment.AssignmentTitle
+                            </div>
+                            <div class="col">
+                                @assignment.AssignmentDescription
+                            </div>
+                            <div class="col">
+                                @assignment.DueDate
+                            </div>
 
-                    </div>
-                </li>
+                        </div>
+                    </li>
+                </a>
             }
         }
     </ul>
@@ -71,6 +73,7 @@ else
     private Course _course;
     private Assignment _assignment;
     private List<Assignment> _allAssignments;
+
 
     protected override async Task OnInitializedAsync()
     {

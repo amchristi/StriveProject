@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Shared\StriveLearningSystem.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AssignmentFiles\" />
+  </ItemGroup>
+
 </Project>

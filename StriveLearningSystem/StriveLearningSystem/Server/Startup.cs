@@ -36,6 +36,8 @@ namespace StriveLearningSystem.Server
             services.AddScoped<UserService>();
             services.AddScoped<CourseService>();
             services.AddScoped<AssignmentService>();
+            services.AddScoped<GradeService>();
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

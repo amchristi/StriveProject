@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Data.DTOs;
 using Data.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -41,6 +42,7 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
+       
         //Returns a list of all the assignments for the course
         public async Task<List<Assignment>> GetAssigmentByCourseID(int courseID)
         {
@@ -55,5 +57,36 @@ namespace StriveLearningSystem.Client.Agents
             }
         }
 
+        public async Task<Assignment> GetAssignment(int AssignmentID)
+        {
+            try
+            {
+                var assignment = await _httpClient.GetJsonAsync<Assignment>($"api/assignment/{AssignmentID}/getassignment");
+                return assignment;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Assignment> SaveAssignment(Assignment assignment)
+        {
+            return await _httpClient.PutJsonAsync<Assignment>($"api/assignments/{assignment.AssignmentID}/update", assignment);
+        }
+
+
+        public async Task<List<AssignmentSubmissionListDTO>> GetAssignmentSubmissions(int AssignmentID)
+        {
+            try
+            {
+                var submissions = await _httpClient.GetJsonAsync<List<AssignmentSubmissionListDTO>>($"api/assignments/{AssignmentID}/submissions");
+                return submissions;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -1,0 +1,61 @@
+﻿@inject CoursesAgent _courseAgent
+
+@if (pageState == 0)
+{
+    <span>Loading...</span>
+}
+else
+{
+    <div class="card">
+        <div class="card-header space-between">
+            <div>
+                <h2>Students Registered for this Course</h2>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Student Email</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in students)
+                    {
+                        <tr>
+                            <td>@(student.FirstName + " " + student.LastName)</td>
+                            <td>@student.Email</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+}
+
+@code {
+
+    [Parameter] public int CourseId { get; set; }
+    int pageState = 0;
+
+    public List<User> students { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        pageState = 0;
+        await GetStudents();
+        pageState = 1;
+    }
+
+    private async Task GetStudents()
+    {
+        students = await _courseAgent.GetStudentsByCourseId(CourseId);
+    }
+
+
+}

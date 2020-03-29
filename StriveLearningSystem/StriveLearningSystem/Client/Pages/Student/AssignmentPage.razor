@@ -1,0 +1,129 @@
+﻿@page "/student/assignmentpage/{AssignmentID:int}"
+@inject AssignmentAgent _assignmentAgent
+@inject GradeAgent _gradeagent
+@inject IdentityAgent _identity
+@inject IToaster Toaster
+@using BlazorInputFile
+<h1>Assignment</h1>
+@if (assignment == null)
+{
+    <h3> Loading....</h3>
+}
+else
+{
+
+    <h2><b>Title: </b>@assignment.AssignmentTitle   <b>CourseID: </b> @assignment.CourseID  </h2>
+    <h4> <b>Assignment Type: </b>@assignment.AssignmentType.</h4>
+    <h4> <b> Assignment Description: </b> @assignment.AssignmentDescription</h4>
+    <h4> <b> Assignment Due Date: </b>@assignment.DueDate.</h4>
+    <h4> <b> Total Points: </b>@assignment.TotalPossible<b></b></h4>
+
+    if (grade.GradeID != 0)
+    {
+        <h3> <b>Assignment Submitted</b> </h3>
+        if (grade.IsFile)
+        {
+            <h4><b>FileName: </b> @grade.FileURl.Split("\\")[2] </h4>
+        }
+        else
+        {
+            <h4><b>Submission: </b> @grade.TextSubmission </h4>
+        }
+    }
+    else
+    {
+
+        <EditForm Model="grade" OnValidSubmit="update">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+            @if (!assignment.IsFile)
+            {
+                <div> Please Enter Text:  <InputTextArea @bind-Value="grade.TextSubmission" rows="20" cols="50">Please enter text</InputTextArea></div>
+            }
+            else
+            {
+                <div>Please Upload File  <InputFile OnChange="HandleFileSelected"></InputFile></div>
+            }
+            <div><button class="btn-primary" type="submit">Save</button></div>
+        </EditForm>
+    }
+
+}
+
+@code {
+
+    [Parameter]
+    public int AssignmentID { set; get; }
+    public Assignment assignment;
+    public Grade grade;
+    IFileListEntry file;
+    public int userId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+
+        userId = await _identity.GetId();
+
+        assignment = await _assignmentAgent.GetAssignment(AssignmentID);
+
+        //Check if the assignment has already been submitted
+        grade = new Grade();
+        grade.AssignmentID = AssignmentID;
+        grade.UserID = userId;
+        grade = await _gradeagent.CheckForGrade(grade);
+
+
+
+    }
+
+    private async Task update()
+    {
+        Console.WriteLine("OnValidSubmit");
+        grade.AssignmentID = assignment.AssignmentID;
+        grade.UserID = userId;
+        grade.IsFile = assignment.IsFile;
+        grade.DateTurnedIn = DateTime.Now;
+        grade = await _gradeagent.SubmitAssignment(grade);
+    }
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        // Here is where the file will be uploaded to the server and a url will be given as a response
+        var gradeFile = await ReadFully(file.Data);
+
+        FileAssignment FileToUpload = new FileAssignment();
+        FileToUpload.Data = gradeFile;
+        FileToUpload.Name = userId + AssignmentID.ToString() + file.Name;
+        FileToUpload = await _gradeagent.UploadAssignmentFile(FileToUpload);
+
+
+        if (FileToUpload.URL != null)
+        {
+            Toaster.Success("Assignment successfully uploaded");
+            grade.FileURl = FileToUpload.URL;
+
+        }
+        else
+        {
+            Toaster.Error("Assignment upload error");
+        }
+
+    }
+
+    public async Task<byte[]> ReadFully(System.IO.Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+        {
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+        }
+    }
+}
