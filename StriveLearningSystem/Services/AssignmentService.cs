@@ -28,9 +28,16 @@ namespace Services
         //Takes a student user id and will return all assignments associated with that id.
         public List<Assignment> GetStudentAssignmentsByUserId(int UserID)
         {
+            var gradedAssignments = (from g in _classDbContext.Grades
+                                     join a in _classDbContext.Assignments on g.AssignmentID equals a.AssignmentID
+                                     where (g.UserID == UserID)
+                                     select a.AssignmentID).AsQueryable();
+
             List<Assignment> assignments = (from a in _classDbContext.Assignments
                                             join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
-                                            where uc.UserID == UserID
+                                            where (uc.UserID == UserID)
+                                            //&& (a.AssignmentID not in (select g.AssignmentID from g in _classDbContext.Grades))
+                                            && (!gradedAssignments.Contains(a.AssignmentID))
                                             select a).OrderBy(m => m.DueDate).Take(5).ToList();
             return assignments;
         }
