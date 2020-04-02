@@ -53,14 +53,24 @@ namespace Services
         }
 
         //Return a sorted list of ungraded assignments by teacher 
-        public List<Assignment> GetTeacherUngradedAssignmentsByUserId(int UserID)
+        public List<AssignmentsToGradeDTO> GetTeacherUngradedAssignmentsByUserId(int UserID)
         {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
+            List<AssignmentsToGradeDTO> assignments = (from a in _classDbContext.Assignments
                                             join c in _classDbContext.Courses on a.CourseID equals c.CourseID
                                             join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
                                             where c.TeacherID == UserID && !g.IsGraded
                                             orderby a.DueDate
-                                            select a).ToList();
+                                            select new AssignmentsToGradeDTO
+                                            {
+                                                AssignmentName = a.AssignmentTitle,
+                                                CourseId = c.CourseID,
+                                                CourseName = c.Title,
+                                                DateTurnedIn = g.DateTurnedIn.Value,
+                                                DueDate = a.DueDate,
+                                                StudentId = g.UserID,
+                                                StudentName = "",
+                                                GradeId = g.GradeID
+                                            }).ToList();
             return assignments;
         }
 
@@ -97,7 +107,7 @@ namespace Services
                 {
                     assignmentSubmission.GradeId = grade.GradeID;
                     assignmentSubmission.IsGraded = grade.IsGraded;
-                    assignmentSubmission.Score = grade.Score.Value;
+                    assignmentSubmission.Score = grade.Score.HasValue ? grade.Score.Value : (int?)null;
                     assignmentSubmission.DateTurnedIn = grade.DateTurnedIn.Value;
                 }
 
