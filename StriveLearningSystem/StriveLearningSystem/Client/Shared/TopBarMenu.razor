@@ -9,7 +9,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("I am initialized");
         name = "";
         name = await _identityAgent.GetName();
     }

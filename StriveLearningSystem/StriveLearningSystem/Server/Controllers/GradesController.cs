@@ -71,6 +71,14 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_gradeservice.GetGrade(gradeId));
         }
 
+        // Get grade by id
+        [Route("api/grades/{gradeId}")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateGrade([FromRoute] int gradeId, [FromBody] Grade grade)
+        {
+            return Ok(await _gradeservice.UpdateGrade(grade));
+        }
+
         // Get grade off assignmentID and the userID
         [Route("api/grade/checkForGrade")]
         [HttpPost]

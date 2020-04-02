@@ -56,21 +56,21 @@ namespace Services
         public List<AssignmentsToGradeDTO> GetTeacherUngradedAssignmentsByUserId(int UserID)
         {
             List<AssignmentsToGradeDTO> assignments = (from a in _classDbContext.Assignments
-                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
-                                            join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
-                                            where c.TeacherID == UserID && !g.IsGraded
-                                            orderby a.DueDate
-                                            select new AssignmentsToGradeDTO
-                                            {
-                                                AssignmentName = a.AssignmentTitle,
-                                                CourseId = c.CourseID,
-                                                CourseName = c.Title,
-                                                DateTurnedIn = g.DateTurnedIn.Value,
-                                                DueDate = a.DueDate,
-                                                StudentId = g.UserID,
-                                                StudentName = "",
-                                                GradeId = g.GradeID
-                                            }).ToList();
+                                                       join c in _classDbContext.Courses on a.CourseID equals c.CourseID
+                                                       join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
+                                                       where c.TeacherID == UserID && !g.IsGraded
+                                                       orderby a.DueDate
+                                                       select new AssignmentsToGradeDTO
+                                                       {
+                                                           AssignmentName = a.AssignmentTitle,
+                                                           CourseId = c.CourseID,
+                                                           CourseName = c.Title,
+                                                           DateTurnedIn = g.DateTurnedIn.Value,
+                                                           DueDate = a.DueDate,
+                                                           StudentId = g.UserID,
+                                                           StudentName = "",
+                                                           GradeId = g.GradeID
+                                                       }).ToList();
             return assignments;
         }
 
@@ -162,6 +162,49 @@ namespace Services
                                   Start = a.DueDate,
                                   Title = a.AssignmentTitle
                               }).ToList();
+
+                var classesDays = (from uc in _classDbContext.UserCourses
+                                   join c in _classDbContext.Courses
+                                    on uc.CourseID equals c.CourseID
+                                   where uc.UserID == userId
+                                   select c).ToList();
+
+                classesDays.ForEach(c =>
+                {
+                    CalendarEvent calendarEvent = new CalendarEvent();
+                    calendarEvent.AllDay = true;
+                    calendarEvent.Title = c.Title;
+                    calendarEvent.DaysOfWeek = new List<int>();
+
+                    char[] days = c.MeetingDays.ToUpper().ToCharArray();
+
+                    if (days.Contains('M'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(1);
+                    }
+                    if (days.Contains('T'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(2);
+                    }
+                    if (days.Contains('W'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(3);
+                    }
+                    if (days.Contains('R'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(4);
+                    }
+                    if (days.Contains('F'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(5);
+                    }
+
+                    calendarEvent.ClassNames = new string[] {"courseCalendarEvent"};
+
+                    events.Add(calendarEvent);
+
+                });
+
                 return events;
             }
             else
@@ -177,6 +220,48 @@ namespace Services
                                   Start = a.DueDate,
                                   Title = a.AssignmentTitle
                               }).ToList();
+
+
+                var classesDays = (from  c in _classDbContext.Courses
+                                   where c.TeacherID == userId
+                                   select c).ToList();
+
+                classesDays.ForEach(c =>
+                {
+                    CalendarEvent calendarEvent = new CalendarEvent();
+                    calendarEvent.AllDay = true;
+                    calendarEvent.Title = c.Title;
+                    calendarEvent.DaysOfWeek = new List<int>();
+
+                    char[] days = c.MeetingDays.ToUpper().ToCharArray();
+
+                    if (days.Contains('M'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(1);
+                    }
+                    if (days.Contains('T'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(2);
+                    }
+                    if (days.Contains('W'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(3);
+                    }
+                    if (days.Contains('R'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(4);
+                    }
+                    if (days.Contains('F'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(5);
+                    }
+
+                    calendarEvent.ClassNames = new string[] { "courseCalendarEvent" };
+
+                    events.Add(calendarEvent);
+
+                });
+
                 return events;
             }
 

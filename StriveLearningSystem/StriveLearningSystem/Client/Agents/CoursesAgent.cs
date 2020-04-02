@@ -44,6 +44,7 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/teacherCourses");
             return courses;
         }
+
         public async Task<List<Assignment>> GetAssignmentsByTeacher()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();

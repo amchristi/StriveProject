@@ -1,6 +1,7 @@
 ﻿@page "/teacher/submission/{GradeId:int}"
 @inject AssignmentAgent _assignmentAgent
 @inject GradeAgent _gradeAgent
+@inject UserAgent _userAgent
 @inject IToaster Toaster
 
 
@@ -11,63 +12,96 @@
 else
 {
     <a href="/teacher/assignments/@grade.AssignmentID">Back to Assignment</a>
-    <h1>Assignment Page</h1>
-    <div class="card">
-        <div class="card-header">
-            <h2>@assignment.AssignmentTitle</h2>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>Course Id:</b> @assignment.CourseID</li>
-                <li class="list-group-item"><b>Title:</b> @assignment.AssignmentTitle</li>
-                <li class="list-group-item"><b>Assignment Type:</b> @assignment.AssignmentType</li>
-                <li class="list-group-item"><b>Assignment Description:</b> @assignment.AssignmentDescription</li>
-                <li class="list-group-item"><b>Assignment Due Date:</b> @assignment.DueDate</li>
-                <li class="list-group-item"><b>Total Points:</b> @assignment.TotalPossible</li>
-                <li class="list-group-item"><b>Submission is File:</b> @assignment.IsFile</li>
-            </ul>
-        </div>
-    </div>
+    @*<h1>Submission Page</h1>*@
+    @*<div class="card">
+            <div class="card-header">
+                <h2>@assignment.AssignmentTitle</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Course Id:</b> @assignment.CourseID</li>
+                    <li class="list-group-item"><b>Title:</b> @assignment.AssignmentTitle</li>
+                    <li class="list-group-item"><b>Assignment Type:</b> @assignment.AssignmentType</li>
+                    <li class="list-group-item"><b>Assignment Description:</b> @assignment.AssignmentDescription</li>
+                    <li class="list-group-item"><b>Assignment Due Date:</b> @assignment.DueDate</li>
+                    <li class="list-group-item"><b>Total Points:</b> @assignment.TotalPossible</li>
+                    <li class="list-group-item"><b>Submission is File:</b> @assignment.IsFile</li>
+                </ul>
+            </div>
+        </div>*@
 
     <div class="card">
         <div class="card-header">
             <h2>Submission</h2>
         </div>
         <div class="card-body">
-            <div>@grade.GradeID</div>
-            <div>@grade.UserID</div>
-            <div>@grade.TextSubmission</div>
-            <div>@grade.FileURl</div>
-            <div>@grade.IsFile</div>
-            <div>@grade.Score</div>
+            <div><b>Student: </b>@student.FirstName @student.LastName</div>
+            @if (grade.IsFile)
+            {
+                <div><b>File URL Submission: </b> @grade.FileURl</div>
+            }
+            else
+            {
+                <div><b>Text Submission: </b>@grade.TextSubmission</div>
+            }
+            <div>
+                <b>Grade: </b>
+                @if (!editGrade && grade.Score.HasValue)
+                {
+                    <span @onclick="@(() => editGrade = true)">@grade.Score</span>
+                }
+                else
+                {
+                    <input type=number @bind-value="grade.Score" />
+                }
+                <span>/@assignment.TotalPossible</span>
+            </div>
+            <div>
+                <button @onclick="GradeAssignment" class="btn-primary">Submit Grade</button>
+            </div>
         </div>
     </div>
-        }
+}
 
-        @code {
+@code {
 
     [Parameter]
-        public int GradeId { set; get; }
-        public Assignment assignment;
-        public Grade grade;
-        int pageState = 0;
+    public int GradeId { set; get; }
+    public Assignment assignment;
+    public Grade grade;
+    int pageState = 0;
+    bool editGrade = false;
+    User student;
 
+    protected override async Task OnInitializedAsync()
+    {
+        pageState = 0;
+        await GetGrade();
+        await GetAssignment();
+        await GetStudent();
+        pageState = 1;
+    }
 
-        protected override async Task OnInitializedAsync()
-        {
-            pageState = 0;
-            await GetGrade();
-            await GetAssignment();
-            pageState = 1;
-        }
+    private async Task GetAssignment()
+    {
+        assignment = await _assignmentAgent.GetAssignment(grade.AssignmentID);
+    }
 
-        private async Task GetAssignment()
-        {
-            assignment = await _assignmentAgent.GetAssignment(grade.AssignmentID);
-        }
+    private async Task GetGrade()
+    {
+        grade = await _gradeAgent.GetGrade(GradeId);
+    }
 
-        private async Task GetGrade()
-        {
-            grade = await _gradeAgent.GetGrade(GradeId);
-        }
-        }
+    private async Task GetStudent()
+    {
+        student = await _userAgent.GetUser(grade.UserID);
+    }
+
+    private async Task GradeAssignment()
+    {
+        grade.IsGraded = true;
+        grade = await _gradeAgent.GradeAssignment(grade);
+        Toaster.Success("Grade Successfully Submitted");
+        editGrade = false;
+    }
+}
