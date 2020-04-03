@@ -29,6 +29,11 @@ else
         {
             <h4><b>Submission: </b> @grade.TextSubmission </h4>
         }
+        @if (grade.IsGraded)
+        {
+            <div><b>Grade: </b>@grade.Score/@assignment.TotalPossible</div>
+        }
+
     }
     else
     {
@@ -62,7 +67,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        
+
 
         userId = await _identity.GetId();
 

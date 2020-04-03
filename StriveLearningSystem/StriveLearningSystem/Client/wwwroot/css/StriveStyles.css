@@ -128,3 +128,6 @@ html, body, app {
   display: flex;
   flex-direction: row;
   justify-content: space-between; }
+
+a.courseCalendarEvent {
+  background-color: #ff8433; }
