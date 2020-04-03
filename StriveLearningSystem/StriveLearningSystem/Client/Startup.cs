@@ -22,6 +22,7 @@ namespace StriveLearningSystem.Client
             services.AddScoped<UserAgent>();
             services.AddScoped<AssignmentAgent>();
             services.AddScoped<GradeAgent>();
+            services.AddScoped<PaymentAgent>();
 
             services.AddSingleton<CoursesState>();
 
