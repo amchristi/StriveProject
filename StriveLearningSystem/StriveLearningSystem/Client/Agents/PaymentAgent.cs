@@ -3,6 +3,7 @@ using Data.DTOs;
 using Data.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+
 using StriveLearningSystem.Client.Identity;
 using StriveLearningSystem.Shared.Models.Identity;
 using System;
@@ -14,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+
 
 namespace StriveLearningSystem.Client.Agents
 {
@@ -31,14 +33,13 @@ namespace StriveLearningSystem.Client.Agents
             
         }
         
-        public async void PayForCourses()
+        public async Task<bool> PayForCourses(CreditCard Card)
         {
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "sk_test_LS4k44JWY54o4tWqb8uLLh5H00LuIW9et8");
-            
+                       
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
 
-            // TODO Check if customer is in stripe
+            // Check if customer is in stripe
             var requestCustomer = new HttpRequestMessage()
             {
                 Method = new HttpMethod("GET"),                
@@ -51,13 +52,8 @@ namespace StriveLearningSystem.Client.Agents
             var CustomerResponseStatusCode = CustomerResponse.StatusCode;
             var CustomerResponseBody = await CustomerResponse.Content.ReadAsStringAsync();
 
-            //if(CustomerResponseStatusCode == "NotFound")
-            ///Console.WriteLine(CustomerResponse);
-            //Console.WriteLine(CustomerResponseStatusCode);
-            //Console.WriteLine(CustomerResponseBody);
-
-
-            // TODO Create new customer for stripe
+            
+            // Create new customer for stripe
             if (CustomerResponseStatusCode != System.Net.HttpStatusCode.OK) 
             {
                 
@@ -69,19 +65,13 @@ namespace StriveLearningSystem.Client.Agents
                     RequestUri = new Uri(("https://api.stripe.com/v1/customers"))
                 };
 
-                Console.WriteLine("After request");
                 CreateCustomerRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "sk_test_LS4k44JWY54o4tWqb8uLLh5H00LuIW9et8");
-                Console.WriteLine("After add auth");
 
-                
-                Console.WriteLine("After getuser");
                 //Load message
                 var CustomerKeyValues = new List<KeyValuePair<string, string>>();
                 CustomerKeyValues.Add(new KeyValuePair<string, string>("id", userId));
                 CustomerKeyValues.Add(new KeyValuePair<string, string>("email", user.Email));
                 CustomerKeyValues.Add(new KeyValuePair<string, string>("name", user.FirstName + " " + user.LastName));
-
-                Console.WriteLine("Past the key value pairs");
 
 
                 // Encode and add the content
@@ -90,25 +80,18 @@ namespace StriveLearningSystem.Client.Agents
                 new System.Net.Http.Headers.MediaTypeHeaderValue(
                     "application/x-www-form-urlencoded");
 
-                Console.WriteLine("Past the encoding content");
 
                 var CreateCustomerResponse = await _httpClient.SendAsync(CreateCustomerRequest);
                 var CreateCustomerResponseStatusCode = CreateCustomerResponse.StatusCode;
                 var CreateCustomerResponseBody = await CreateCustomerResponse.Content.ReadAsStringAsync();
 
-                Console.WriteLine(CreateCustomerResponse);
+             /*   Console.WriteLine(CreateCustomerResponse);
                 Console.WriteLine(CreateCustomerResponseStatusCode);
-                Console.WriteLine(CreateCustomerResponseBody);
-
-
+                Console.WriteLine(CreateCustomerResponseBody);*/
+                
             }
-            
-         
-            
-
-
-            // Check if there is payment if not add payment
-
+ 
+            // Add the card
             var requestAddCard = new HttpRequestMessage() 
             { 
                 Method = new HttpMethod("POST"),
@@ -120,10 +103,10 @@ namespace StriveLearningSystem.Client.Agents
             //Load message
             var keyValues = new List<KeyValuePair<string, string>>();
             keyValues.Add(new KeyValuePair<string, string>("source[object]", "card"));
-            keyValues.Add(new KeyValuePair<string, string>("source[number]", "4242424242424242"));
-            keyValues.Add(new KeyValuePair<string, string>("source[exp_month]", "12"));
-            keyValues.Add(new KeyValuePair<string, string>("source[exp_year]", "2020"));
-            keyValues.Add(new KeyValuePair<string, string>("source[cvc]", "123"));
+            keyValues.Add(new KeyValuePair<string, string>("source[number]", Card.CardNumber));
+            keyValues.Add(new KeyValuePair<string, string>("source[exp_month]", Card.ExpMonth));
+            keyValues.Add(new KeyValuePair<string, string>("source[exp_year]", Card.ExpYear));
+            keyValues.Add(new KeyValuePair<string, string>("source[cvc]", Card.cvc));
             // Encode and add the content
             requestAddCard.Content = new FormUrlEncodedContent(keyValues);
             
@@ -135,13 +118,17 @@ namespace StriveLearningSystem.Client.Agents
             var responseStatusCode = response.StatusCode;
             var responseBody = await response.Content.ReadAsStringAsync();
            
-            Console.WriteLine(response);
-            Console.WriteLine(responseStatusCode);
+            //Console.WriteLine(response);
+            //Console.WriteLine(responseStatusCode);
             Console.WriteLine(responseBody);
-            //var cardID = JObject.Parse(responseBody);
 
+            // There should be a better way to pull out this value.
+            int startOfId = responseBody.IndexOf("id");
+            string cardID = responseBody.Substring(startOfId + 6, 29);
 
+            Console.WriteLine(cardID);
 
+            
 
            // Add the charge
            var requestAddCharge = new HttpRequestMessage()
@@ -156,7 +143,7 @@ namespace StriveLearningSystem.Client.Agents
             keyValues = new List<KeyValuePair<string, string>>();
             keyValues.Add(new KeyValuePair<string, string>("amount", "2000"));
             keyValues.Add(new KeyValuePair<string, string>("currency", "usd"));
-            keyValues.Add(new KeyValuePair<string, string>("source", "card_1GSES7I3VLMyuepn8RqWFmMj"));
+            keyValues.Add(new KeyValuePair<string, string>("source", cardID));
             keyValues.Add(new KeyValuePair<string, string>("description", "My first test charge"));
             keyValues.Add(new KeyValuePair<string, string>("customer", userId));
             // Encode and add the content
@@ -173,6 +160,7 @@ namespace StriveLearningSystem.Client.Agents
             Console.WriteLine(responseStatusCode);
             Console.WriteLine(responseBody);
 
+            return true;
         }
     }
 }

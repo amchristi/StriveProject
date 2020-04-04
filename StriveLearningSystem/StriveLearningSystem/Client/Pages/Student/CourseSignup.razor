@@ -2,7 +2,7 @@
 @inject CoursesAgent _coursesAgent
 @inject CoursesState  _coursesState
 @inject UserAgent _userAgent
-@inject PaymentAgent  _paymentAgent
+
 @inject IToaster Toaster
 
 @if (_coursesvar == null)
@@ -14,7 +14,7 @@ else
 
     <h1>Course Management</h1>
     <h2>Courses</h2>
-    <button type="button" class="btn btn-primary" @onclick="@Payment">Pay for courses</button>
+    <a href="/Payment"><button type="button" class="btn btn-primary">Pay for courses</button></a>
     <!--Course list-->
     <ul class="list-group" style="width:100%">
         <li class="list-group-item active">
@@ -137,10 +137,7 @@ else
         _registeredCourses = _coursesState.Courses;
         this.StateHasChanged();
     }
-    private void Payment()
-    {
-       _paymentAgent.PayForCourses();
-    }
+
 
 
 }
