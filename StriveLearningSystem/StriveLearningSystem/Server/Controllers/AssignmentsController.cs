@@ -23,20 +23,31 @@ namespace StriveLearningSystem.Server.Controllers
         private readonly AssignmentService _assignmentService;
         private readonly UserService _userService;
         private readonly CourseService _courseService;
+        private readonly AnnouncementService _announcementService;
 
-        public AssignmentsController(UserService userService, CourseService courseService, AssignmentService assignmentService)
+        public AssignmentsController(UserService userService, CourseService courseService, AssignmentService assignmentService, AnnouncementService announcementService)
         {
             _userService = userService;
             _courseService = courseService;
             _assignmentService = assignmentService;
+            _announcementService = announcementService;
         }
 
         [Route("api/assignments/addAssignment")]
         [HttpPost]
-        public async Task<IActionResult> AddCourse([FromBody] Assignment newAssignment)
+        public async Task<IActionResult> AddAssignment([FromBody] Assignment newAssignment)
         {
             try
             {
+                Announcement announcement = new Announcement
+                {
+                    AnnouncementID = 0,
+                    Body = "New Assignment!",
+                    CourseID = newAssignment.CourseID,
+                    DateCreated = DateTime.Now,
+                    Title = newAssignment.AssignmentTitle
+                };
+                announcement = await _announcementService.CreateAnnouncement(announcement);
                 return Ok(await _assignmentService.AddNewAssignment(newAssignment));
             }
             catch (Exception e)
