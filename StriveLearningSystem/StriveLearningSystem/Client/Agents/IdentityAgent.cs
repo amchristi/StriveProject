@@ -44,7 +44,6 @@ namespace StriveLearningSystem.Client.Agents
 
             await _localStorage.SetItemAsync("authToken", loginResult.Token);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.Token);
-            Console.WriteLine("heyo");
             ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginResult.Token);
 
             
@@ -54,8 +53,8 @@ namespace StriveLearningSystem.Client.Agents
 
         public async Task Logout()
         {
+            ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut(); 
             await _localStorage.RemoveItemAsync("authToken");
-            ((StriveAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
 

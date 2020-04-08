@@ -28,9 +28,16 @@ namespace Services
         //Takes a student user id and will return all assignments associated with that id.
         public List<Assignment> GetStudentAssignmentsByUserId(int UserID)
         {
+            var gradedAssignments = (from g in _classDbContext.Grades
+                                     join a in _classDbContext.Assignments on g.AssignmentID equals a.AssignmentID
+                                     where (g.UserID == UserID)
+                                     select a.AssignmentID).AsQueryable();
+
             List<Assignment> assignments = (from a in _classDbContext.Assignments
                                             join uc in _classDbContext.UserCourses on a.CourseID equals uc.CourseID
-                                            where uc.UserID == UserID
+                                            where (uc.UserID == UserID)
+                                            //&& (a.AssignmentID not in (select g.AssignmentID from g in _classDbContext.Grades))
+                                            && (!gradedAssignments.Contains(a.AssignmentID))
                                             select a).OrderBy(m => m.DueDate).Take(5).ToList();
             return assignments;
         }
@@ -46,14 +53,24 @@ namespace Services
         }
 
         //Return a sorted list of ungraded assignments by teacher 
-        public List<Assignment> GetTeacherUngradedAssignmentsByUserId(int UserID)
+        public List<AssignmentsToGradeDTO> GetTeacherUngradedAssignmentsByUserId(int UserID)
         {
-            List<Assignment> assignments = (from a in _classDbContext.Assignments
-                                            join c in _classDbContext.Courses on a.CourseID equals c.CourseID
-                                            join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
-                                            where c.TeacherID == UserID && !g.IsGraded
-                                            orderby a.DueDate
-                                            select a).ToList();
+            List<AssignmentsToGradeDTO> assignments = (from a in _classDbContext.Assignments
+                                                       join c in _classDbContext.Courses on a.CourseID equals c.CourseID
+                                                       join g in _classDbContext.Grades on a.AssignmentID equals g.AssignmentID
+                                                       where c.TeacherID == UserID && !g.IsGraded
+                                                       orderby a.DueDate
+                                                       select new AssignmentsToGradeDTO
+                                                       {
+                                                           AssignmentName = a.AssignmentTitle,
+                                                           CourseId = c.CourseID,
+                                                           CourseName = c.Title,
+                                                           DateTurnedIn = g.DateTurnedIn.Value,
+                                                           DueDate = a.DueDate,
+                                                           StudentId = g.UserID,
+                                                           StudentName = "",
+                                                           GradeId = g.GradeID
+                                                       }).ToList();
             return assignments;
         }
 
@@ -90,7 +107,7 @@ namespace Services
                 {
                     assignmentSubmission.GradeId = grade.GradeID;
                     assignmentSubmission.IsGraded = grade.IsGraded;
-                    assignmentSubmission.Score = grade.Score.Value;
+                    assignmentSubmission.Score = grade.Score.HasValue ? grade.Score.Value : (int?)null;
                     assignmentSubmission.DateTurnedIn = grade.DateTurnedIn.Value;
                 }
 
@@ -145,6 +162,49 @@ namespace Services
                                   Start = a.DueDate,
                                   Title = a.AssignmentTitle
                               }).ToList();
+
+                var classesDays = (from uc in _classDbContext.UserCourses
+                                   join c in _classDbContext.Courses
+                                    on uc.CourseID equals c.CourseID
+                                   where uc.UserID == userId
+                                   select c).ToList();
+
+                classesDays.ForEach(c =>
+                {
+                    CalendarEvent calendarEvent = new CalendarEvent();
+                    calendarEvent.AllDay = true;
+                    calendarEvent.Title = c.Title;
+                    calendarEvent.DaysOfWeek = new List<int>();
+
+                    char[] days = c.MeetingDays.ToUpper().ToCharArray();
+
+                    if (days.Contains('M'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(1);
+                    }
+                    if (days.Contains('T'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(2);
+                    }
+                    if (days.Contains('W'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(3);
+                    }
+                    if (days.Contains('R'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(4);
+                    }
+                    if (days.Contains('F'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(5);
+                    }
+
+                    calendarEvent.ClassNames = new string[] {"courseCalendarEvent"};
+
+                    events.Add(calendarEvent);
+
+                });
+
                 return events;
             }
             else
@@ -160,6 +220,48 @@ namespace Services
                                   Start = a.DueDate,
                                   Title = a.AssignmentTitle
                               }).ToList();
+
+
+                var classesDays = (from  c in _classDbContext.Courses
+                                   where c.TeacherID == userId
+                                   select c).ToList();
+
+                classesDays.ForEach(c =>
+                {
+                    CalendarEvent calendarEvent = new CalendarEvent();
+                    calendarEvent.AllDay = true;
+                    calendarEvent.Title = c.Title;
+                    calendarEvent.DaysOfWeek = new List<int>();
+
+                    char[] days = c.MeetingDays.ToUpper().ToCharArray();
+
+                    if (days.Contains('M'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(1);
+                    }
+                    if (days.Contains('T'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(2);
+                    }
+                    if (days.Contains('W'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(3);
+                    }
+                    if (days.Contains('R'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(4);
+                    }
+                    if (days.Contains('F'))
+                    {
+                        calendarEvent.DaysOfWeek.Add(5);
+                    }
+
+                    calendarEvent.ClassNames = new string[] { "courseCalendarEvent" };
+
+                    events.Add(calendarEvent);
+
+                });
+
                 return events;
             }
 

@@ -21,10 +21,15 @@ namespace StriveLearningSystem.Server.Controllers
     public class GradesController : Controller
     {
         public readonly GradeService _gradeservice;
+        public readonly AnnouncementService _announcementService;
+        public readonly CourseService _courseService;
+        
 
-        public GradesController(GradeService gradeservice)
+        public GradesController(GradeService gradeservice, AnnouncementService announcementService, CourseService courseService)
         {
             _gradeservice = gradeservice;
+            _announcementService = announcementService;
+            _courseService = courseService;
         }
 
 
@@ -69,6 +74,25 @@ namespace StriveLearningSystem.Server.Controllers
         public IActionResult GetGrade([FromRoute] int gradeId)
         {
             return Ok(_gradeservice.GetGrade(gradeId));
+        }
+
+        // Get grade by id
+        [Route("api/grades/{gradeId}")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateGrade([FromRoute] int gradeId, [FromBody] Grade grade)
+        {
+            var course = _courseService.GetCourseByAssignmentId(grade.AssignmentID);
+
+            Announcement announcement = new Announcement
+            {
+                AnnouncementID = 0,
+                Body = course.Title + " Your recently graded assignment: " + grade.Score,
+                DateCreated = DateTime.Now,
+                Title = "Grade Posted!",
+                CourseID = course.CourseID
+            };
+            announcement = await _announcementService.CreateAnnouncement(announcement);
+            return Ok(await _gradeservice.UpdateGrade(grade));
         }
 
         // Get grade off assignmentID and the userID

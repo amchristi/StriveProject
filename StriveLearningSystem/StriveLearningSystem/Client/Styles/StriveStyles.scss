@@ -187,3 +187,7 @@ html, body, app {
     flex-direction:row;
     justify-content:space-between;
 }
+
+a.courseCalendarEvent {
+    background-color: scale-color($secondaryColor, $lightness:20);
+}

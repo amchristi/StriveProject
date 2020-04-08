@@ -63,5 +63,13 @@ namespace Services
         {
             return _classDbContext.Grades.FirstOrDefault(m => m.GradeID == gradeId);
         }
+
+        public async Task<Grade> UpdateGrade(Grade grade)
+        {
+            _classDbContext.Grades.Update(grade);
+            await _classDbContext.SaveChangesAsync();
+
+            return grade;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Data.DTOs;
 using Data.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -43,6 +44,7 @@ namespace StriveLearningSystem.Client.Agents
             var courses = await _httpClient.GetJsonAsync<List<Course>>($"api/users/{userId}/teacherCourses");
             return courses;
         }
+
         public async Task<List<Assignment>> GetAssignmentsByTeacher()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
@@ -52,11 +54,11 @@ namespace StriveLearningSystem.Client.Agents
         }
 
         //Returns a sorted list of ungraded assignments by teacher.
-        public async Task<List<Assignment>> GetAssignmentsUngradedByTeacher()
+        public async Task<List<AssignmentsToGradeDTO>> GetAssignmentsUngradedByTeacher()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier).Value;
-            var assignments = await _httpClient.GetJsonAsync<List<Assignment>>($"api/users/{userId}/teacherUngradedAssignments");
+            var assignments = await _httpClient.GetJsonAsync<List<AssignmentsToGradeDTO>>($"api/users/{userId}/teacherUngradedAssignments");
             return assignments;
         }
 

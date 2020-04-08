@@ -1,0 +1,108 @@
+﻿@page "/Payment"
+@inject CoursesAgent _coursesAgent
+@inject CoursesState  _coursesState
+@inject UserAgent _userAgent
+@inject PaymentAgent  _paymentAgent
+@inject IToaster Toaster
+
+@if (_coursesvar == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <h1>Payment</h1>
+    <h2>Courses</h2>
+    <div class="creditCardForm">
+        <div class="heading">
+            <h1>Confirm Purchase</h1>
+        </div>
+        <div class="payment">
+            <form>
+                <div class="form-group owner">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" @bind="Card.CardHolderName">
+                </div>
+
+                <div class="form-group" id="card-number-field">
+                    <label for="creditCard">Credit Card Number</label>
+                    <input class="form-control" @bind="Card.CardNumber" id="cardNumber" type="text" inputmode="numeric">
+                </div>
+
+                <div class="form-group CVV">
+                    <label for="cvv">CVV</label>
+                    <input type="text" @bind="Card.cvc" class="form-control" id="cvv">
+                </div>
+
+                <div class="form-group" id="expiration-date">
+                    <label>Expiration Date</label>
+                    <select @bind="Card.ExpMonth">
+                        <option value="">Select Month</option>
+                        <option value="01">January</option>
+                        <option value="02">February </option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select @bind="Card.ExpYear">
+                        <option value="2020"> 2020</option>
+                        <option value="2021"> 2021</option>
+                        <option value="2022"> 2020</option>
+                        <option value="2023"> 2021</option>
+                    </select>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="SubmitPayment">Submit</button>
+
+
+}
+
+@code
+{
+    private List<CourseInformationDTO> _coursesvar;
+    private List<Course> _registeredCourses;
+    private List<User> _teachers;
+    private CreditCard Card;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _coursesvar = await _coursesAgent.getCourses();
+        await _coursesState.LoadCourses();
+
+        _registeredCourses = _coursesState.Courses;
+
+        Card = new CreditCard();
+        Card.CardNumber = "4242424242424242";
+        Card.cvc = "123";
+        Card.ExpMonth = "12";
+        Card.ExpYear = "2020";
+    }
+
+    public async void SubmitPayment()
+    {
+        Console.WriteLine(Card.CardNumber);
+        var paymentComplete = await _paymentAgent.PayForCourses(Card);
+        if (paymentComplete)
+        {
+            Toaster.Success("Succesfully Paid");
+        }
+        else
+        {
+            Toaster.Error("Unsucessful Payment");
+        }
+
+    }
+
+}

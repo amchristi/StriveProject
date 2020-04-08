@@ -21,7 +21,6 @@ namespace StriveLearningSystem.Client.Agents
         private readonly HttpClient _httpClient;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-
         public GradeAgent(HttpClient httpClient, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
@@ -72,6 +71,12 @@ namespace StriveLearningSystem.Client.Agents
             {
                 return null;
             }
+        }
+
+        public async Task<Grade> GradeAssignment(Grade grade)
+        {
+            return await _httpClient.PutJsonAsync<Grade>($"api/grades/{grade.GradeID}", grade);
+
         }
 
     }

@@ -23,6 +23,16 @@ namespace Services
                              select c).FirstOrDefault<Course>();
             return course;
         }
+
+        public Course GetCourseByAssignmentId(int assignmentId)
+        {
+            Course course = (from c in _classDbContext.Courses
+                             join a in _classDbContext.Assignments on c.CourseID equals a.CourseID
+                             where a.AssignmentID == assignmentId
+                             select c).FirstOrDefault<Course>();
+            return course;
+        }
+
         // Takes a user id that is a student and returns a list of courses 
         public List<Course> GetCoursesByStudentID(int inputUserID)
         {
