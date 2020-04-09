@@ -24,13 +24,15 @@ namespace StriveLearningSystem.Server.Controllers
         private readonly UserService _userService;
         private readonly CourseService _courseService;
         private readonly AnnouncementService _announcementService;
+       
 
-        public AssignmentsController(UserService userService, CourseService courseService, AssignmentService assignmentService, AnnouncementService announcementService)
+        public AssignmentsController(UserService userService, CourseService courseService, AssignmentService assignmentService, AnnouncementService announcementService )
         {
             _userService = userService;
             _courseService = courseService;
             _assignmentService = assignmentService;
             _announcementService = announcementService;
+      
         }
 
         [Route("api/assignments/addAssignment")]
@@ -72,6 +74,7 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_assignmentService.GetAssignmentByAssignmentID(AssignmentID));
         }
 
+      
         //Updates an assignment
         [Route("api/assignments/{AssignmentID}/update")]
         [HttpPut]

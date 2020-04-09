@@ -6,12 +6,14 @@ using StriveLearningSystem.Client.Identity;
 using StriveLearningSystem.Shared.Models.Identity;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StriveLearningSystem.Client.Agents
@@ -56,7 +58,8 @@ namespace StriveLearningSystem.Client.Agents
 
         public async Task<Grade> GetGrade(int gradeId)
         {
-            return await _httpClient.GetJsonAsync<Grade>($"api/grades/{gradeId}");
+            Console.WriteLine("gradeid " + gradeId);
+            return await _httpClient.GetJsonAsync<Grade>($"api/grades/{gradeId}/getgrades");
         }
 
         //Gets the grade from the assignmentID and the userId
@@ -78,6 +81,16 @@ namespace StriveLearningSystem.Client.Agents
             return await _httpClient.PutJsonAsync<Grade>($"api/grades/{grade.GradeID}", grade);
 
         }
+
+        public async Task<HttpResponseMessage> Download(String name)
+        {
+       
+            name = Path.GetFileName(name);
+            Console.WriteLine(name);
+            return await _httpClient.GetJsonAsync<HttpResponseMessage>($"api/grades/{name}/grades");
+
+        }
+
 
     }
 }
