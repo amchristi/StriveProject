@@ -38,7 +38,7 @@ else
             <div><b>Student: </b>@student.FirstName @student.LastName</div>
             @if (grade.IsFile)
             {
-                <div><b>File URL Submission: </b> @grade.FileURl      <button @onclick="Download" class="btn-primary">Download</button></div>
+                <div><b>File URL Submission: </b> @grade.FileURl      <a href="api/grades/@grade.FileURL/grqdes">download</a></div>
             }
             else
             {
