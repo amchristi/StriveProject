@@ -122,9 +122,9 @@ namespace StriveLearningSystem.Server.Controllers
             try
             {
 
-                var filePath = "\\AssignmentFiles\\"+name;
-                //return File(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
-                 return PhysicalFile(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
+               // var filePath = "\\AssignmentFiles\\"+name;
+                  //return File(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
+                 return PhysicalFile(name, MimeTypes.GetMimeType(name), Path.GetFileName(name));
                // return Ok(_fileService.GetFile("1736yoda.jpg"));
 
 
