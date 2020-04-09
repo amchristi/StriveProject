@@ -75,6 +75,7 @@ namespace StriveLearningSystem.Client.Agents
             return await _httpClient.PutJsonAsync<Assignment>($"api/assignments/{assignment.AssignmentID}/update", assignment);
         }
 
+        
 
         public async Task<List<AssignmentSubmissionListDTO>> GetAssignmentSubmissions(int AssignmentID)
         {

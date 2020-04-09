@@ -58,7 +58,11 @@ namespace Services
 
             return retGrade;
         }
+        public bool Download(String dowload)
+        {
 
+            return false;
+        }
         public Grade GetGrade(int gradeId)
         {
             return _classDbContext.Grades.FirstOrDefault(m => m.GradeID == gradeId);

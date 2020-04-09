@@ -14,6 +14,9 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using MimeKit;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace StriveLearningSystem.Server.Controllers
 {
@@ -23,13 +26,14 @@ namespace StriveLearningSystem.Server.Controllers
         public readonly GradeService _gradeservice;
         public readonly AnnouncementService _announcementService;
         public readonly CourseService _courseService;
-        
+       // public readonly FileService _fileService;
 
-        public GradesController(GradeService gradeservice, AnnouncementService announcementService, CourseService courseService)
+        public GradesController(GradeService gradeservice, AnnouncementService announcementService, CourseService courseService/*, FileService fileService*/)
         {
             _gradeservice = gradeservice;
             _announcementService = announcementService;
             _courseService = courseService;
+            //_fileService = fileService;
         }
 
 
@@ -69,7 +73,7 @@ namespace StriveLearningSystem.Server.Controllers
         }
 
         // Get grade by id
-        [Route("api/grades/{gradeId}")]
+        [Route("api/grades/{gradeId}/getgrades")]
         [HttpGet]
         public IActionResult GetGrade([FromRoute] int gradeId)
         {
@@ -103,6 +107,26 @@ namespace StriveLearningSystem.Server.Controllers
             try
             {
                 return Ok(_gradeservice.CheckForGrade(grade));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error Getting Grade");
+            }
+        }
+
+        [Route("api/grades/{name}/grades")]
+        [HttpGet]
+        public IActionResult Download([FromRoute] String name)
+        {
+            try
+            {
+
+                var filePath = "\\AssignmentFiles\\"+name;
+                //return File(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
+                 return PhysicalFile(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
+               // return Ok(_fileService.GetFile("1736yoda.jpg"));
+
 
             }
             catch (Exception e)

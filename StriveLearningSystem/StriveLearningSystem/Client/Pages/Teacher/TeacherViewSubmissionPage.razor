@@ -38,7 +38,7 @@ else
             <div><b>Student: </b>@student.FirstName @student.LastName</div>
             @if (grade.IsFile)
             {
-                <div><b>File URL Submission: </b> @grade.FileURl</div>
+                <div><b>File URL Submission: </b> @grade.FileURl      <button @onclick="Download" class="btn-primary">Download</button></div>
             }
             else
             {
@@ -82,6 +82,11 @@ else
         pageState = 1;
     }
 
+    private async Task Download()
+    {
+        var message =  await _gradeAgent.Download(grade.FileURl);
+        //Toaster.Error(message.ToString());
+    }
     private async Task GetAssignment()
     {
         assignment = await _assignmentAgent.GetAssignment(grade.AssignmentID);
