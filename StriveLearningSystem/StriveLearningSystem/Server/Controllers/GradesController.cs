@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using MimeKit;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace StriveLearningSystem.Server.Controllers
 {
@@ -26,13 +27,15 @@ namespace StriveLearningSystem.Server.Controllers
         public readonly GradeService _gradeservice;
         public readonly AnnouncementService _announcementService;
         public readonly CourseService _courseService;
-       // public readonly FileService _fileService;
+        public readonly IWebHostEnvironment _webHostEnvironment;
+        // public readonly FileService _fileService;
 
-        public GradesController(GradeService gradeservice, AnnouncementService announcementService, CourseService courseService/*, FileService fileService*/)
+        public GradesController(GradeService gradeservice, AnnouncementService announcementService, CourseService courseService, IWebHostEnvironment webHostEnvironment/*, FileService fileService*/)
         {
             _gradeservice = gradeservice;
             _announcementService = announcementService;
             _courseService = courseService;
+            _webHostEnvironment = webHostEnvironment;
             //_fileService = fileService;
         }
 
@@ -115,19 +118,15 @@ namespace StriveLearningSystem.Server.Controllers
             }
         }
 
-        [Route("api/grades/{name}/grades")]
+        [Route("api/AssignmentFiles/{name}")]
         [HttpGet]
-        public IActionResult Download([FromRoute] String name)
+        public IActionResult Download([FromRoute] string name)
         {
             try
             {
-
-               // var filePath = "\\AssignmentFiles\\"+name;
-                  //return File(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
-                 return PhysicalFile(name, MimeTypes.GetMimeType(name), Path.GetFileName(name));
-               // return Ok(_fileService.GetFile("1736yoda.jpg"));
-
-
+                var rootPath = _webHostEnvironment.ContentRootPath;
+                var filePath = rootPath + "\\AssignmentFiles\\" + name;
+                return PhysicalFile(filePath, MimeTypes.GetMimeType(name), Path.GetFileName(filePath));
             }
             catch (Exception e)
             {

@@ -82,15 +82,6 @@ namespace StriveLearningSystem.Client.Agents
 
         }
 
-        public async Task<HttpResponseMessage> Download(String name)
-        {
-       
-            name = Path.GetFileName(name);
-            Console.WriteLine(name);
-            return await _httpClient.GetJsonAsync<HttpResponseMessage>($"api/grades/{name}/grades");
-
-        }
-
 
     }
 }
