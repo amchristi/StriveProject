@@ -10,7 +10,8 @@ namespace Data.Models
         public string CardNumber { get; set; }
         public string ExpMonth{ get; set; }
         public string ExpYear { get; set; }
-        public string cvc { get; set; }
+        public string cvc { get; set; } 
+        public int amount { get; set; }
 
     }
 }

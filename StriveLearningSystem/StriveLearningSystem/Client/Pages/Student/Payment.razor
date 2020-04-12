@@ -35,6 +35,7 @@ else
                     <input type="text" @bind="Card.cvc" class="form-control" id="cvv">
                 </div>
 
+
                 <div class="form-group" id="expiration-date">
                     <label>Expiration Date</label>
                     <select @bind="Card.ExpMonth">
@@ -59,7 +60,10 @@ else
                         <option value="2023"> 2021</option>
                     </select>
                 </div>
-                
+                <div class="form-group Amount">
+                    <label for="amount">Amount$</label>
+                    <input @bind="amount" class="form-control" id="amount" inputmode="decimal">
+                </div>
             </form>
         </div>
     </div>
@@ -74,6 +78,7 @@ else
     private List<Course> _registeredCourses;
     private List<User> _teachers;
     private CreditCard Card;
+    private string amount;
 
 
     protected override async Task OnInitializedAsync()
@@ -92,6 +97,15 @@ else
 
     public async void SubmitPayment()
     {
+        try
+        {
+            Card.amount = int.Parse(amount)*100;
+        }
+        catch
+        {
+            Toaster.Error("Invalid amount");
+            return;
+        }
         Console.WriteLine(Card.CardNumber);
         var paymentComplete = await _paymentAgent.PayForCourses(Card);
         if (paymentComplete)

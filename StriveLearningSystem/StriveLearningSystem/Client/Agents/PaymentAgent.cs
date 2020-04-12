@@ -141,7 +141,7 @@ namespace StriveLearningSystem.Client.Agents
             requestAddCharge.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "sk_test_LS4k44JWY54o4tWqb8uLLh5H00LuIW9et8");
             //Load message
             keyValues = new List<KeyValuePair<string, string>>();
-            keyValues.Add(new KeyValuePair<string, string>("amount", "2000"));
+            keyValues.Add(new KeyValuePair<string, string>("amount", Card.amount.ToString()));
             keyValues.Add(new KeyValuePair<string, string>("currency", "usd"));
             keyValues.Add(new KeyValuePair<string, string>("source", cardID));
             keyValues.Add(new KeyValuePair<string, string>("description", "My first test charge"));
@@ -154,6 +154,17 @@ namespace StriveLearningSystem.Client.Agents
                 "application/x-www-form-urlencoded");
 
             response = await _httpClient.SendAsync(requestAddCharge);
+            //Should have a the loop finish while the call is being made.
+            /*for(int i = 0; i < 1000; i++)
+            {
+                for(int j = 0; j < 1000; j++)
+                {
+                    for(int k = 0; k < 1000; k++)
+                    {
+
+                    }
+                }
+            }*/
             responseStatusCode = response.StatusCode;
             responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(response);
