@@ -149,7 +149,7 @@ namespace Services
                                                       Description = c.Description,
                                                       Location = c.Location,
                                                       MeetingDays = c.MeetingDays,
-                                                      Subject = c.MeetingDays,
+                                                      Subject = c.Subject,
                                                       TeacherID = c.TeacherID,
                                                       TeacherName = u.FirstName + " " + u.LastName,
                                                       Title = c.Title
