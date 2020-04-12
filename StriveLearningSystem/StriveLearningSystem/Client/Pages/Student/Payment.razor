@@ -13,8 +13,7 @@ else
 {
 
     <h1>Payment</h1>
-    <h2>Courses</h2>
-    <div class="creditCardForm">
+    <div class="creditCardForm" style="width:50%">
         <div class="heading">
             <h1>Confirm Purchase</h1>
         </div>
@@ -60,6 +59,7 @@ else
                         <option value="2023"> 2021</option>
                     </select>
                 </div>
+                <h3>Total amount to pay for all classes @TotalCost</h3>
                 <div class="form-group Amount">
                     <label for="amount">Amount$</label>
                     <input @bind="amount" class="form-control" id="amount" inputmode="decimal">
@@ -75,18 +75,29 @@ else
 @code
 {
     private List<CourseInformationDTO> _coursesvar;
-    private List<Course> _registeredCourses;
-    private List<User> _teachers;
+    private List<Course> registeredCourses;
+    private List<User> teachers;
     private CreditCard Card;
     private string amount;
+    int TotalCost;
 
 
     protected override async Task OnInitializedAsync()
     {
         _coursesvar = await _coursesAgent.getCourses();
         await _coursesState.LoadCourses();
+        
 
-        _registeredCourses = _coursesState.Courses;
+        registeredCourses = _coursesState.Courses;
+
+        int TotalCreditHours = 0;
+        foreach(var i in registeredCourses)
+        {
+            TotalCreditHours += i.CreditHours;
+        }
+        int CostPerCreditHour = 200;
+        TotalCost = TotalCreditHours * CostPerCreditHour;
+        amount = TotalCost.ToString();
 
         Card = new CreditCard();
         Card.CardNumber = "4242424242424242";
