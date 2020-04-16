@@ -1,0 +1,22 @@
+﻿
+@inject IJSRuntime JSRuntime
+
+<canvas @ref="chartRef" id="barchart"></canvas>
+
+@code {
+    [Parameter] public List<int> Data { get; set; }
+    [Parameter] public List<string> Labels { get; set; }
+
+    ElementReference chartRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine(Data.First());
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<object>("createNewChart", chartRef, Data, Labels);
+        }
+
+    }
+
+}

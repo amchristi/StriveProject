@@ -188,6 +188,8 @@ namespace StriveLearningSystem.Server.Controllers
         {
             return Ok(_courseService.GetStudentsByCourseId(courseId));
         }
+
+        
     }
 }
 
