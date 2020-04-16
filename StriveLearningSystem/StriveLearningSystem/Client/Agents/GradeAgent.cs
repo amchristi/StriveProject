@@ -82,6 +82,11 @@ namespace StriveLearningSystem.Client.Agents
 
         }
 
+        public async Task<List<int>> GetGradesByAssignment(int assignmentId)
+
+        {
+            return await _httpClient.GetJsonAsync<List<int>>($"api/assignments/{assignmentId}/grades");
+        }
 
     }
 }

@@ -91,6 +91,13 @@ namespace StriveLearningSystem.Server.Controllers
             return Ok(_assignmentService.GetAssignmentSubmissions(assignmentId));
         }
 
+        [Route("api/assignments/{assignmentId}/grades")]
+        [HttpGet]
+        public IActionResult GetGradesByAssignment([FromRoute] int assignmentId)
+        {
+            return Ok(_assignmentService.GetGradesByAssignmentId(assignmentId));
+        }
+
     }
 }
 

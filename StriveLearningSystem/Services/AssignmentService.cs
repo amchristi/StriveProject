@@ -266,5 +266,17 @@ namespace Services
             }
 
         }
+
+        public List<int> GetGradesByAssignmentId(int assignmentId)
+        {
+            var grades = (from assignment in _classDbContext.Assignments
+                          join grade in _classDbContext.Grades
+                          on assignment.AssignmentID equals grade.AssignmentID
+                          where assignment.AssignmentID == assignmentId
+                          && grade.Score.HasValue
+                          select grade.Score.Value).ToList();
+
+            return grades;
+        }
     }
 }
