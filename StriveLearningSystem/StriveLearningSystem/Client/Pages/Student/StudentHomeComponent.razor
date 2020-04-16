@@ -39,7 +39,7 @@ else
             }
         </div>
 
-        <a href="/courseRegistration" >
+        <a href="/courseRegistration">
             Register or Drop Classes
         </a>
     </div>
@@ -121,26 +121,30 @@ else
                 </div>
             </div>
         </li>
-        @foreach (var announcement in _announcementsvar)
+        @foreach (var grp in _announcementsvar
+        .OrderBy(_announcementsvar => _announcementsvar.DateCreated)
+        .GroupBy(_announcementsvar => string.Format("{0:yyyyMMddHH}", _announcementsvar.DateCreated)))
         {
-            <a class="list-group-item list-group-item-action">
+            @foreach (var announcement in grp)
+            {
+                <a class="list-group-item list-group-item-action">
 
-                <div class="row">
-                    <div class="col">
-                        @announcement.AnnouncementID
+                    <div class="row">
+                        <div class="col">
+                            @announcement.AnnouncementID
+                        </div>
+                        <div class="col">
+                            @announcement.Title
+                        </div>
+                        <div class="col">
+                            @announcement.Body
+                        </div>
+                        <div class="col">
+                            @announcement.DateCreated
+                        </div>
                     </div>
-                    <div class="col">
-                        @announcement.Title
-                    </div>
-                    <div class="col">
-                        @announcement.Body
-                    </div>
-                    <div class="col">
-                        @announcement.DateCreated
-                    </div>
-                </div>
-            </a>
-        }
+                </a>
+            }}
     </ul>
 }
 
@@ -161,13 +165,15 @@ else
         _assignmentsvar = await _coursesAgent.GetAssignmentsByStudent();
 
 
-
-        _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
+       
+            _announcementsvar = await _coursesAgent.GetAnnouncementsByStudent();
         await _coursesState.LoadCourses();
         Courses = _coursesState.Courses;
 
         currDate = DateTime.Now;
         wfn = currDate.AddDays(7);
+
+        _announcementsvar = _announcementsvar.OrderBy(_announcementsvar => _announcementsvar.DateCreated).ToList<Announcement>();
     }
 
 
